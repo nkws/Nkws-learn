@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import ChatBubble from "../components/ChatBubble";
 import ProgressBar from "../components/ProgressBar";
-import QuickAnswers from "../components/QuickAnswers";
+import ChoiceButtons from "../components/ChoiceButtons";
 import RewardModal from "../components/RewardModal";
-import { useTTS, useVoiceInput } from "../hooks/useSpeech";
+import { useTTS } from "../hooks/useSpeech";
 import {
   STARS_PER_REWARD,
   LEVEL_NAMES,
@@ -17,12 +17,13 @@ import {
 
 export default function ChatScreen({ progress, setProgress, onBack }) {
   const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState("");
+  const [choices, setChoices] = useState([]);
+  const [correctAnswer, setCorrectAnswer] = useState("");
   const [showReward, setShowReward] = useState(false);
+  const [answering, setAnswering] = useState(false);
   const currentQuestionRef = useRef(null);
   const chatEndRef = useRef(null);
   const { speak } = useTTS();
-  const { listening, startListening, stopListening } = useVoiceInput();
   const initializedRef = useRef(false);
 
   const scrollToBottom = useCallback(() => {
@@ -33,16 +34,17 @@ export default function ChatScreen({ progress, setProgress, onBack }) {
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
-  const sendMessage = useCallback(
-    (userText) => {
-      const userMsg = { role: "user", content: userText };
+  const handleChoice = useCallback(
+    (choice) => {
+      setAnswering(true);
+      const userMsg = { role: "user", content: choice };
       setMessages((prev) => [...prev, userMsg]);
 
       const currentQ = currentQuestionRef.current;
       if (!currentQ) return;
 
       const result = evaluateAndRespond(
-        userText,
+        choice,
         currentQ,
         progress.level,
         progress.streak
@@ -52,8 +54,11 @@ export default function ChatScreen({ progress, setProgress, onBack }) {
       setMessages((prev) => [...prev, assistantMsg]);
       speak(result.response);
 
-      // Store next question for the next round
+      // Update choices for next question
       currentQuestionRef.current = result.nextQuestion;
+      setChoices(result.nextQuestion.choices);
+      setCorrectAnswer(result.nextQuestion.answer);
+      setAnswering(false);
 
       if (result.correct) {
         setProgress((prev) => {
@@ -95,33 +100,14 @@ export default function ChatScreen({ progress, setProgress, onBack }) {
 
     const firstQ = generateQuestion(progress.level);
     currentQuestionRef.current = firstQ;
-    const greeting = getGreeting(progress.level, progress.stars, firstQ);
+    setChoices(firstQ.choices);
+    setCorrectAnswer(firstQ.answer);
 
+    const greeting = getGreeting(progress.level, progress.stars, firstQ);
     const greetingMsg = { role: "assistant", content: greeting };
     setMessages([greetingMsg]);
     speak(greeting);
   }, [progress.level, progress.stars, speak]);
-
-  const handleSend = () => {
-    const text = input.trim();
-    if (!text) return;
-    setInput("");
-    sendMessage(text);
-  };
-
-  const handleQuickAnswer = (option) => {
-    sendMessage(option);
-  };
-
-  const handleVoice = () => {
-    if (listening) {
-      stopListening();
-    } else {
-      startListening((transcript) => {
-        sendMessage(transcript);
-      });
-    }
-  };
 
   return (
     <div className="screen chat-screen">
@@ -147,34 +133,13 @@ export default function ChatScreen({ progress, setProgress, onBack }) {
         <div ref={chatEndRef} />
       </div>
 
-      {/* Quick answers */}
-      <QuickAnswers onSelect={handleQuickAnswer} disabled={false} />
-
-      {/* Input area */}
-      <div className="chat-input-area">
-        <button
-          className={`voice-btn ${listening ? "voice-active" : ""}`}
-          onClick={handleVoice}
-          aria-label="Voice input"
-        >
-          🎤
-        </button>
-        <input
-          className="chat-input"
-          type="text"
-          placeholder="Type your answer..."
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSend()}
-        />
-        <button
-          className="send-btn"
-          onClick={handleSend}
-          disabled={!input.trim()}
-        >
-          ➤
-        </button>
-      </div>
+      {/* Multiple choice answers */}
+      <ChoiceButtons
+        choices={choices}
+        correctAnswer={correctAnswer}
+        onSelect={handleChoice}
+        disabled={answering}
+      />
 
       {/* Reward modal */}
       {showReward && (

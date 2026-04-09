@@ -19,7 +19,63 @@ function describeTime(h, m) {
   return `${h}:${String(m).padStart(2, "0")}`;
 }
 
-// Generate a question + answer for a given level
+// Shuffle an array
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// Generate wrong choices that look plausible
+function generateChoices(correctAnswer, hours, minutes, level) {
+  const wrongs = new Set();
+
+  if (level <= 2) {
+    // O'clock or half past — vary the hour
+    while (wrongs.size < 2) {
+      const fakeH = randomInt(1, 12);
+      if (fakeH === hours) continue;
+      wrongs.add(describeTime(fakeH, minutes));
+    }
+  } else if (level === 3) {
+    // Quarter past/to — mix quarter past/to with different hours
+    const options = [15, 45];
+    while (wrongs.size < 2) {
+      const fakeH = randomInt(1, 12);
+      const fakeM = pick(options);
+      const desc = describeTime(fakeH, fakeM);
+      if (desc === correctAnswer) continue;
+      wrongs.add(desc);
+    }
+  } else if (level === 4) {
+    // Five-minute intervals
+    const fiveMinOptions = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 0];
+    while (wrongs.size < 2) {
+      const fakeH = pick([hours, randomInt(1, 12)]);
+      const fakeM = pick(fiveMinOptions);
+      const desc = describeTime(fakeH, fakeM);
+      if (desc === correctAnswer) continue;
+      wrongs.add(desc);
+    }
+  } else {
+    // Time addition/subtraction — vary by 1-2 hours
+    while (wrongs.size < 2) {
+      const offset = pick([-2, -1, 1, 2]);
+      const fakeH = hours + offset;
+      if (fakeH < 1 || fakeH > 12) continue;
+      const desc = describeTime(fakeH, minutes);
+      if (desc === correctAnswer) continue;
+      wrongs.add(desc);
+    }
+  }
+
+  return shuffle([correctAnswer, ...wrongs]);
+}
+
+// Generate a question + answer + choices for a given level
 function generateQuestion(level) {
   const contexts = [
     "Time to check the clock! 🕐",
@@ -43,29 +99,29 @@ function generateQuestion(level) {
     case 1: {
       hours = randomInt(1, 12);
       minutes = 0;
-      question = `${pick(contexts)} ${pick(singapore)} [CLOCK:${formatTime(hours, minutes)}] What time does this clock show? 🤔`;
+      question = `${pick(contexts)} ${pick(singapore)} [CLOCK:${formatTime(hours, minutes)}] What time does this clock show?`;
       answer = `${hours} o'clock`;
       break;
     }
     case 2: {
       hours = randomInt(1, 12);
       minutes = 30;
-      question = `${pick(contexts)} ${pick(singapore)} [CLOCK:${formatTime(hours, minutes)}] Can you tell me what time this is? 🤔`;
+      question = `${pick(contexts)} ${pick(singapore)} [CLOCK:${formatTime(hours, minutes)}] Can you tell me what time this is?`;
       answer = `half past ${hours}`;
       break;
     }
     case 3: {
       hours = randomInt(1, 12);
       minutes = pick([15, 45]);
-      question = `${pick(contexts)} ${pick(singapore)} [CLOCK:${formatTime(hours, minutes)}] What time is it? 🤔`;
+      question = `${pick(contexts)} ${pick(singapore)} [CLOCK:${formatTime(hours, minutes)}] What time is it?`;
       answer = describeTime(hours, minutes);
       break;
     }
     case 4: {
       hours = randomInt(1, 12);
       minutes = pick([5, 10, 20, 25, 35, 40, 50, 55]);
-      question = `${pick(contexts)} ${pick(singapore)} [CLOCK:${formatTime(hours, minutes)}] What time does this clock show? 🤔`;
-      answer = formatTime(hours, minutes);
+      question = `${pick(contexts)} ${pick(singapore)} [CLOCK:${formatTime(hours, minutes)}] What time does this clock show?`;
+      answer = describeTime(hours, minutes);
       break;
     }
     case 5: {
@@ -79,9 +135,11 @@ function generateQuestion(level) {
         `School ends at ${describeTime(hours, minutes)}. Keanu plays for ${addHours} hour${addHours > 1 ? "s" : ""} after that! ⚽`,
         `It's ${describeTime(hours, minutes)}. Dinner is in ${addHours} hour${addHours > 1 ? "s" : ""}! 🍛`,
       ];
-      question = `${pick(scenarios)} [CLOCK:${formatTime(hours, minutes)}] What time will it be? 🤔`;
+      question = `${pick(scenarios)} [CLOCK:${formatTime(hours, minutes)}] What time will it be?`;
       answer = describeTime(resultH, resultM);
-      break;
+      // For choices, use the result hours/minutes
+      const choices = generateChoices(answer, resultH, resultM, level);
+      return { question, answer, hours, minutes, choices };
     }
     case 6: {
       const resultH = randomInt(2, 11);
@@ -93,57 +151,21 @@ function generateQuestion(level) {
         `Bedtime is at ${describeTime(hours, minutes2)}. ${subHours} hour${subHours > 1 ? "s" : ""} ago Keanu was watching TV! 📺`,
         `It's ${describeTime(hours, minutes2)} now. ${subHours} hour${subHours > 1 ? "s" : ""} ago Keanu left school! 🏫`,
       ];
-      question = `${pick(scenarios)} [CLOCK:${formatTime(hours, minutes2)}] What time was it? 🤔`;
+      question = `${pick(scenarios)} [CLOCK:${formatTime(hours, minutes2)}] What time was it?`;
       answer = describeTime(resultH, minutes2);
-      break;
+      const choices = generateChoices(answer, resultH, minutes2, level);
+      return { question, answer, hours, minutes: minutes2, choices };
     }
     default: {
       hours = randomInt(1, 12);
       minutes = 0;
-      question = `[CLOCK:${formatTime(hours, minutes)}] What time is this? 🤔`;
+      question = `[CLOCK:${formatTime(hours, minutes)}] What time is this?`;
       answer = `${hours} o'clock`;
     }
   }
 
-  return { question, answer, hours, minutes };
-}
-
-// Check if user's answer is close enough to the correct answer
-function isAnswerCorrect(userAnswer, correctAnswer, hours, minutes) {
-  const u = userAnswer.toLowerCase().trim();
-  const c = correctAnswer.toLowerCase().trim();
-
-  // Direct match
-  if (u.includes(c) || c.includes(u)) return true;
-
-  // Check numeric formats: "3:00", "3 00", "300"
-  const timeStr = formatTime(hours, minutes);
-  if (u.includes(timeStr)) return true;
-
-  // Check just the number for o'clock
-  if (minutes === 0 && u.includes(String(hours))) return true;
-
-  // "half past X"
-  if (minutes === 30) {
-    if (u.includes("half past") && u.includes(String(hours))) return true;
-    if (u.includes("30") && u.includes(String(hours))) return true;
-  }
-
-  // "quarter past/to"
-  if (minutes === 15) {
-    if (u.includes("quarter past") && u.includes(String(hours))) return true;
-    if (u.includes("15") && u.includes(String(hours))) return true;
-  }
-  if (minutes === 45) {
-    const nextH = hours === 12 ? 1 : hours + 1;
-    if (u.includes("quarter to") && u.includes(String(nextH))) return true;
-    if (u.includes("45") && u.includes(String(hours))) return true;
-  }
-
-  // For 5-min intervals, check if they got the numbers right
-  if (u.includes(String(hours)) && u.includes(String(minutes))) return true;
-
-  return false;
+  const choices = generateChoices(answer, hours, minutes, level);
+  return { question, answer, hours, minutes, choices };
 }
 
 // Encouragement phrases
@@ -159,11 +181,11 @@ const PRAISE = [
 ];
 
 const HINTS = [
-  "Hmm, not quite! 🤔 Look at where the short hand is pointing — that tells us the hour! Try again! 💪",
-  "Almost! 🦊 The short hand shows the hour, the long hand shows the minutes. Have another look! 👀",
-  "Let's try again! 🌟 Count the numbers the short hand is pointing to. What number is it near? 🤔",
-  "So close! 💫 Remember, when the long hand points to 12, it's exactly o'clock! Try once more! 🙌",
-  "Not quite, but that's okay! 🦊 The long hand pointing to 6 means half past. What does the short hand say? 🤔",
+  "Hmm, not quite! 🤔 Look at where the short hand is pointing — that tells us the hour!",
+  "Almost! 🦊 The short hand shows the hour, the long hand shows the minutes.",
+  "Let's try again! 🌟 Count the numbers the short hand is pointing to.",
+  "So close! 💫 Remember, when the long hand points to 12, it's exactly o'clock!",
+  "Not quite, but that's okay! 🦊 Keep looking at the hands on the clock!",
 ];
 
 const LEVEL_UP_MSG = "Level up! 🎉🎊🏆 You're getting so good at this, Keanu!";
@@ -175,22 +197,9 @@ export function getGreeting(level, stars, firstQuestion) {
   return `Hey Keanu! 🦊✨ I'm Koko, your time-telling buddy! Let's learn how to read clocks together — it's going to be fun! ${firstQuestion.question}`;
 }
 
-export function getResponse(userAnswer, level, streak) {
-  const q = generateQuestion(level);
-  // We need the *previous* question's answer to check — but since we generate new questions each time,
-  // we'll store the current question data and check against it.
-  // This function is called differently — see below.
-  return { ...q, praise: pick(PRAISE), hint: pick(HINTS) };
-}
-
 // Main function: evaluate answer and return Koko's response + next question
 export function evaluateAndRespond(userAnswer, currentQ, level, streak) {
-  const correct = isAnswerCorrect(
-    userAnswer,
-    currentQ.answer,
-    currentQ.hours,
-    currentQ.minutes
-  );
+  const correct = userAnswer === currentQ.answer;
 
   let newLevel = level;
   let newStreak = correct ? streak + 1 : 0;
