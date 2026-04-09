@@ -231,13 +231,13 @@ function buildTime6() {
 
 function buildTime7() {
   const scenarios = [
-    { h: 5, m: 0, sub: 1, ctx: "It's 5 o'clock. 1 hour ago Keanu was playing!" },
-    { h: 8, m: 0, sub: 2, ctx: "It's 8 o'clock. 2 hours ago Keanu had dinner!" },
+    { h: 5, m: 0, sub: 1, ctx: "It's 5 o'clock. 1 hour ago you was playing!" },
+    { h: 8, m: 0, sub: 2, ctx: "It's 8 o'clock. 2 hours ago you had dinner!" },
     { h: 4, m: 30, sub: 1, ctx: "It's half past 4. 1 hour ago school ended!" },
-    { h: 10, m: 0, sub: 3, ctx: "It's 10 o'clock. 3 hours ago Keanu woke up!" },
+    { h: 10, m: 0, sub: 3, ctx: "It's 10 o'clock. 3 hours ago you woke up!" },
     { h: 6, m: 0, sub: 2, ctx: "It's 6 o'clock. 2 hours ago it was recess!" },
-    { h: 9, m: 30, sub: 2, ctx: "It's half past 9. 2 hours ago Keanu was reading!" },
-    { h: 3, m: 0, sub: 1, ctx: "It's 3 o'clock. 1 hour ago Keanu had lunch!" },
+    { h: 9, m: 30, sub: 2, ctx: "It's half past 9. 2 hours ago you was reading!" },
+    { h: 3, m: 0, sub: 1, ctx: "It's 3 o'clock. 1 hour ago you had lunch!" },
     { h: 7, m: 0, sub: 3, ctx: "It's 7 o'clock. 3 hours ago school started!" },
     { h: 11, m: 0, sub: 2, ctx: "It's 11 o'clock. 2 hours ago the bus came!" },
     { h: 12, m: 0, sub: 1, ctx: "It's 12 o'clock. 1 hour ago it was assembly!" },

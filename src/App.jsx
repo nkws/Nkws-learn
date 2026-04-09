@@ -5,6 +5,7 @@ import TopicListScreen from "./screens/TopicListScreen";
 import ModuleListScreen from "./screens/ModuleListScreen";
 import ChatScreen from "./screens/ChatScreen";
 import AboutScreen from "./screens/AboutScreen";
+import { getSubjectsForLevel, getTotalStars } from "./utils/constants";
 import {
   loadProgress, saveProgress,
   loadModuleVideos, saveModuleVideos,
@@ -42,6 +43,35 @@ export default function App() {
     setScreen("chat");
   }, []);
 
+  const handleResetTopic = useCallback((topicId) => {
+    setProgress((prev) => {
+      // Find all module IDs for this topic in the active level
+      const subjects = getSubjectsForLevel(activeLevel) || [];
+      const allModuleIds = [];
+      for (const subject of subjects) {
+        const topic = subject.topics.find((t) => t.id === topicId);
+        if (topic) {
+          topic.modules.forEach((m) => allModuleIds.push(m.id));
+        }
+      }
+      const newModuleStars = { ...prev.moduleStars };
+      const newCompleted = [...(prev.completedModules || [])];
+      for (const id of allModuleIds) {
+        delete newModuleStars[id];
+        const idx = newCompleted.indexOf(id);
+        if (idx !== -1) newCompleted.splice(idx, 1);
+      }
+      const updated = {
+        ...prev,
+        moduleStars: newModuleStars,
+        completedModules: newCompleted,
+        stars: getTotalStars(newModuleStars),
+      };
+      saveProgress(updated);
+      return updated;
+    });
+  }, [activeLevel]);
+
   if (screen === "about") {
     return <AboutScreen onBack={() => setScreen("home")} />;
   }
@@ -72,6 +102,7 @@ export default function App() {
         onModuleVideosChange={handleModuleVideosChange}
         onStartModule={handleStartModule}
         onReattempt={handleReattempt}
+        onResetTopic={handleResetTopic}
         onBack={() => setScreen("topics")}
       />
     );

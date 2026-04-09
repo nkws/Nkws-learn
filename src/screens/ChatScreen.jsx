@@ -135,7 +135,7 @@ export default function ChatScreen({
           const perfectMsg = isPerfect
             ? isZhLang
               ? `${responseText} 满分！每一道题都答对了！太厉害了！⭐ ${newCorrectCount} / ${totalQ} 星！`
-              : `${responseText} PERFECT SCORE! You got every single question right first time! Amazing work, Keanu! ⭐ ${newCorrectCount} out of ${totalQ} stars!`
+              : `${responseText} PERFECT SCORE! You got every single question right first time! Amazing work! ⭐ ${newCorrectCount} out of ${totalQ} stars!`
             : isZhLang
               ? `${responseText} 你完成了 ${mod?.title}！⭐ ${newCorrectCount} / ${totalQ} 星！`
               : `${responseText} You finished the ${mod?.title} module! ⭐ ${newCorrectCount} out of ${totalQ} stars!`;

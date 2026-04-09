@@ -3,7 +3,7 @@ export default function RewardModal({ videoId, onDismiss }) {
     <div className="reward-overlay" onClick={onDismiss}>
       <div className="reward-modal" onClick={(e) => e.stopPropagation()}>
         <div className="reward-emojis">🎉⭐🏆</div>
-        <h2 className="reward-title">Amazing Job, Keanu!</h2>
+        <h2 className="reward-title">Amazing Job!</h2>
         <p className="reward-subtitle">You earned a video reward!</p>
         {videoId && (
           <div className="reward-video">

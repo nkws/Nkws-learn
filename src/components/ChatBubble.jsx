@@ -6,9 +6,9 @@ export default function ChatBubble({ message, showSpeakBtn, speakChoices, onSpea
   const parts = parseClockTags(message.content);
 
   return (
-    <div className={`chat-bubble-row ${isKoko ? "koko" : "keanu"}`}>
+    <div className={`chat-bubble-row ${isKoko ? "koko" : "student"}`}>
       {isKoko && <span className="avatar">🦊</span>}
-      <div className={`chat-bubble ${isKoko ? "bubble-koko" : "bubble-keanu"}`}>
+      <div className={`chat-bubble ${isKoko ? "bubble-koko" : "bubble-student"}`}>
         {parts.map((part, i) =>
           part.type === "clock" ? (
             <div key={i} className="bubble-clock">

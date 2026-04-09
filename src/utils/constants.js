@@ -49,7 +49,7 @@ const MATH_TOPICS = [
     modules: [
       { id: "as20-1", title: "Addition to 20", description: "10+5, 12+3, 11+8... bigger additions!", starsToUnlock: 0 },
       { id: "as20-2", title: "Subtraction to 20", description: "15-5, 18-8, 20-10... bigger subtractions!", starsToUnlock: 0 },
-      { id: "as20-3", title: "Addition Word Problems", description: "Keanu has 8 stickers, gets 5 more...", starsToUnlock: 10 },
+      { id: "as20-3", title: "Addition Word Problems", description: "You have 8 stickers, get 5 more...", starsToUnlock: 10 },
       { id: "as20-4", title: "Subtraction Word Problems", description: "15 sweets, eats 5, how many left?", starsToUnlock: 18 },
       { id: "as20-5", title: "Mixed Problems", description: "Addition and subtraction together!", starsToUnlock: 26 },
     ],

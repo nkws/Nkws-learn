@@ -52,15 +52,15 @@ function buildAS2() {
 function buildAS3() {
   // Addition word problems
   return shuffle([
-    { q: "Keanu has 8 stickers. He gets 5 more. How many now?", a: "13" },
+    { q: "You has 8 stickers. He gets 5 more. How many now?", a: "13" },
     { q: "There are 7 birds. 6 more come. How many birds?", a: "13" },
-    { q: "Keanu reads 9 pages. Then reads 4 more. How many total?", a: "13" },
-    { q: "There are 11 apples. Keanu adds 3. How many?", a: "14" },
-    { q: "Keanu has 6 toys. He gets 8 more. How many now?", a: "14" },
+    { q: "You reads 9 pages. Then reads 4 more. How many total?", a: "13" },
+    { q: "There are 11 apples. You adds 3. How many?", a: "14" },
+    { q: "You has 6 toys. He gets 8 more. How many now?", a: "14" },
     { q: "There are 12 children. 5 more join. How many?", a: "17" },
-    { q: "Keanu scores 10 points, then 7 more. Total?", a: "17" },
+    { q: "You scores 10 points, then 7 more. Total?", a: "17" },
     { q: "There are 9 fish. 9 more swim in. How many?", a: "18" },
-    { q: "Keanu has 11 cards. He finds 4 more. How many?", a: "15" },
+    { q: "You has 11 cards. He finds 4 more. How many?", a: "15" },
     { q: "There are 8 chairs. We add 8 more. How many?", a: "16" },
   ]).map((item) => {
     const w = nearbyWrongs(Number(item.a));
@@ -71,15 +71,15 @@ function buildAS3() {
 function buildAS4() {
   // Subtraction word problems
   return shuffle([
-    { q: "Keanu has 15 sweets. He eats 5. How many left?", a: "10" },
+    { q: "You has 15 sweets. He eats 5. How many left?", a: "10" },
     { q: "There are 18 balloons. 8 pop. How many left?", a: "10" },
-    { q: "Keanu has 14 stickers. He gives away 4. How many?", a: "10" },
+    { q: "You has 14 stickers. He gives away 4. How many?", a: "10" },
     { q: "There are 20 children. 7 go home. How many left?", a: "13" },
-    { q: "Keanu has 16 crayons. He loses 3. How many left?", a: "13" },
-    { q: "There are 17 cookies. Keanu eats 5. How many left?", a: "12" },
-    { q: "Keanu has 19 marbles. He gives 6 away. How many?", a: "13" },
+    { q: "You has 16 crayons. He loses 3. How many left?", a: "13" },
+    { q: "There are 17 cookies. You eats 5. How many left?", a: "12" },
+    { q: "You has 19 marbles. He gives 6 away. How many?", a: "13" },
     { q: "There are 13 birds. 3 fly away. How many left?", a: "10" },
-    { q: "Keanu has 12 pencils. He breaks 2. How many left?", a: "10" },
+    { q: "You has 12 pencils. He breaks 2. How many left?", a: "10" },
     { q: "There are 20 stars. 10 disappear. How many left?", a: "10" },
   ]).map((item) => {
     const w = nearbyWrongs(Number(item.a));

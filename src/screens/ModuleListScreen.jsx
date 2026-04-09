@@ -12,12 +12,14 @@ export default function ModuleListScreen({
   onModuleVideosChange,
   onStartModule,
   onReattempt,
+  onResetTopic,
   onBack,
 }) {
   const [editingModule, setEditingModule] = useState(null);
   const [videoInput, setVideoInput] = useState("");
   const [error, setError] = useState("");
   const [confirmModule, setConfirmModule] = useState(null);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   const topic = getTopic(subjectId, topicId, level);
   const topicStars = getTopicStars(topicId, progress.moduleStars || {});
@@ -149,13 +151,43 @@ export default function ModuleListScreen({
         })}
       </div>
 
+      {topicStars > 0 && (
+        <button className="reset-topic-btn" onClick={() => setShowResetConfirm(true)}>
+          Reset all progress for this topic
+        </button>
+      )}
+
+      {showResetConfirm && (
+        <div className="reward-overlay" onClick={() => setShowResetConfirm(false)}>
+          <div className="reward-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="reward-emojis">⚠️</div>
+            <h2 className="reward-title">Reset Progress?</h2>
+            <p className="reward-subtitle">
+              This will clear all stars and completion status for every module in this topic. This cannot be undone.
+            </p>
+            <button
+              className="btn-primary reward-dismiss"
+              onClick={() => { setShowResetConfirm(false); onResetTopic(topicId); }}
+            >
+              Reset
+            </button>
+            <button
+              className="confirm-cancel"
+              onClick={() => setShowResetConfirm(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
       {confirmModule !== null && (
         <div className="reward-overlay" onClick={() => setConfirmModule(null)}>
           <div className="reward-modal" onClick={(e) => e.stopPropagation()}>
             <div className="reward-emojis">⚠️</div>
             <h2 className="reward-title">No Reward Video</h2>
             <p className="reward-subtitle">
-              No video has been set for this module. Keanu won't get a video reward at the end.
+              No video has been set for this module. There won't be a video reward at the end.
             </p>
             <button
               className="btn-primary reward-dismiss"
