@@ -79,8 +79,8 @@ export function useTTS() {
     const doSpeak = () => {
       for (const sentence of sentences) {
         const utterance = new SpeechSynthesisUtterance(sentence);
-        utterance.rate = 0.9;
-        utterance.pitch = 1.05;
+        utterance.rate = 1.0;
+        utterance.pitch = 1.3;
         if (voiceRef.current) {
           utterance.voice = voiceRef.current;
         } else {
