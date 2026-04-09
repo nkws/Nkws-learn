@@ -88,7 +88,9 @@ export default function ChatScreen({
 
       setQuestionIndex(nextIdx);
       setMessages((prev) => [...prev, userMsg, { role: "assistant", content: responseText }]);
-      speak(responseText);
+      // Read response aloud, then read next question's choices
+      const nextChoices = !isLast ? questions[nextIdx]?.choices : null;
+      speak(responseText, nextChoices);
       setAnswering(false);
     },
     [questions, questionIndex, totalCount, moduleId, mod?.title, videoId, setProgress, answering]
@@ -121,6 +123,7 @@ export default function ChatScreen({
             key={i}
             message={msg}
             showSpeakBtn={i === 0 && msg.role === "assistant"}
+            speakChoices={i === 0 ? questions[0]?.choices : null}
             onSpeak={speak}
           />
         ))}

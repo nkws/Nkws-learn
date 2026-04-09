@@ -1,7 +1,7 @@
 import Clock from "./Clock";
 import { parseClockTags } from "../utils/parseClock";
 
-export default function ChatBubble({ message, showSpeakBtn, onSpeak }) {
+export default function ChatBubble({ message, showSpeakBtn, speakChoices, onSpeak }) {
   const isKoko = message.role === "assistant";
   const parts = parseClockTags(message.content);
 
@@ -21,7 +21,7 @@ export default function ChatBubble({ message, showSpeakBtn, onSpeak }) {
         {showSpeakBtn && onSpeak && (
           <button
             className="speak-btn"
-            onClick={() => onSpeak(message.content)}
+            onClick={() => onSpeak(message.content, speakChoices)}
             aria-label="Read aloud"
           >
             🔊

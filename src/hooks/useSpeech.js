@@ -64,33 +64,43 @@ export function useTTS() {
     });
   }, []);
 
-  const speak = useCallback((text) => {
+  const makeUtterance = useCallback((text) => {
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 1.0;
+    utterance.pitch = 1.3;
+    if (voiceRef.current) {
+      utterance.voice = voiceRef.current;
+    } else {
+      utterance.lang = "en-GB";
+    }
+    return utterance;
+  }, []);
+
+  // speak(text) or speak(text, choices) — choices are read after with pauses
+  const speak = useCallback((text, choices) => {
     const synth = window.speechSynthesis;
     if (!synth) return;
     synth.cancel();
 
     const cleaned = cleanForSpeech(text);
-
-    // Split on sentence boundaries so TTS respects pauses at full stops and commas
     const sentences = cleaned
       .split(/(?<=[.!?])\s+/)
       .filter((s) => s.trim().length > 0);
 
     const doSpeak = () => {
       for (const sentence of sentences) {
-        const utterance = new SpeechSynthesisUtterance(sentence);
-        utterance.rate = 1.0;
-        utterance.pitch = 1.3;
-        if (voiceRef.current) {
-          utterance.voice = voiceRef.current;
-        } else {
-          utterance.lang = "en-GB";
-        }
-        synth.speak(utterance);
+        synth.speak(makeUtterance(sentence));
+      }
+
+      if (choices && choices.length > 0) {
+        // Brief pause then read "Your options are:"
+        synth.speak(makeUtterance("Your options are."));
+        choices.forEach((choice, i) => {
+          synth.speak(makeUtterance(`${i + 1}. ${choice}.`));
+        });
       }
     };
 
-    // If voices haven't loaded yet, wait then speak
     if (!readyRef.current) {
       waitForVoices().then((voices) => {
         if (!voiceRef.current && voices.length > 0) {
@@ -102,7 +112,7 @@ export function useTTS() {
     } else {
       doSpeak();
     }
-  }, []);
+  }, [makeUtterance]);
 
   // Call this during a user gesture to unlock speech on iOS
   const unlock = useCallback(() => {
