@@ -72,17 +72,33 @@ function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-const PRAISE = [
+const PRAISE_EN = [
   "Correct! Well done!", "You got it! Great job!", "Well done! You're a champion!",
   "Great job, Keanu! So clever!", "Exactly right! Awesome!", "Perfect! You're amazing!",
   "Brilliant! Koko is so proud of you!", "Spot on! You're doing so well!",
 ];
 
-const HINTS = [
+const PRAISE_ZH = [
+  "答对了！真棒！", "你做到了！太厉害了！", "非常好！你是冠军！",
+  "太聪明了！", "完全正确！好厉害！", "完美！你太棒了！",
+  "真了不起！Koko 很骄傲！", "一点都没错！继续加油！",
+];
+
+const HINTS_EN = [
   "Hmm, not quite! Have another look!", "Almost! Let's think about it again!",
   "Let's try again! You're so close!", "So close! Don't worry, you're learning!",
   "Not quite, but that's okay! Keep going!",
 ];
 
-export function getPraise() { return pick(PRAISE); }
-export function getHint(correctAnswer) { return `${pick(HINTS)} The answer was ${correctAnswer}.`; }
+const HINTS_ZH = [
+  "嗯，不太对哦！再看看吧！", "差一点！再想想看！",
+  "再试一次！你快要答对了！", "很接近了！别担心，你在学习！",
+  "没关系，继续加油！",
+];
+
+export function getPraise(lang = "en") { return pick(lang === "zh" ? PRAISE_ZH : PRAISE_EN); }
+export function getHint(correctAnswer, lang = "en") {
+  const hint = pick(lang === "zh" ? HINTS_ZH : HINTS_EN);
+  const answerLabel = lang === "zh" ? `答案是 ${correctAnswer}。` : `The answer was ${correctAnswer}.`;
+  return `${hint} ${answerLabel}`;
+}

@@ -43,7 +43,10 @@ export default function ChatScreen({
     totalQuestionsRef.current = qs.length;
     wrongThisRoundRef.current = [];
     if (qs.length > 0) {
-      const greeting = `Here's your first question. ${qs[0].question}`;
+      const isZh = subjectId === "chinese";
+      const greeting = isZh
+        ? `这是你的第一道题。${qs[0].question}`
+        : `Here's your first question. ${qs[0].question}`;
       setMessages([{ role: "assistant", content: greeting }]);
     }
     setShowIntro(false);
@@ -104,19 +107,20 @@ export default function ChatScreen({
         }
 
         if (!isLast) {
-          responseText = `${getPraise()} ${questions[nextIdx].question}`;
+          responseText = `${getPraise(ttsLang)} ${questions[nextIdx].question}`;
           nextChoices = questions[nextIdx].choices;
         } else {
-          responseText = getPraise();
+          responseText = getPraise(ttsLang);
         }
       } else {
         wrongThisRoundRef.current.push(currentQ);
 
         if (!isLast) {
-          responseText = `${getHint(currentQ.answer)} Let's try the next one! ${questions[nextIdx].question}`;
+          const nextPrompt = ttsLang === "zh" ? "我们来试下一题！" : "Let's try the next one!";
+          responseText = `${getHint(currentQ.answer, ttsLang)} ${nextPrompt} ${questions[nextIdx].question}`;
           nextChoices = questions[nextIdx].choices;
         } else {
-          responseText = getHint(currentQ.answer);
+          responseText = getHint(currentQ.answer, ttsLang);
         }
       }
 
@@ -126,13 +130,18 @@ export default function ChatScreen({
         if (wrongs.length === 0) {
           // All correct — module complete! Save score once.
           const isPerfect = newCorrectCount === totalQ;
+          const isZhLang = ttsLang === "zh";
           const perfectMsg = isPerfect
-            ? `${responseText} PERFECT SCORE! You got every single question right first time! Amazing work, Keanu! ⭐ ${newCorrectCount} out of ${totalQ} stars!`
-            : `${responseText} You finished the ${mod?.title} module! ⭐ ${newCorrectCount} out of ${totalQ} stars!`;
+            ? isZhLang
+              ? `${responseText} 满分！每一道题都答对了！太厉害了！⭐ ${newCorrectCount} / ${totalQ} 星！`
+              : `${responseText} PERFECT SCORE! You got every single question right first time! Amazing work, Keanu! ⭐ ${newCorrectCount} out of ${totalQ} stars!`
+            : isZhLang
+              ? `${responseText} 你完成了 ${mod?.title}！⭐ ${newCorrectCount} / ${totalQ} 星！`
+              : `${responseText} You finished the ${mod?.title} module! ⭐ ${newCorrectCount} out of ${totalQ} stars!`;
           const videoPrompt = isPerfect && videoId
             ? ""
             : !isPerfect && videoId
-              ? " Get a perfect score to unlock the video reward!"
+              ? isZhLang ? " 全部答对就能看视频奖励哦！" : " Get a perfect score to unlock the video reward!"
               : "";
           const completeMsg = perfectMsg + videoPrompt;
           setMessages((prev) => [...prev, userMsg, { role: "assistant", content: completeMsg }]);
@@ -144,7 +153,10 @@ export default function ChatScreen({
             setTimeout(() => setShowReward(true), 1000);
           }
         } else {
-          const retryMsg = `${responseText} Let's go over the ones you missed! You have ${wrongs.length} question${wrongs.length > 1 ? "s" : ""} to try again. ${wrongs[0].question}`;
+          const retryIntro = ttsLang === "zh"
+            ? `我们来复习答错的题目吧！还有 ${wrongs.length} 道题要再试一次。`
+            : `Let's go over the ones you missed! You have ${wrongs.length} question${wrongs.length > 1 ? "s" : ""} to try again.`;
+          const retryMsg = `${responseText} ${retryIntro} ${wrongs[0].question}`;
           setMessages((prev) => [...prev, userMsg, { role: "assistant", content: retryMsg }]);
           speak(retryMsg, wrongs[0].choices);
           setQuestions([...wrongs]);

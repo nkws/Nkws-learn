@@ -7,88 +7,58 @@ function shuffle(arr) {
   return a;
 }
 
-// ============ QUESTION BANKS ============
-
 function buildCns1() {
   return shuffle([
-    { q: "What does 我是男孩 mean?", a: "I am a boy", choices: ["I am a boy", "I am a girl", "I am a teacher"] },
-    { q: "What does 我是女孩 mean?", a: "I am a girl", choices: ["I am a girl", "I am a boy", "I am a student"] },
-    { q: "What does 我是学生 mean?", a: "I am a student", choices: ["I am a student", "I am a teacher", "I am a boy"] },
-    { q: "What does 我是老师 mean?", a: "I am a teacher", choices: ["I am a teacher", "I am a student", "I am a girl"] },
-    { q: "What does 他是哥哥 mean?", a: "He is an older brother", choices: ["He is an older brother", "He is a younger brother", "He is a father"] },
-    { q: "What does 她是姐姐 mean?", a: "She is an older sister", choices: ["She is an older sister", "She is a younger sister", "She is a mother"] },
-    { q: "What does 我是中国人 mean?", a: "I am Chinese", choices: ["I am Chinese", "I am a student", "I am a boy"] },
-    { q: "What does 他是爸爸 mean?", a: "He is a father", choices: ["He is a father", "He is a mother", "He is a brother"] },
-  ]).map((item) => ({
-    question: item.q,
-    answer: item.a,
-    choices: shuffle([...item.choices]),
-  }));
+    { q: "我是_____。（你是男孩还是女孩？）", a: "男孩", choices: ["男孩", "老师", "小鸟"] },
+    { q: "我是_____。（你在学校是什么？）", a: "学生", choices: ["学生", "老师", "爸爸"] },
+    { q: "她是我的_____。（生你的女人）", a: "妈妈", choices: ["妈妈", "姐姐", "老师"] },
+    { q: "他是我的_____。（生你的男人）", a: "爸爸", choices: ["爸爸", "哥哥", "弟弟"] },
+    { q: "我是一个好_____。", a: "孩子", choices: ["孩子", "老师", "桌子"] },
+    { q: "我今年_____岁。（Keanu的年龄）", a: "七", choices: ["五", "七", "十"] },
+    { q: "我的名字是_____。", a: "Keanu", choices: ["Keanu", "Koko", "老师"] },
+    { q: "我是新加坡的_____。", a: "小朋友", choices: ["小朋友", "老师", "大人"] },
+  ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]) }));
 }
 
 function buildCns2() {
   return shuffle([
-    { q: "What does 这是书 mean?", a: "This is a book", choices: ["This is a book", "This is a pen", "This is a desk"] },
-    { q: "What does 这是笔 mean?", a: "This is a pen", choices: ["This is a pen", "This is a book", "This is a chair"] },
-    { q: "What does 这是猫 mean?", a: "This is a cat", choices: ["This is a cat", "This is a dog", "This is a fish"] },
-    { q: "What does 这是狗 mean?", a: "This is a dog", choices: ["This is a dog", "This is a cat", "This is a bird"] },
-    { q: "What does 这是苹果 mean?", a: "This is an apple", choices: ["This is an apple", "This is a banana", "This is bread"] },
-    { q: "What does 这是水 mean?", a: "This is water", choices: ["This is water", "This is milk", "This is rice"] },
-    { q: "What does 这是学校 mean?", a: "This is a school", choices: ["This is a school", "This is a classroom", "This is a book"] },
-    { q: "What does 这是椅子 mean?", a: "This is a chair", choices: ["This is a chair", "This is a desk", "This is a pen"] },
-  ]).map((item) => ({
-    question: item.q,
-    answer: item.a,
-    choices: shuffle([...item.choices]),
-  }));
+    { q: "这是什么？（看书的东西）", a: "这是书", choices: ["这是书", "这是笔", "这是桌子"] },
+    { q: "那是什么？（写字的东西）", a: "那是笔", choices: ["那是书", "那是笔", "那是椅子"] },
+    { q: "这是什么？（坐的东西）", a: "这是椅子", choices: ["这是桌子", "这是书", "这是椅子"] },
+    { q: "这是什么？（红红的水果）", a: "这是苹果", choices: ["这是苹果", "这是香蕉", "这是鸡蛋"] },
+    { q: "那是什么？（会喵喵叫的）", a: "那是猫", choices: ["那是狗", "那是猫", "那是鸟"] },
+    { q: "这是什么？（会汪汪叫的）", a: "这是狗", choices: ["这是猫", "这是狗", "这是鱼"] },
+    { q: "这是什么？（我们喝的）", a: "这是水", choices: ["这是水", "这是饭", "这是书"] },
+    { q: "那是什么？（学习的地方）", a: "那是学校", choices: ["那是公园", "那是家", "那是学校"] },
+  ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]) }));
 }
 
 function buildCns3() {
   return shuffle([
-    { q: "What does 我喜欢猫 mean?", a: "I like cats", choices: ["I like cats", "I like dogs", "I like fish"] },
-    { q: "What does 我喜欢狗 mean?", a: "I like dogs", choices: ["I like dogs", "I like cats", "I like birds"] },
-    { q: "What does 我喜欢吃饭 mean?", a: "I like eating rice", choices: ["I like eating rice", "I like eating noodles", "I like drinking water"] },
-    { q: "What does 我喜欢看书 mean?", a: "I like reading books", choices: ["I like reading books", "I like writing", "I like school"] },
-    { q: "What does 我喜欢红色 mean?", a: "I like red", choices: ["I like red", "I like blue", "I like green"] },
-    { q: "What does 我喜欢苹果 mean?", a: "I like apples", choices: ["I like apples", "I like bananas", "I like bread"] },
-    { q: "What does 我喜欢学校 mean?", a: "I like school", choices: ["I like school", "I like reading books", "I like cats"] },
-    { q: "What does 我喜欢喝水 mean?", a: "I like drinking water", choices: ["I like drinking water", "I like eating rice", "I like milk"] },
-  ]).map((item) => ({
-    question: item.q,
-    answer: item.a,
-    choices: shuffle([...item.choices]),
-  }));
+    { q: "我喜欢什么动物？（喵喵叫的）", a: "我喜欢猫", choices: ["我喜欢猫", "我喜欢狗", "我喜欢鱼"] },
+    { q: "我喜欢吃什么？（白色的主食）", a: "我喜欢吃饭", choices: ["我喜欢吃饭", "我喜欢吃面", "我喜欢喝水"] },
+    { q: "我喜欢什么颜色？（天空的颜色）", a: "我喜欢蓝色", choices: ["我喜欢红色", "我喜欢蓝色", "我喜欢绿色"] },
+    { q: "我喜欢做什么？（在操场上）", a: "我喜欢跑步", choices: ["我喜欢跑步", "我喜欢睡觉", "我喜欢吃饭"] },
+    { q: "我喜欢看什么？（有画面的）", a: "我喜欢看书", choices: ["我喜欢看书", "我喜欢喝水", "我喜欢吃饭"] },
+    { q: "我喜欢吃什么水果？（黄色弯弯的）", a: "我喜欢吃香蕉", choices: ["我喜欢吃苹果", "我喜欢吃香蕉", "我喜欢吃面包"] },
+    { q: "我喜欢和谁玩？（一起上学的人）", a: "我喜欢和朋友玩", choices: ["我喜欢和老师玩", "我喜欢和朋友玩", "我喜欢和猫玩"] },
+    { q: "我喜欢去哪里？（有滑梯的地方）", a: "我喜欢去公园", choices: ["我喜欢去学校", "我喜欢去公园", "我喜欢去家"] },
+  ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]) }));
 }
 
 function buildCns4() {
   return shuffle([
-    { q: "What does 你好吗 mean?", a: "How are you?", choices: ["How are you?", "What is this?", "Who are you?"] },
-    { q: "What does 你叫什么名字 mean?", a: "What is your name?", choices: ["What is your name?", "How are you?", "How old are you?"] },
-    { q: "What does 你几岁 mean?", a: "How old are you?", choices: ["How old are you?", "What is your name?", "Where are you?"] },
-    { q: "What does 这是什么 mean?", a: "What is this?", choices: ["What is this?", "Who is this?", "Where is this?"] },
-    { q: "What does 你喜欢什么 mean?", a: "What do you like?", choices: ["What do you like?", "How are you?", "What is this?"] },
-    { q: "What does 你要去哪里 mean?", a: "Where are you going?", choices: ["Where are you going?", "What is your name?", "How old are you?"] },
-    { q: "What does 你是谁 mean?", a: "Who are you?", choices: ["Who are you?", "How are you?", "Where are you?"] },
-    { q: "What does 你吃了吗 mean?", a: "Have you eaten?", choices: ["Have you eaten?", "What do you like?", "How are you?"] },
-  ]).map((item) => ({
-    question: item.q,
-    answer: item.a,
-    choices: shuffle([...item.choices]),
-  }));
+    { q: "你好吗？（回答：我很好）", a: "我很好", choices: ["我很好", "我不好", "再见"] },
+    { q: "你叫什么名字？", a: "我叫 Keanu", choices: ["我叫 Keanu", "我七岁", "我是学生"] },
+    { q: "你几岁了？", a: "我七岁", choices: ["我叫 Keanu", "我七岁", "我很好"] },
+    { q: "你喜欢什么？（选一个动物）", a: "我喜欢猫", choices: ["我喜欢猫", "我是学生", "我七岁"] },
+    { q: "这是什么？（红红圆圆的水果）", a: "这是苹果", choices: ["这是苹果", "这是书", "这是猫"] },
+    { q: "谁是你的老师？", a: "她是我的老师", choices: ["她是我的老师", "她是我的妈妈", "她是我的姐姐"] },
+    { q: "你要去哪里？（学习的地方）", a: "我要去学校", choices: ["我要去学校", "我要去公园", "我要回家"] },
+    { q: "今天天气怎么样？（有太阳）", a: "今天天气很好", choices: ["今天天气很好", "今天下雨", "今天很冷"] },
+  ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]) }));
 }
 
-const CNSENTENCES_BUILDERS = {
-  "cns-1": buildCns1,
-  "cns-2": buildCns2,
-  "cns-3": buildCns3,
-  "cns-4": buildCns4,
-};
-
-export const CNSENTENCES_QUESTION_COUNTS = {
-  "cns-1": 8, "cns-2": 8, "cns-3": 8, "cns-4": 8,
-};
-
-export function buildCnSentencesQuestions(moduleId) {
-  const builder = CNSENTENCES_BUILDERS[moduleId];
-  return builder ? builder() : [];
-}
+const BUILDERS = { "cns-1": buildCns1, "cns-2": buildCns2, "cns-3": buildCns3, "cns-4": buildCns4 };
+export const CNSENTENCES_QUESTION_COUNTS = { "cns-1": 8, "cns-2": 8, "cns-3": 8, "cns-4": 8 };
+export function buildCnSentencesQuestions(moduleId) { return BUILDERS[moduleId]?.() || []; }

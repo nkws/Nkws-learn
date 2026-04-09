@@ -201,40 +201,40 @@ const SCIENCE_TOPICS = [
 // ============ CHINESE TOPICS ============
 const CHINESE_TOPICS = [
   {
-    id: "pinyin", title: "Hanyu Pinyin", icon: "🗣️", description: "Learn the sounds of Chinese.",
+    id: "pinyin", title: "汉语拼音", icon: "🗣️", description: "学习中文的发音。",
     modules: [
-      { id: "py-1", title: "Initials (b, p, m, f)", description: "The beginning sounds!", starsToUnlock: 0, hasIntro: true },
-      { id: "py-2", title: "Initials (d, t, n, l)", description: "More beginning sounds!", starsToUnlock: 0 },
-      { id: "py-3", title: "Initials (g, k, h)", description: "Back-of-throat sounds!", starsToUnlock: 6 },
-      { id: "py-4", title: "Finals (a, o, e, i, u, ü)", description: "The vowel sounds!", starsToUnlock: 12 },
-      { id: "py-5", title: "The 4 Tones", description: "High, rising, dipping, falling!", starsToUnlock: 18 },
+      { id: "py-1", title: "声母 (b, p, m, f)", description: "学习前面的音！", starsToUnlock: 0, hasIntro: true },
+      { id: "py-2", title: "声母 (d, t, n, l)", description: "更多的声母！", starsToUnlock: 0 },
+      { id: "py-3", title: "声母 (g, k, h)", description: "喉咙发出的音！", starsToUnlock: 6 },
+      { id: "py-4", title: "韵母 (a, o, e, i, u, ü)", description: "元音的发音！", starsToUnlock: 12 },
+      { id: "py-5", title: "四声", description: "一声、二声、三声、四声！", starsToUnlock: 18 },
     ],
   },
   {
-    id: "characters", title: "Basic Characters", icon: "字", description: "Learn common Chinese characters.",
+    id: "characters", title: "基本汉字", icon: "字", description: "学习常见的中文字。",
     modules: [
-      { id: "ch-1", title: "Numbers 一 to 十", description: "Learn to read 1-10 in Chinese!", starsToUnlock: 0, hasIntro: true },
-      { id: "ch-2", title: "Family (家人)", description: "爸爸, 妈妈, 哥哥, 姐姐...", starsToUnlock: 0 },
-      { id: "ch-3", title: "Body (身体)", description: "头, 手, 眼睛, 耳朵...", starsToUnlock: 8 },
-      { id: "ch-4", title: "Animals (动物)", description: "猫, 狗, 鱼, 鸟...", starsToUnlock: 14 },
+      { id: "ch-1", title: "数字 一 到 十", description: "学习中文数字！", starsToUnlock: 0, hasIntro: true },
+      { id: "ch-2", title: "家人", description: "爸爸、妈妈、哥哥、姐姐……", starsToUnlock: 0 },
+      { id: "ch-3", title: "身体", description: "头、手、眼睛、耳朵……", starsToUnlock: 8 },
+      { id: "ch-4", title: "动物", description: "猫、狗、鱼、鸟……", starsToUnlock: 14 },
     ],
   },
   {
-    id: "cn-vocab", title: "Common Words", icon: "📝", description: "Everyday Chinese words.",
+    id: "cn-vocab", title: "常用词语", icon: "📝", description: "学习日常生活的中文词语。",
     modules: [
-      { id: "cnv-1", title: "Greetings", description: "你好, 谢谢, 再见, 对不起.", starsToUnlock: 0 },
-      { id: "cnv-2", title: "Food (食物)", description: "饭, 面, 水, 牛奶...", starsToUnlock: 0 },
-      { id: "cnv-3", title: "School (学校)", description: "老师, 书, 笔, 桌子...", starsToUnlock: 6 },
-      { id: "cnv-4", title: "Colours (颜色)", description: "红, 蓝, 绿, 黄...", starsToUnlock: 12 },
+      { id: "cnv-1", title: "打招呼", description: "你好、谢谢、再见、对不起。", starsToUnlock: 0 },
+      { id: "cnv-2", title: "食物", description: "饭、面、水、牛奶……", starsToUnlock: 0 },
+      { id: "cnv-3", title: "学校", description: "老师、书、笔、桌子……", starsToUnlock: 6 },
+      { id: "cnv-4", title: "颜色", description: "红、蓝、绿、黄……", starsToUnlock: 12 },
     ],
   },
   {
-    id: "cn-sentences", title: "Simple Sentences", icon: "💬", description: "Read and understand simple Chinese sentences.",
+    id: "cn-sentences", title: "简单句子", icon: "💬", description: "学习读和理解简单的中文句子。",
     modules: [
-      { id: "cns-1", title: "I am... (我是...)", description: "我是男孩。我是学生。", starsToUnlock: 0 },
-      { id: "cns-2", title: "This is... (这是...)", description: "这是书。那是笔。", starsToUnlock: 0 },
-      { id: "cns-3", title: "I like... (我喜欢...)", description: "我喜欢猫。我喜欢吃饭。", starsToUnlock: 6 },
-      { id: "cns-4", title: "Questions (问题)", description: "你好吗？这是什么？", starsToUnlock: 12 },
+      { id: "cns-1", title: "我是……", description: "我是男孩。我是学生。", starsToUnlock: 0 },
+      { id: "cns-2", title: "这是……", description: "这是书。那是笔。", starsToUnlock: 0 },
+      { id: "cns-3", title: "我喜欢……", description: "我喜欢猫。我喜欢吃饭。", starsToUnlock: 6 },
+      { id: "cns-4", title: "问和答", description: "你好吗？这是什么？", starsToUnlock: 12 },
     ],
   },
 ];
@@ -244,7 +244,7 @@ export const SUBJECTS = [
   { id: "math", title: "Mathematics", icon: "🔢", description: "Numbers, shapes, time, and more!", topics: MATH_TOPICS },
   { id: "english", title: "English", icon: "📖", description: "Words, grammar, reading, and phonics!", topics: ENGLISH_TOPICS },
   { id: "science", title: "Science", icon: "🔬", description: "Living things, plants, animals, and weather!", topics: SCIENCE_TOPICS },
-  { id: "chinese", title: "Chinese 华文", icon: "字", description: "Pinyin, characters, words, and sentences!", topics: CHINESE_TOPICS },
+  { id: "chinese", title: "华文", icon: "字", description: "拼音、汉字、词语、句子！", topics: CHINESE_TOPICS },
 ];
 
 // ============ HELPERS ============
