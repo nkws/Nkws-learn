@@ -30,7 +30,7 @@ const EMOJI_REGEX = /[\p{Emoji_Presentation}\p{Extended_Pictographic}\u200d\uFE0
 
 export function cleanForSpeech(text) {
   return text
-    .replace(CLOCK_REGEX, "look at the clock")
+    .replace(CLOCK_REGEX, " ... ")
     .replace(EMOJI_REGEX, "")
     .replace(/\s{2,}/g, " ")
     .trim();

@@ -1,9 +1,10 @@
+// Kid-friendly reward videos (Numberblocks, StoryBots, Cocomelon, etc.)
 export const YOUTUBE_REWARDS = [
-  "dQw4w9WgXcQ",
-  "ZbZSe6N_BXs",
-  "kJQP7kiw5Fk",
-  "L_jWHffIx5E",
-  "fJ9rUzIMcZQ",
+  "yCLaJmDraXE",  // Numberblocks — Telling Time
+  "WHfRIKBFbYQ",  // StoryBots — Time
+  "eVcBSoRqLMo",  // Cocomelon — Days of the Week
+  "dE1UQif-gIo",  // Peppa Pig — Full Episodes
+  "e_04ZrNroTo",  // Super Simple Songs — What Time Is It
 ];
 
 export const LEVEL_NAMES = {

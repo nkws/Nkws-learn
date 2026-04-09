@@ -9,9 +9,7 @@ export default function RewardModal({ rewardCount, onDismiss }) {
   const [timeUp, setTimeUp] = useState(false);
   const intervalRef = useRef(null);
 
-  // Pick a video from the playlist — kid can tap next/prev within the embed
   const videoId = YOUTUBE_REWARDS[(rewardCount - 1) % YOUTUBE_REWARDS.length];
-  const playlistParam = YOUTUBE_REWARDS.join(",");
 
   // Countdown timer
   useEffect(() => {
@@ -99,7 +97,7 @@ export default function RewardModal({ rewardCount, onDismiss }) {
       {/* Embedded YouTube video — fills remaining space */}
       <div className="reward-video-container">
         <iframe
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playlist=${playlistParam}`}
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`}
           title="YouTube reward"
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
