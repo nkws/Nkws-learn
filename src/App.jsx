@@ -1,7 +1,7 @@
 import { useState, useCallback } from "react";
 import WelcomeScreen from "./screens/WelcomeScreen";
 import ChatScreen from "./screens/ChatScreen";
-import { loadProgress, loadModuleVideos, saveModuleVideos } from "./utils/progress";
+import { loadProgress, saveProgress, loadModuleVideos, saveModuleVideos } from "./utils/progress";
 
 export default function App() {
   const [screen, setScreen] = useState("welcome");
@@ -15,6 +15,22 @@ export default function App() {
   }, []);
 
   const handleStartModule = useCallback((moduleId) => {
+    setActiveModule(moduleId);
+    setScreen("chat");
+  }, []);
+
+  const handleReattempt = useCallback((moduleId) => {
+    setProgress((prev) => {
+      const oldModStars = prev.moduleStars[moduleId] || 0;
+      const updated = {
+        ...prev,
+        stars: prev.stars - oldModStars,
+        moduleStars: { ...prev.moduleStars, [moduleId]: 0 },
+        completedModules: (prev.completedModules || []).filter((id) => id !== moduleId),
+      };
+      saveProgress(updated);
+      return updated;
+    });
     setActiveModule(moduleId);
     setScreen("chat");
   }, []);
@@ -37,6 +53,7 @@ export default function App() {
       moduleVideos={moduleVideos}
       onModuleVideosChange={handleModuleVideosChange}
       onStartModule={handleStartModule}
+      onReattempt={handleReattempt}
     />
   );
 }

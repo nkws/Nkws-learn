@@ -118,6 +118,16 @@ export default function ChatScreen({
             setMessages((prev2) => [...prev2, userMsg, { role: "assistant", content: completeMsg }]);
             speak(completeMsg);
             setModuleComplete(true);
+            // Mark module as completed in progress
+            setProgress((prev2) => {
+              const completed = prev2.completedModules || [];
+              if (!completed.includes(moduleId)) {
+                const updated = { ...prev2, completedModules: [...completed, moduleId] };
+                saveProgress(updated);
+                return updated;
+              }
+              return prev2;
+            });
             if (videoId) {
               setTimeout(() => setShowReward(true), 1000);
             }

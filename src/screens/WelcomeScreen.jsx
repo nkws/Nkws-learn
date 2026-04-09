@@ -8,6 +8,7 @@ export default function WelcomeScreen({
   moduleVideos,
   onModuleVideosChange,
   onStartModule,
+  onReattempt,
 }) {
   const [editingModule, setEditingModule] = useState(null);
   const [videoInput, setVideoInput] = useState("");
@@ -41,6 +42,8 @@ export default function WelcomeScreen({
     }
   };
 
+  const completedModules = progress.completedModules || [];
+
   return (
     <div className="screen welcome-screen">
       <div className="welcome-header">
@@ -66,15 +69,18 @@ export default function WelcomeScreen({
           const modStars = progress.moduleStars[mod.id] || 0;
           const locked = progress.stars < mod.starsToUnlock;
           const hasVideo = !!moduleVideos[mod.id];
+          const isCompleted = completedModules.includes(mod.id);
 
           return (
             <div
               key={mod.id}
-              className={`module-card ${locked ? "module-locked" : ""}`}
+              className={`module-card ${locked ? "module-locked" : ""} ${isCompleted ? "module-completed" : ""}`}
             >
               <div className="module-info">
                 <div className="module-title-row">
-                  <span className="module-number">{mod.id}</span>
+                  <span className={`module-number ${isCompleted ? "module-number-done" : ""}`}>
+                    {isCompleted ? "✓" : mod.id}
+                  </span>
                   <h3 className="module-title">{mod.title}</h3>
                   {modStars > 0 && (
                     <span className="module-stars">⭐ {modStars}</span>
@@ -122,6 +128,13 @@ export default function WelcomeScreen({
                 <div className="module-lock">
                   🔒 {mod.starsToUnlock} stars
                 </div>
+              ) : isCompleted ? (
+                <button
+                  className="module-redo-btn"
+                  onClick={() => onReattempt(mod.id)}
+                >
+                  ↻
+                </button>
               ) : (
                 <button
                   className="module-play-btn"

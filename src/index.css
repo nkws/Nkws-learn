@@ -254,6 +254,33 @@ button {
   text-align: center;
 }
 
+.module-completed {
+  border: 2px solid #C8E6C9;
+}
+
+.module-number-done {
+  background: #4CAF50;
+}
+
+.module-redo-btn {
+  background: var(--orange);
+  color: white;
+  font-size: 22px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(255,179,71,0.3);
+  transition: transform 0.15s;
+}
+
+.module-redo-btn:active {
+  transform: scale(0.92);
+}
+
 /* ============ PRIMARY BUTTON ============ */
 .btn-primary {
   background: linear-gradient(135deg, var(--coral), #FF8A65);

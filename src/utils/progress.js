@@ -3,8 +3,8 @@ const VIDEOS_KEY = "koko-module-videos";
 
 const DEFAULT_PROGRESS = {
   stars: 0,
-  // Per-module stars: { 1: 3, 2: 5, ... }
   moduleStars: {},
+  completedModules: [],
   lastSession: null,
 };
 
