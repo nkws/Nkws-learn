@@ -49,3 +49,8 @@ export function getTopicStars(topicId, moduleStars) {
   if (!topic) return 0;
   return topic.modules.reduce((sum, mod) => sum + (moduleStars[mod.id] || 0), 0);
 }
+
+// Get total stars across ALL modules in ALL topics
+export function getTotalStars(moduleStars) {
+  return TOPICS.reduce((sum, topic) => sum + getTopicStars(topic.id, moduleStars), 0);
+}

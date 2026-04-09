@@ -1,6 +1,8 @@
-import { TOPICS, getTopicStars } from "../utils/constants";
+import { TOPICS, getTopicStars, getTotalStars } from "../utils/constants";
 
 export default function HomeScreen({ progress, onSelectTopic }) {
+  const totalStars = getTotalStars(progress.moduleStars || {});
+
   return (
     <div className="screen home-screen">
       <div className="home-header">
@@ -11,9 +13,9 @@ export default function HomeScreen({ progress, onSelectTopic }) {
         </div>
       </div>
 
-      {progress.stars > 0 && (
+      {totalStars > 0 && (
         <div className="welcome-progress">
-          <span>⭐ {progress.stars} total stars</span>
+          <span>⭐ {totalStars} total stars</span>
         </div>
       )}
 

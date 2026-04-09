@@ -3,7 +3,7 @@ import ChatBubble from "../components/ChatBubble";
 import ChoiceButtons from "../components/ChoiceButtons";
 import RewardModal from "../components/RewardModal";
 import { useTTS } from "../hooks/useSpeech";
-import { getModule } from "../utils/constants";
+import { getModule, getTotalStars } from "../utils/constants";
 import { saveProgress } from "../utils/progress";
 import { buildModuleQuestions, getPraise, getHint, getIntro } from "../utils/kokoEngine";
 import IntroScreen from "./IntroScreen";
@@ -62,13 +62,12 @@ export default function ChatScreen({
   const saveModuleScore = useCallback(
     (finalCorrect) => {
       setProgress((prev) => {
-        const oldModStars = prev.moduleStars[moduleId] || 0;
-        const newTotal = prev.stars - oldModStars + finalCorrect;
+        const newModuleStars = { ...prev.moduleStars, [moduleId]: finalCorrect };
         const completed = prev.completedModules || [];
         const updated = {
           ...prev,
-          stars: newTotal,
-          moduleStars: { ...prev.moduleStars, [moduleId]: finalCorrect },
+          stars: getTotalStars(newModuleStars),
+          moduleStars: newModuleStars,
           completedModules: completed.includes(moduleId)
             ? completed
             : [...completed, moduleId],
