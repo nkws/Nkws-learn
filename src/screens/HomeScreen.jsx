@@ -7,7 +7,7 @@ const LEVELS = [
   { id: "p3", title: "Primary 3", subtitle: "Age 8-9", icon: "3" },
 ];
 
-export default function HomeScreen({ progress, onSelectLevel, onAbout }) {
+export default function HomeScreen({ progress, onSelectLevel, onAbout, onHowTo }) {
   const totalStars = getTotalStars(progress.moduleStars || {});
 
   return (
@@ -45,6 +45,9 @@ export default function HomeScreen({ progress, onSelectLevel, onAbout }) {
 
       <AdSlot />
 
+      <button className="about-link" onClick={onHowTo}>
+        How to Use
+      </button>
       <button className="about-link" onClick={onAbout}>
         About Koko's Classroom
       </button>

@@ -5,6 +5,7 @@ import TopicListScreen from "./screens/TopicListScreen";
 import ModuleListScreen from "./screens/ModuleListScreen";
 import ChatScreen from "./screens/ChatScreen";
 import AboutScreen from "./screens/AboutScreen";
+import HowToScreen from "./screens/HowToScreen";
 import { getSubjectsForLevel, getTotalStars } from "./utils/constants";
 import {
   loadProgress, saveProgress,
@@ -72,6 +73,10 @@ export default function App() {
     });
   }, [activeLevel]);
 
+  if (screen === "howto") {
+    return <HowToScreen onBack={() => setScreen("home")} />;
+  }
+
   if (screen === "about") {
     return <AboutScreen onBack={() => setScreen("home")} />;
   }
@@ -137,6 +142,7 @@ export default function App() {
     <HomeScreen
       progress={progress}
       onSelectLevel={(level) => { setActiveLevel(level); setScreen("subjects"); }}
+      onHowTo={() => setScreen("howto")}
       onAbout={() => setScreen("about")}
     />
   );
