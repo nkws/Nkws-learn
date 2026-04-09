@@ -100,9 +100,16 @@ export function useTTS(lang = "en") {
     const sentences = cleaned.split(splitRegex).filter((s) => s.trim().length > 0);
 
     const doSpeak = () => {
-      for (const sentence of sentences) {
+      sentences.forEach((sentence, i) => {
         synth.speak(makeUtterance(sentence));
-      }
+        // Add a pause between sentences (especially between reply and next question)
+        if (i < sentences.length - 1) {
+          const gap = new SpeechSynthesisUtterance(" ");
+          gap.volume = 0;
+          gap.rate = 0.1;
+          synth.speak(gap);
+        }
+      });
 
       if (choices && choices.length > 0) {
         // Spoken labels — avoids TTS saying "Capital A"
