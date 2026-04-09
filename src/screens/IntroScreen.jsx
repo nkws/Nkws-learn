@@ -4,9 +4,27 @@ import { useTTS } from "../hooks/useSpeech";
 
 export default function IntroScreen({ intro, onFinish }) {
   const [pageIndex, setPageIndex] = useState(0);
+  const [speechUnlocked, setSpeechUnlocked] = useState(false);
   const page = intro.pages[pageIndex];
   const isLast = pageIndex === intro.pages.length - 1;
   const { speak } = useTTS();
+
+  const goNext = () => {
+    if (isLast) {
+      onFinish();
+    } else {
+      const nextPage = intro.pages[pageIndex + 1];
+      setPageIndex(pageIndex + 1);
+      if (speechUnlocked) {
+        speak(nextPage.text);
+      }
+    }
+  };
+
+  const handleFirstSpeak = () => {
+    speak(page.text);
+    setSpeechUnlocked(true);
+  };
 
   return (
     <div className="screen intro-screen">
@@ -28,13 +46,15 @@ export default function IntroScreen({ intro, onFinish }) {
 
         <p className="intro-text">
           {page.text}
-          <button
-            className="speak-btn"
-            onClick={() => speak(page.text)}
-            aria-label="Read aloud"
-          >
-            🔊
-          </button>
+          {!speechUnlocked && (
+            <button
+              className="speak-btn"
+              onClick={handleFirstSpeak}
+              aria-label="Read aloud"
+            >
+              🔊
+            </button>
+          )}
         </p>
       </div>
 
@@ -51,20 +71,18 @@ export default function IntroScreen({ intro, onFinish }) {
         {pageIndex > 0 && (
           <button
             className="intro-back-btn"
-            onClick={() => setPageIndex(pageIndex - 1)}
+            onClick={() => {
+              const prevPage = intro.pages[pageIndex - 1];
+              setPageIndex(pageIndex - 1);
+              if (speechUnlocked) speak(prevPage.text);
+            }}
           >
             ← Back
           </button>
         )}
         <button
           className="btn-primary intro-next-btn"
-          onClick={() => {
-            if (isLast) {
-              onFinish();
-            } else {
-              setPageIndex(pageIndex + 1);
-            }
-          }}
+          onClick={goNext}
         >
           {isLast ? "Start Quiz!" : "Next →"}
         </button>
