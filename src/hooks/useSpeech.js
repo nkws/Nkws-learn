@@ -106,9 +106,22 @@ export function useTTS(lang = "en") {
 
       if (choices && choices.length > 0) {
         const labels = ["A", "B", "C", "D", "E"];
-        synth.speak(makeUtterance(isZh ? "选项是。" : "Your options are."));
+        // Pause before options
+        const pause = new SpeechSynthesisUtterance(" ");
+        pause.volume = 0;
+        pause.rate = 0.1;
+        synth.speak(pause);
+
+        synth.speak(makeUtterance(isZh ? "选项是" : "Your options are"));
         choices.forEach((choice, i) => {
-          synth.speak(makeUtterance(`${labels[i]}. ${choice}.`));
+          // Pause between each option
+          const gap = new SpeechSynthesisUtterance(" ");
+          gap.volume = 0;
+          gap.rate = 0.1;
+          synth.speak(gap);
+          // Speak label and choice as separate utterances for a natural gap
+          synth.speak(makeUtterance(labels[i]));
+          synth.speak(makeUtterance(choice));
         });
       }
     };

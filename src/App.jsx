@@ -3,6 +3,7 @@ import HomeScreen from "./screens/HomeScreen";
 import TopicListScreen from "./screens/TopicListScreen";
 import ModuleListScreen from "./screens/ModuleListScreen";
 import ChatScreen from "./screens/ChatScreen";
+import AboutScreen from "./screens/AboutScreen";
 import {
   loadProgress, saveProgress,
   loadModuleVideos, saveModuleVideos,
@@ -48,6 +49,10 @@ export default function App() {
     setActiveModule(moduleId);
     setScreen("chat");
   }, []);
+
+  if (screen === "about") {
+    return <AboutScreen onBack={() => setScreen("home")} />;
+  }
 
   if (screen === "chat" && activeModule && activeTopic && activeSubject) {
     return (
@@ -95,6 +100,7 @@ export default function App() {
     <HomeScreen
       progress={progress}
       onSelectSubject={handleSelectSubject}
+      onAbout={() => setScreen("about")}
     />
   );
 }

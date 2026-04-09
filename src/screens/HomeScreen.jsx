@@ -1,6 +1,6 @@
 import { SUBJECTS, getTotalStars } from "../utils/constants";
 
-export default function HomeScreen({ progress, onSelectSubject }) {
+export default function HomeScreen({ progress, onSelectSubject, onAbout }) {
   const totalStars = getTotalStars(progress.moduleStars || {});
 
   return (
@@ -36,6 +36,10 @@ export default function HomeScreen({ progress, onSelectSubject }) {
           </button>
         ))}
       </div>
+
+      <button className="about-link" onClick={onAbout}>
+        About Koko's Classroom
+      </button>
     </div>
   );
 }
