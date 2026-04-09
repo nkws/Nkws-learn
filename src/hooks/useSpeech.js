@@ -1,64 +1,107 @@
 import { useCallback, useRef, useEffect } from "react";
 import { cleanForSpeech } from "../utils/parseClock";
 
-// Preferred voices ranked by quality (iOS/macOS have enhanced versions)
+// Preferred voices — female English voices ranked by quality on iOS/macOS
 const PREFERRED_VOICES = [
-  "samantha",  // iOS enhanced — natural female
-  "karen",     // iOS Australian English — friendly
-  "moira",     // iOS Irish English
-  "tessa",     // iOS South African English
-  "martha",    // iOS
-  "fiona",     // iOS British
+  "samantha",
+  "karen",
+  "moira",
+  "tessa",
+  "martha",
+  "fiona",
   "google uk english female",
   "google us english",
 ];
 
 function pickBestVoice(voices) {
-  // Try preferred voices first (case-insensitive partial match)
   for (const pref of PREFERRED_VOICES) {
     const match = voices.find(
       (v) => v.name.toLowerCase().includes(pref) && v.lang.startsWith("en")
     );
     if (match) return match;
   }
-  // Fall back to any English voice
+  // Fall back to any female-sounding English voice (heuristic: avoid "male"/"david"/"daniel"/"james")
+  const maleNames = ["male", "david", "daniel", "james", "tom", "alex", "fred", "ralph"];
+  const nonMale = voices.find(
+    (v) =>
+      v.lang.startsWith("en") &&
+      !maleNames.some((m) => v.name.toLowerCase().includes(m))
+  );
+  if (nonMale) return nonMale;
   return voices.find((v) => v.lang.startsWith("en")) || null;
+}
+
+// Promise that resolves once voices are loaded
+let voicesReady = null;
+function waitForVoices() {
+  if (voicesReady) return voicesReady;
+  voicesReady = new Promise((resolve) => {
+    const synth = window.speechSynthesis;
+    if (!synth) { resolve([]); return; }
+    const voices = synth.getVoices();
+    if (voices.length > 0) { resolve(voices); return; }
+    const onchange = () => {
+      synth.removeEventListener("voiceschanged", onchange);
+      resolve(synth.getVoices());
+    };
+    synth.addEventListener("voiceschanged", onchange);
+    // Timeout fallback — some browsers never fire voiceschanged
+    setTimeout(() => resolve(synth.getVoices()), 1000);
+  });
+  return voicesReady;
 }
 
 export function useTTS() {
   const voiceRef = useRef(null);
+  const readyRef = useRef(false);
 
-  // Voices load asynchronously on some browsers
   useEffect(() => {
-    const loadVoices = () => {
-      const voices = window.speechSynthesis?.getVoices() || [];
+    waitForVoices().then((voices) => {
       if (voices.length > 0) {
         voiceRef.current = pickBestVoice(voices);
       }
-    };
-
-    loadVoices();
-    window.speechSynthesis?.addEventListener?.("voiceschanged", loadVoices);
-    return () => {
-      window.speechSynthesis?.removeEventListener?.("voiceschanged", loadVoices);
-    };
+      readyRef.current = true;
+    });
   }, []);
 
   const speak = useCallback((text) => {
-    if (!window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
+    const synth = window.speechSynthesis;
+    if (!synth) return;
+    synth.cancel();
+
     const cleaned = cleanForSpeech(text);
-    const utterance = new SpeechSynthesisUtterance(cleaned);
-    utterance.rate = 0.9;
-    utterance.pitch = 1.05;
 
-    if (voiceRef.current) {
-      utterance.voice = voiceRef.current;
+    // Split on sentence boundaries so TTS respects pauses at full stops and commas
+    const sentences = cleaned
+      .split(/(?<=[.!?])\s+/)
+      .filter((s) => s.trim().length > 0);
+
+    const doSpeak = () => {
+      for (const sentence of sentences) {
+        const utterance = new SpeechSynthesisUtterance(sentence);
+        utterance.rate = 0.9;
+        utterance.pitch = 1.05;
+        if (voiceRef.current) {
+          utterance.voice = voiceRef.current;
+        } else {
+          utterance.lang = "en-GB";
+        }
+        synth.speak(utterance);
+      }
+    };
+
+    // If voices haven't loaded yet, wait then speak
+    if (!readyRef.current) {
+      waitForVoices().then((voices) => {
+        if (!voiceRef.current && voices.length > 0) {
+          voiceRef.current = pickBestVoice(voices);
+        }
+        readyRef.current = true;
+        doSpeak();
+      });
     } else {
-      utterance.lang = "en-GB";
+      doSpeak();
     }
-
-    window.speechSynthesis.speak(utterance);
   }, []);
 
   return { speak };

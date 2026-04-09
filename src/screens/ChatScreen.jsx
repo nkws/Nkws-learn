@@ -15,7 +15,7 @@ import {
   generateQuestion,
 } from "../utils/kokoEngine";
 
-export default function ChatScreen({ progress, setProgress, onBack }) {
+export default function ChatScreen({ progress, setProgress, videos, onBack }) {
   const [messages, setMessages] = useState([]);
   const [choices, setChoices] = useState([]);
   const [correctAnswer, setCorrectAnswer] = useState("");
@@ -145,6 +145,7 @@ export default function ChatScreen({ progress, setProgress, onBack }) {
       {showReward && (
         <RewardModal
           rewardCount={progress.rewardCount}
+          videos={videos}
           onDismiss={() => setShowReward(false)}
         />
       )}

@@ -1,17 +1,18 @@
 import { useState, useEffect, useRef } from "react";
-import { YOUTUBE_REWARDS } from "../utils/constants";
 
 const SCREEN_TIME_SECONDS = 5 * 60; // 5 minutes
 
-export default function RewardModal({ rewardCount, onDismiss }) {
+export default function RewardModal({ rewardCount, videos, onDismiss }) {
   const [secondsLeft, setSecondsLeft] = useState(SCREEN_TIME_SECONDS);
   const [started, setStarted] = useState(false);
   const [timeUp, setTimeUp] = useState(false);
   const intervalRef = useRef(null);
 
-  const videoId = YOUTUBE_REWARDS[(rewardCount - 1) % YOUTUBE_REWARDS.length];
+  const videoId =
+    videos.length > 0
+      ? videos[(rewardCount - 1) % videos.length].id
+      : null;
 
-  // Countdown timer
   useEffect(() => {
     if (!started || timeUp) return;
 
@@ -33,7 +34,6 @@ export default function RewardModal({ rewardCount, onDismiss }) {
   const secs = secondsLeft % 60;
   const pct = (secondsLeft / SCREEN_TIME_SECONDS) * 100;
 
-  // Time's up — iframe is removed, video stops
   if (timeUp) {
     return (
       <div className="reward-overlay">
@@ -51,7 +51,6 @@ export default function RewardModal({ rewardCount, onDismiss }) {
     );
   }
 
-  // Not started yet — show celebration
   if (!started) {
     return (
       <div className="reward-overlay">
@@ -61,9 +60,13 @@ export default function RewardModal({ rewardCount, onDismiss }) {
           <p className="reward-subtitle">
             You earned 5 minutes of YouTube! 🎬
           </p>
-          <button className="btn-primary reward-start" onClick={() => setStarted(true)}>
-            Watch Now! 🎬
-          </button>
+          {videoId ? (
+            <button className="btn-primary reward-start" onClick={() => setStarted(true)}>
+              Watch Now! 🎬
+            </button>
+          ) : (
+            <p className="reward-subtitle">No videos added yet. Ask a parent to add some!</p>
+          )}
           <button className="reward-skip" onClick={onDismiss}>
             Skip, keep learning
           </button>
@@ -72,10 +75,8 @@ export default function RewardModal({ rewardCount, onDismiss }) {
     );
   }
 
-  // Playing — fullscreen-ish video with floating timer
   return (
     <div className="reward-overlay reward-playing">
-      {/* Timer bar at top */}
       <div className="reward-timer-bar">
         <div className="reward-timer-track">
           <div
@@ -94,16 +95,17 @@ export default function RewardModal({ rewardCount, onDismiss }) {
         </button>
       </div>
 
-      {/* Embedded YouTube video — fills remaining space */}
       <div className="reward-video-container">
-        <iframe
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`}
-          title="YouTube reward"
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          className="reward-iframe"
-        />
+        {videoId && (
+          <iframe
+            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`}
+            title="YouTube reward"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="reward-iframe"
+          />
+        )}
       </div>
     </div>
   );
