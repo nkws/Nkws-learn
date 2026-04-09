@@ -59,7 +59,186 @@ button {
   padding-bottom: var(--safe-bottom);
 }
 
-/* ============ WELCOME / MODULE SELECT ============ */
+/* ============ HOME SCREEN ============ */
+.home-screen {
+  align-items: center;
+  gap: 16px;
+  padding: 24px 16px;
+  background: linear-gradient(160deg, #FFF8E1 0%, #FFECB3 50%, #FFE0B2 100%);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.home-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.home-mascot {
+  font-size: 52px;
+}
+
+.home-heading {
+  font-size: 26px;
+  color: var(--coral);
+  margin-bottom: 2px;
+}
+
+.home-sub {
+  font-size: 15px;
+  color: #666;
+}
+
+.topic-list {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.topic-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: white;
+  border-radius: 20px;
+  padding: 18px 16px;
+  text-align: left;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  transition: transform 0.15s;
+}
+
+.topic-card:active {
+  transform: scale(0.98);
+}
+
+.topic-icon {
+  font-size: 36px;
+  flex-shrink: 0;
+}
+
+.topic-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.topic-title {
+  font-size: 18px;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.topic-desc {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 4px;
+}
+
+.topic-stars {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--orange);
+}
+
+.topic-arrow {
+  font-size: 24px;
+  color: #ccc;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ============ INTRO SCREEN ============ */
+.intro-screen {
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 24px;
+  text-align: center;
+  background: linear-gradient(160deg, #FFF8E1 0%, #FFECB3 50%, #FFE0B2 100%);
+}
+
+.intro-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.intro-mascot {
+  font-size: 40px;
+}
+
+.intro-title {
+  font-size: 24px;
+  color: var(--coral);
+}
+
+.intro-content {
+  background: white;
+  border-radius: 24px;
+  padding: 24px 20px;
+  max-width: 380px;
+  width: 100%;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.intro-clock {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.intro-emoji {
+  font-size: 28px;
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.intro-text {
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.intro-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.intro-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ddd;
+}
+
+.intro-dot-active {
+  background: var(--orange);
+}
+
+.intro-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.intro-back-btn {
+  background: none;
+  color: var(--teal);
+  font-size: 16px;
+  font-weight: 700;
+  padding: 12px 20px;
+}
+
+.intro-next-btn {
+  font-size: 18px;
+  padding: 14px 36px;
+}
+
+/* ============ MODULE SELECT ============ */
 .welcome-screen {
   align-items: center;
   gap: 12px;

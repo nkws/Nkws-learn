@@ -1,9 +1,6 @@
-// Extract YouTube video ID from various URL formats or plain ID
 export function extractVideoId(input) {
   const trimmed = input.trim();
-
   if (/^[\w-]{11}$/.test(trimmed)) return trimmed;
-
   try {
     const url = new URL(trimmed);
     if (url.searchParams.has("v")) return url.searchParams.get("v");
@@ -15,6 +12,5 @@ export function extractVideoId(input) {
   } catch {
     // not a URL
   }
-
   return null;
 }

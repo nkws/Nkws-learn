@@ -3,17 +3,20 @@ import ChatBubble from "../components/ChatBubble";
 import ChoiceButtons from "../components/ChoiceButtons";
 import RewardModal from "../components/RewardModal";
 import { useTTS } from "../hooks/useSpeech";
-import { MODULES } from "../utils/constants";
+import { getModule } from "../utils/constants";
 import { saveProgress } from "../utils/progress";
-import { buildModuleQuestions, getPraise, getHint } from "../utils/kokoEngine";
+import { buildModuleQuestions, getPraise, getHint, getIntro } from "../utils/kokoEngine";
+import IntroScreen from "./IntroScreen";
 
 export default function ChatScreen({
+  topicId,
   moduleId,
   progress,
   setProgress,
   moduleVideos,
   onBack,
 }) {
+  const [showIntro, setShowIntro] = useState(true);
   const [messages, setMessages] = useState([]);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [questions, setQuestions] = useState([]);
@@ -27,20 +30,29 @@ export default function ChatScreen({
   const chatEndRef = useRef(null);
   const { speak } = useTTS();
 
-  const mod = MODULES.find((m) => m.id === moduleId);
+  const mod = getModule(topicId, moduleId);
   const videoId = moduleVideos[moduleId] || null;
+  const intro = getIntro(moduleId);
   const totalQ = totalQuestionsRef.current;
 
-  useEffect(() => {
+  const startQuiz = useCallback(() => {
     const qs = buildModuleQuestions(moduleId);
     setQuestions(qs);
     totalQuestionsRef.current = qs.length;
     wrongThisRoundRef.current = [];
     if (qs.length > 0) {
-      const greeting = `Let's learn about ${mod?.title}! Here's your first question. ${qs[0].question}`;
+      const greeting = `Here's your first question. ${qs[0].question}`;
       setMessages([{ role: "assistant", content: greeting }]);
     }
-  }, [moduleId, mod?.title]);
+    setShowIntro(false);
+  }, [moduleId]);
+
+  // If no intro, start quiz immediately
+  useEffect(() => {
+    if (!intro) {
+      startQuiz();
+    }
+  }, [intro, startQuiz]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -140,6 +152,11 @@ export default function ChatScreen({
   );
 
   const currentQ = questions[questionIndex] || null;
+
+  // Show intro if module has one and we haven't started yet
+  if (showIntro && intro) {
+    return <IntroScreen intro={intro} onFinish={startQuiz} />;
+  }
 
   return (
     <div className="screen chat-screen">

@@ -1,20 +1,25 @@
 import { useState } from "react";
-import Clock from "../components/Clock";
-import { MODULES } from "../utils/constants";
+import { getTopic, getTopicStars } from "../utils/constants";
 import { MODULE_QUESTION_COUNTS } from "../utils/kokoEngine";
 import { extractVideoId } from "../utils/videos";
 
-export default function WelcomeScreen({
+export default function ModuleListScreen({
+  topicId,
   progress,
   moduleVideos,
   onModuleVideosChange,
   onStartModule,
   onReattempt,
+  onBack,
 }) {
   const [editingModule, setEditingModule] = useState(null);
   const [videoInput, setVideoInput] = useState("");
   const [error, setError] = useState("");
   const [confirmModule, setConfirmModule] = useState(null);
+
+  const topic = getTopic(topicId);
+  const topicStars = getTopicStars(topicId, progress.moduleStars || {});
+  const completedModules = progress.completedModules || [];
 
   const handleSaveVideo = (moduleId) => {
     if (!videoInput.trim()) {
@@ -43,32 +48,23 @@ export default function WelcomeScreen({
     }
   };
 
-  const completedModules = progress.completedModules || [];
+  if (!topic) return null;
 
   return (
     <div className="screen welcome-screen">
       <div className="welcome-header">
-        <div className="welcome-clock floating">
-          <Clock hours={10} minutes={10} size={120} />
-        </div>
+        <button className="back-btn" onClick={onBack}>←</button>
         <div>
-          <h1 className="welcome-heading">Hi Keanu!</h1>
-          <p className="welcome-sub">
-            🦊 Pick a lesson to start learning!
-          </p>
+          <h1 className="welcome-heading">{topic.icon} {topic.title}</h1>
+          <p className="welcome-sub">⭐ {topicStars} stars earned</p>
         </div>
       </div>
 
-      {progress.stars > 0 && (
-        <div className="welcome-progress">
-          <span>⭐ {progress.stars} stars</span>
-        </div>
-      )}
-
       <div className="module-list">
-        {MODULES.map((mod) => {
+        {topic.modules.map((mod, idx) => {
           const modStars = progress.moduleStars[mod.id] || 0;
-          const locked = progress.stars < mod.starsToUnlock;
+          const totalQ = MODULE_QUESTION_COUNTS[mod.id] || 0;
+          const locked = topicStars < mod.starsToUnlock;
           const hasVideo = !!moduleVideos[mod.id];
           const isCompleted = completedModules.includes(mod.id);
 
@@ -80,11 +76,11 @@ export default function WelcomeScreen({
               <div className="module-info">
                 <div className="module-title-row">
                   <span className={`module-number ${isCompleted ? "module-number-done" : ""}`}>
-                    {isCompleted ? "✓" : mod.id}
+                    {isCompleted ? "✓" : idx + 1}
                   </span>
                   <h3 className="module-title">{mod.title}</h3>
                   <span className="module-stars">
-                    ⭐ {modStars} / {MODULE_QUESTION_COUNTS[mod.id] || 0}
+                    ⭐ {modStars} / {totalQ}
                   </span>
                 </div>
                 <p className="module-desc">{mod.description}</p>
@@ -149,14 +145,13 @@ export default function WelcomeScreen({
         })}
       </div>
 
-      {/* No-video warning */}
       {confirmModule !== null && (
         <div className="reward-overlay" onClick={() => setConfirmModule(null)}>
           <div className="reward-modal" onClick={(e) => e.stopPropagation()}>
             <div className="reward-emojis">⚠️</div>
             <h2 className="reward-title">No Reward Video</h2>
             <p className="reward-subtitle">
-              No video has been set for this module. Keanu won't get a video reward at the end. You can set one using the "Set reward video" button.
+              No video has been set for this module. Keanu won't get a video reward at the end.
             </p>
             <button
               className="btn-primary reward-dismiss"

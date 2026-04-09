@@ -1,10 +1,12 @@
 import { useState, useCallback } from "react";
-import WelcomeScreen from "./screens/WelcomeScreen";
+import HomeScreen from "./screens/HomeScreen";
+import ModuleListScreen from "./screens/ModuleListScreen";
 import ChatScreen from "./screens/ChatScreen";
 import { loadProgress, saveProgress, loadModuleVideos, saveModuleVideos } from "./utils/progress";
 
 export default function App() {
-  const [screen, setScreen] = useState("welcome");
+  const [screen, setScreen] = useState("home");
+  const [activeTopic, setActiveTopic] = useState(null);
   const [activeModule, setActiveModule] = useState(null);
   const [progress, setProgress] = useState(() => loadProgress());
   const [moduleVideos, setModuleVideos] = useState(() => loadModuleVideos());
@@ -12,6 +14,11 @@ export default function App() {
   const handleModuleVideosChange = useCallback((newVideos) => {
     setModuleVideos(newVideos);
     saveModuleVideos(newVideos);
+  }, []);
+
+  const handleSelectTopic = useCallback((topicId) => {
+    setActiveTopic(topicId);
+    setScreen("modules");
   }, []);
 
   const handleStartModule = useCallback((moduleId) => {
@@ -32,25 +39,37 @@ export default function App() {
     setScreen("chat");
   }, []);
 
-  if (screen === "chat" && activeModule) {
+  if (screen === "chat" && activeModule && activeTopic) {
     return (
       <ChatScreen
+        topicId={activeTopic}
         moduleId={activeModule}
         progress={progress}
         setProgress={setProgress}
         moduleVideos={moduleVideos}
-        onBack={() => setScreen("welcome")}
+        onBack={() => setScreen("modules")}
+      />
+    );
+  }
+
+  if (screen === "modules" && activeTopic) {
+    return (
+      <ModuleListScreen
+        topicId={activeTopic}
+        progress={progress}
+        moduleVideos={moduleVideos}
+        onModuleVideosChange={handleModuleVideosChange}
+        onStartModule={handleStartModule}
+        onReattempt={handleReattempt}
+        onBack={() => setScreen("home")}
       />
     );
   }
 
   return (
-    <WelcomeScreen
+    <HomeScreen
       progress={progress}
-      moduleVideos={moduleVideos}
-      onModuleVideosChange={handleModuleVideosChange}
-      onStartModule={handleStartModule}
-      onReattempt={handleReattempt}
+      onSelectTopic={handleSelectTopic}
     />
   );
 }
