@@ -20,6 +20,7 @@ export default function ModuleListScreen({
   const [error, setError] = useState("");
   const [confirmModule, setConfirmModule] = useState(null);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [showClearVideosConfirm, setShowClearVideosConfirm] = useState(false);
 
   const topic = getTopic(subjectId, topicId, level);
   const topicStars = getTopicStars(topicId, progress.moduleStars || {});
@@ -157,6 +158,12 @@ export default function ModuleListScreen({
         </button>
       )}
 
+      {topic.modules.some((m) => !!moduleVideos[m.id]) && (
+        <button className="reset-topic-btn" onClick={() => setShowClearVideosConfirm(true)}>
+          Clear all video links for this topic
+        </button>
+      )}
+
       {showResetConfirm && (
         <div className="reward-overlay" onClick={() => setShowResetConfirm(false)}>
           <div className="reward-modal" onClick={(e) => e.stopPropagation()}>
@@ -174,6 +181,35 @@ export default function ModuleListScreen({
             <button
               className="confirm-cancel"
               onClick={() => setShowResetConfirm(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showClearVideosConfirm && (
+        <div className="reward-overlay" onClick={() => setShowClearVideosConfirm(false)}>
+          <div className="reward-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="reward-emojis">⚠️</div>
+            <h2 className="reward-title">Clear Videos?</h2>
+            <p className="reward-subtitle">
+              This will remove all video links for every module in this topic.
+            </p>
+            <button
+              className="btn-primary reward-dismiss"
+              onClick={() => {
+                setShowClearVideosConfirm(false);
+                const updated = { ...moduleVideos };
+                topic.modules.forEach((m) => delete updated[m.id]);
+                onModuleVideosChange(updated);
+              }}
+            >
+              Clear
+            </button>
+            <button
+              className="confirm-cancel"
+              onClick={() => setShowClearVideosConfirm(false)}
             >
               Cancel
             </button>
