@@ -66,7 +66,9 @@ export default function ModuleListScreen({
         {topic.modules.map((mod, idx) => {
           const modStars = progress.moduleStars[mod.id] || 0;
           const totalQ = MODULE_QUESTION_COUNTS[mod.id] || 0;
-          const locked = topicStars < mod.starsToUnlock;
+          // First module is always unlocked; others need prior module completed
+          const prevModule = idx > 0 ? topic.modules[idx - 1] : null;
+          const locked = prevModule ? !completedModules.includes(prevModule.id) : false;
           const hasVideo = !!moduleVideos[mod.id];
           const isCompleted = completedModules.includes(mod.id);
 
@@ -125,7 +127,7 @@ export default function ModuleListScreen({
 
               {locked ? (
                 <div className="module-lock">
-                  🔒 {mod.starsToUnlock} stars
+                  🔒
                 </div>
               ) : isCompleted ? (
                 <button
