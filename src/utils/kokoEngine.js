@@ -1,4 +1,3 @@
-// Time generation helpers per level
 function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -28,16 +27,16 @@ function shuffle(arr) {
   return a;
 }
 
-function generateChoices(correctAnswer, hours, minutes, level) {
+function generateChoices(correctAnswer, hours, minutes, moduleId) {
   const wrongs = new Set();
 
-  if (level <= 2) {
+  if (moduleId <= 3) {
     while (wrongs.size < 2) {
       const fakeH = randomInt(1, 12);
       if (fakeH === hours) continue;
       wrongs.add(describeTime(fakeH, minutes));
     }
-  } else if (level === 3) {
+  } else if (moduleId === 4) {
     const options = [15, 45];
     while (wrongs.size < 2) {
       const fakeH = randomInt(1, 12);
@@ -46,7 +45,7 @@ function generateChoices(correctAnswer, hours, minutes, level) {
       if (desc === correctAnswer) continue;
       wrongs.add(desc);
     }
-  } else if (level === 4) {
+  } else if (moduleId === 5) {
     const fiveMinOptions = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 0];
     while (wrongs.size < 2) {
       const fakeH = pick([hours, randomInt(1, 12)]);
@@ -69,84 +68,139 @@ function generateChoices(correctAnswer, hours, minutes, level) {
   return shuffle([correctAnswer, ...wrongs]);
 }
 
-function generateQuestion(level) {
-  const contexts = [
+// Module 1: Clock Face — teaching questions about the clock itself
+const CLOCK_FACE_QUESTIONS = [
+  {
+    question: "How many numbers are on a clock face?",
+    answer: "12",
+    choices: ["10", "12", "24"],
+    hours: 12, minutes: 0,
+  },
+  {
+    question: "Which hand is shorter, the hour hand or the minute hand?",
+    answer: "Hour hand",
+    choices: ["Hour hand", "Minute hand", "They're the same"],
+    hours: 3, minutes: 0,
+  },
+  {
+    question: "The short hand tells us the...?",
+    answer: "Hour",
+    choices: ["Hour", "Minutes", "Seconds"],
+    hours: 9, minutes: 0,
+  },
+  {
+    question: "The long hand tells us the...?",
+    answer: "Minutes",
+    choices: ["Hour", "Minutes", "Day"],
+    hours: 6, minutes: 30,
+  },
+  {
+    question: "What number is at the very top of the clock?",
+    answer: "12",
+    choices: ["1", "12", "6"],
+    hours: 12, minutes: 0,
+  },
+  {
+    question: "What number is at the very bottom of the clock?",
+    answer: "6",
+    choices: ["3", "6", "9"],
+    hours: 6, minutes: 0,
+  },
+  {
+    question: "When the long hand points to 12, it means...?",
+    answer: "Exactly o'clock",
+    choices: ["Exactly o'clock", "Half past", "Quarter past"],
+    hours: 3, minutes: 0,
+  },
+  {
+    question: "When the long hand points to 6, it means...?",
+    answer: "Half past",
+    choices: ["Exactly o'clock", "Half past", "Quarter to"],
+    hours: 8, minutes: 30,
+  },
+];
+
+export function generateQuestion(moduleId) {
+  if (moduleId === 1) {
+    const q = pick(CLOCK_FACE_QUESTIONS);
+    return {
+      question: `[CLOCK:${formatTime(q.hours, q.minutes)}] ${q.question}`,
+      answer: q.answer,
+      hours: q.hours,
+      minutes: q.minutes,
+      choices: shuffle([...q.choices]),
+    };
+  }
+
+  const context = pick([
     "Time to check the clock!",
     "Look at the clock on the wall!",
     "Koko checks the time!",
     "The school bell is ringing!",
     "Let's see what time it is!",
-  ];
-
-  const scenarios = [
-    "It's time for recess!",
-    "School is starting!",
-    "Cartoon time!",
-    "Time for bed soon!",
-    "Koko is looking at the clock!",
-  ];
+  ]);
 
   let hours, minutes, question, answer;
 
-  switch (level) {
-    case 1: {
-      hours = randomInt(1, 12);
-      minutes = 0;
-      question = `${pick(contexts)} ${pick(scenarios)} [CLOCK:${formatTime(hours, minutes)}] What time does this clock show?`;
-      answer = `${hours} o'clock`;
-      break;
-    }
+  switch (moduleId) {
     case 2: {
       hours = randomInt(1, 12);
-      minutes = 30;
-      question = `${pick(contexts)} ${pick(scenarios)} [CLOCK:${formatTime(hours, minutes)}] Can you tell me what time this is?`;
-      answer = `half past ${hours}`;
+      minutes = 0;
+      question = `${context} [CLOCK:${formatTime(hours, minutes)}] What time does this clock show?`;
+      answer = `${hours} o'clock`;
       break;
     }
     case 3: {
       hours = randomInt(1, 12);
-      minutes = pick([15, 45]);
-      question = `${pick(contexts)} ${pick(scenarios)} [CLOCK:${formatTime(hours, minutes)}] What time is it?`;
-      answer = describeTime(hours, minutes);
+      minutes = 30;
+      question = `${context} [CLOCK:${formatTime(hours, minutes)}] Can you tell me what time this is?`;
+      answer = `half past ${hours}`;
       break;
     }
     case 4: {
       hours = randomInt(1, 12);
-      minutes = pick([5, 10, 20, 25, 35, 40, 50, 55]);
-      question = `${pick(contexts)} ${pick(scenarios)} [CLOCK:${formatTime(hours, minutes)}] What time does this clock show?`;
+      minutes = pick([15, 45]);
+      question = `${context} [CLOCK:${formatTime(hours, minutes)}] What time is it?`;
       answer = describeTime(hours, minutes);
       break;
     }
     case 5: {
+      hours = randomInt(1, 12);
+      minutes = pick([5, 10, 20, 25, 35, 40, 50, 55]);
+      question = `${context} [CLOCK:${formatTime(hours, minutes)}] What time does this clock show?`;
+      answer = describeTime(hours, minutes);
+      break;
+    }
+    case 6: {
       hours = randomInt(1, 10);
       const addHours = pick([1, 2, 3]);
       minutes = pick([0, 30]);
       const resultH = hours + addHours;
       const resultM = minutes;
-      const addScenarios = [
+      const scenario = pick([
         `It's ${describeTime(hours, minutes)} now. Cartoon starts in ${addHours} hour${addHours > 1 ? "s" : ""}!`,
         `School ends at ${describeTime(hours, minutes)}. Keanu plays for ${addHours} hour${addHours > 1 ? "s" : ""} after that!`,
         `It's ${describeTime(hours, minutes)}. Dinner is in ${addHours} hour${addHours > 1 ? "s" : ""}!`,
-      ];
-      question = `${pick(addScenarios)} [CLOCK:${formatTime(hours, minutes)}] What time will it be?`;
+      ]);
+      question = `${scenario} [CLOCK:${formatTime(hours, minutes)}] What time will it be?`;
       answer = describeTime(resultH, resultM);
-      const choices = generateChoices(answer, resultH, resultM, level);
+      const choices = generateChoices(answer, resultH, resultM, moduleId);
       return { question, answer, hours, minutes, choices };
     }
-    case 6: {
+    case 7: {
       const resultH = randomInt(2, 11);
       const subHours = pick([1, 2]);
-      const minutes2 = pick([0, 30]);
+      const mins = pick([0, 30]);
       hours = resultH + subHours;
-      const subScenarios = [
-        `Recess ends at ${describeTime(hours, minutes2)}. It started ${subHours} hour${subHours > 1 ? "s" : ""} ago!`,
-        `Bedtime is at ${describeTime(hours, minutes2)}. ${subHours} hour${subHours > 1 ? "s" : ""} ago Keanu was watching TV!`,
-        `It's ${describeTime(hours, minutes2)} now. ${subHours} hour${subHours > 1 ? "s" : ""} ago Keanu left school!`,
-      ];
-      question = `${pick(subScenarios)} [CLOCK:${formatTime(hours, minutes2)}] What time was it?`;
-      answer = describeTime(resultH, minutes2);
-      const choices = generateChoices(answer, resultH, minutes2, level);
-      return { question, answer, hours, minutes: minutes2, choices };
+      const scenario = pick([
+        `Recess ends at ${describeTime(hours, mins)}. It started ${subHours} hour${subHours > 1 ? "s" : ""} ago!`,
+        `Bedtime is at ${describeTime(hours, mins)}. ${subHours} hour${subHours > 1 ? "s" : ""} ago Keanu was watching TV!`,
+        `It's ${describeTime(hours, mins)} now. ${subHours} hour${subHours > 1 ? "s" : ""} ago Keanu left school!`,
+      ]);
+      question = `${scenario} [CLOCK:${formatTime(hours, mins)}] What time was it?`;
+      answer = describeTime(resultH, mins);
+      const choices = generateChoices(answer, resultH, mins, moduleId);
+      return { question, answer, hours, minutes: mins, choices };
     }
     default: {
       hours = randomInt(1, 12);
@@ -156,7 +210,7 @@ function generateQuestion(level) {
     }
   }
 
-  const choices = generateChoices(answer, hours, minutes, level);
+  const choices = generateChoices(answer, hours, minutes, moduleId);
   return { question, answer, hours, minutes, choices };
 }
 
@@ -179,36 +233,16 @@ const HINTS = [
   "Not quite, but that's okay! Keep looking at the hands on the clock!",
 ];
 
-const LEVEL_UP_MSG = "Level up! You're getting so good at this, Keanu!";
-
-export function getGreeting(level, stars, firstQuestion) {
-  if (level > 1 || stars > 0) {
-    return `Welcome back, Keanu! You have ${stars} stars. So cool! Let's keep going. ${firstQuestion.question}`;
-  }
-  return `Hey Keanu! I'm Koko, your time-telling buddy! Let's learn how to read clocks together. It's going to be fun! ${firstQuestion.question}`;
+export function getGreeting(moduleId, moduleTitle) {
+  return `Let's learn about ${moduleTitle}! Here's your first question.`;
 }
 
-export function evaluateAndRespond(userAnswer, currentQ, level, streak) {
+export function evaluateAndRespond(userAnswer, currentQ, moduleId) {
   const correct = userAnswer === currentQ.answer;
-
-  let newLevel = level;
-  let newStreak = correct ? streak + 1 : 0;
-  let levelledUp = false;
-
-  if (correct && newStreak >= 3) {
-    newLevel = Math.min(level + 1, 6);
-    if (newLevel !== level) {
-      levelledUp = true;
-      newStreak = 0;
-    }
-  }
-
-  const nextQ = generateQuestion(newLevel);
+  const nextQ = generateQuestion(moduleId);
 
   let response;
-  if (correct && levelledUp) {
-    response = `${pick(PRAISE)} ${LEVEL_UP_MSG} ${nextQ.question}`;
-  } else if (correct) {
+  if (correct) {
     response = `${pick(PRAISE)} ${nextQ.question}`;
   } else {
     response = `${pick(HINTS)} The answer was ${currentQ.answer}. Let's try this one! ${nextQ.question}`;
@@ -217,11 +251,6 @@ export function evaluateAndRespond(userAnswer, currentQ, level, streak) {
   return {
     response,
     correct,
-    levelledUp,
-    newLevel,
-    newStreak,
     nextQuestion: nextQ,
   };
 }
-
-export { generateQuestion };

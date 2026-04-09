@@ -59,164 +59,195 @@ button {
   padding-bottom: var(--safe-bottom);
 }
 
-/* ============ WELCOME ============ */
+/* ============ WELCOME / MODULE SELECT ============ */
 .welcome-screen {
   align-items: center;
-  justify-content: center;
-  gap: 16px;
-  padding: 24px;
-  text-align: center;
+  gap: 12px;
+  padding: 20px 16px;
   background: linear-gradient(160deg, #FFF8E1 0%, #FFECB3 50%, #FFE0B2 100%);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
 
-.welcome-clock {
-  margin-bottom: 8px;
-}
-
-.welcome-mascot {
-  font-size: 56px;
-  line-height: 1;
+.welcome-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  text-align: left;
+  width: 100%;
+  max-width: 420px;
 }
 
 .welcome-heading {
-  font-size: 36px;
-  color: var(--coral);
-}
-
-.welcome-sub {
-  font-size: 18px;
-  color: #666;
-}
-
-.welcome-progress {
-  display: flex;
-  gap: 12px;
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--teal);
-  background: white;
-  padding: 8px 20px;
-  border-radius: 24px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-
-.welcome-divider {
-  color: #ccc;
-}
-
-/* ============ WELCOME EXTRAS ============ */
-.welcome-videos-btn {
-  background: none;
-  color: #999;
-  font-size: 14px;
-  font-weight: 700;
-  padding: 8px;
-  text-decoration: underline;
-  margin-top: 4px;
-}
-
-/* ============ VIDEO MANAGER ============ */
-.video-manager {
-  background: white;
-  border-radius: 20px;
-  padding: 16px;
-  width: 100%;
-  max-width: 380px;
-  text-align: left;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-}
-
-.vm-title {
-  font-size: 18px;
+  font-size: 28px;
   color: var(--coral);
   margin-bottom: 2px;
 }
 
-.vm-hint {
-  font-size: 13px;
-  color: #999;
-  margin-bottom: 12px;
+.welcome-sub {
+  font-size: 15px;
+  color: #666;
 }
 
-.vm-list {
+.welcome-progress {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--teal);
+  background: white;
+  padding: 6px 18px;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* ============ MODULE LIST ============ */
+.module-list {
+  width: 100%;
+  max-width: 420px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 10px;
 }
 
-.vm-item {
+.module-card {
   display: flex;
   align-items: center;
-  gap: 10px;
-  background: #FAFAFA;
-  border-radius: 12px;
-  padding: 6px 10px;
+  gap: 12px;
+  background: white;
+  border-radius: 18px;
+  padding: 14px 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  text-align: left;
 }
 
-.vm-thumb {
-  width: 48px;
-  height: 36px;
-  border-radius: 6px;
-  object-fit: cover;
+.module-locked {
+  opacity: 0.5;
 }
 
-.vm-label {
+.module-info {
   flex: 1;
-  font-size: 14px;
-  font-weight: 600;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  min-width: 0;
 }
 
-.vm-remove {
-  background: none;
-  color: #ccc;
-  font-size: 18px;
-  padding: 4px 8px;
-  font-weight: 700;
-}
-
-.vm-remove:active {
-  color: var(--coral);
-}
-
-.vm-add {
+.module-title-row {
   display: flex;
+  align-items: center;
   gap: 8px;
+  margin-bottom: 2px;
 }
 
-.vm-input {
-  flex: 1;
-  font-family: 'Nunito', sans-serif;
+.module-number {
+  background: var(--orange);
+  color: white;
+  font-family: 'Fredoka One', cursive;
   font-size: 14px;
-  padding: 10px 12px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.module-title {
+  font-size: 16px;
+  color: var(--text);
+}
+
+.module-stars {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--orange);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.module-desc {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 6px;
+}
+
+.module-video-btn {
+  background: none;
+  color: #bbb;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 0;
+  text-align: left;
+}
+
+.module-video-edit {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.mv-input {
+  flex: 1;
+  min-width: 120px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 12px;
+  padding: 6px 10px;
   border: 2px solid #eee;
-  border-radius: 12px;
+  border-radius: 10px;
   outline: none;
   background: #FAFAFA;
 }
 
-.vm-input:focus {
+.mv-input:focus {
   border-color: var(--teal);
 }
 
-.vm-add-btn {
+.mv-save {
   background: var(--teal);
   color: white;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 700;
-  padding: 10px 16px;
-  border-radius: 12px;
+  padding: 6px 12px;
+  border-radius: 10px;
 }
 
-.vm-error {
-  font-size: 12px;
+.mv-cancel {
+  background: none;
+  color: #ccc;
+  font-size: 16px;
+  padding: 4px;
+}
+
+.mv-error {
+  font-size: 11px;
   color: var(--coral);
-  margin-top: 6px;
+  width: 100%;
+}
+
+.module-play-btn {
+  background: var(--teal);
+  color: white;
+  font-size: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,137,123,0.3);
+  transition: transform 0.15s;
+}
+
+.module-play-btn:active {
+  transform: scale(0.92);
+}
+
+.module-lock {
+  font-size: 12px;
+  font-weight: 700;
+  color: #ccc;
+  flex-shrink: 0;
+  text-align: center;
 }
 
 /* ============ PRIMARY BUTTON ============ */
@@ -276,53 +307,24 @@ button {
   border-radius: 12px;
 }
 
-/* ============ PROGRESS BAR ============ */
-.progress-bar-container {
-  padding: 8px 16px;
-  background: white;
-  border-bottom: 1px solid #eee;
-}
-
-.progress-stats {
+/* ============ CHAT PROGRESS ============ */
+.chat-progress-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 4px;
+  padding: 6px 16px;
+  background: white;
+  border-bottom: 1px solid #eee;
+  font-size: 13px;
 }
 
-.stars-count {
+.chat-stars {
   font-weight: 800;
-  font-size: 15px;
 }
 
-.level-badge {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--orange);
-  background: #FFF3E0;
-  padding: 2px 10px;
-  border-radius: 10px;
-}
-
-.progress-track {
-  height: 8px;
-  background: #eee;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--orange), var(--coral));
-  border-radius: 4px;
-  transition: width 0.5s ease;
-}
-
-.progress-hint {
-  font-size: 11px;
+.chat-reward-hint {
   color: #999;
-  margin-top: 2px;
-  text-align: right;
+  font-size: 11px;
 }
 
 /* ============ MESSAGES ============ */
@@ -382,29 +384,6 @@ button {
   display: flex;
   justify-content: center;
   margin: 8px 0;
-}
-
-/* Typing indicator */
-.typing {
-  display: flex;
-  gap: 4px;
-  padding: 14px 20px;
-}
-
-.dot {
-  width: 8px;
-  height: 8px;
-  background: #bbb;
-  border-radius: 50%;
-  animation: bounce 1.4s infinite ease-in-out;
-}
-
-.dot:nth-child(2) {
-  animation-delay: 0.16s;
-}
-
-.dot:nth-child(3) {
-  animation-delay: 0.32s;
 }
 
 /* ============ MULTIPLE CHOICE ============ */
@@ -508,14 +487,8 @@ button {
 
 /* ============ ANIMATIONS ============ */
 @keyframes fadeSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeIn {
@@ -524,61 +497,22 @@ button {
 }
 
 @keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.85);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 @keyframes bounce {
-  0%, 80%, 100% {
-    transform: scale(0);
-  }
-  40% {
-    transform: scale(1);
-  }
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
 }
 
 @keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
 }
 
 .floating {
   animation: float 3s ease-in-out infinite;
-}
-
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 4px 16px rgba(255, 107, 107, 0.4);
-  }
-  50% {
-    box-shadow: 0 4px 24px rgba(255, 107, 107, 0.7);
-  }
-}
-
-.pulse {
-  animation: pulse-glow 2s ease-in-out infinite;
-}
-
-@keyframes pulse-ring {
-  0% {
-    box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.6);
-  }
-  70% {
-    box-shadow: 0 0 0 10px rgba(255, 107, 107, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(255, 107, 107, 0);
-  }
 }
 
 /* ============ CLOCK SVG ============ */

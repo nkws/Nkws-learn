@@ -1,13 +1,9 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import ChatBubble from "../components/ChatBubble";
-import ProgressBar from "../components/ProgressBar";
 import ChoiceButtons from "../components/ChoiceButtons";
 import RewardModal from "../components/RewardModal";
 import { useTTS } from "../hooks/useSpeech";
-import {
-  STARS_PER_REWARD,
-  LEVEL_NAMES,
-} from "../utils/constants";
+import { MODULES, STARS_PER_REWARD } from "../utils/constants";
 import { saveProgress } from "../utils/progress";
 import {
   getGreeting,
@@ -15,7 +11,13 @@ import {
   generateQuestion,
 } from "../utils/kokoEngine";
 
-export default function ChatScreen({ progress, setProgress, videos, onBack }) {
+export default function ChatScreen({
+  moduleId,
+  progress,
+  setProgress,
+  moduleVideos,
+  onBack,
+}) {
   const [messages, setMessages] = useState([]);
   const [choices, setChoices] = useState([]);
   const [correctAnswer, setCorrectAnswer] = useState("");
@@ -25,6 +27,10 @@ export default function ChatScreen({ progress, setProgress, videos, onBack }) {
   const chatEndRef = useRef(null);
   const { speak } = useTTS();
   const initializedRef = useRef(false);
+
+  const mod = MODULES.find((m) => m.id === moduleId);
+  const modStars = progress.moduleStars[moduleId] || 0;
+  const videoId = moduleVideos[moduleId] || null;
 
   const scrollToBottom = useCallback(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -43,18 +49,12 @@ export default function ChatScreen({ progress, setProgress, videos, onBack }) {
       const currentQ = currentQuestionRef.current;
       if (!currentQ) return;
 
-      const result = evaluateAndRespond(
-        choice,
-        currentQ,
-        progress.level,
-        progress.streak
-      );
+      const result = evaluateAndRespond(choice, currentQ, moduleId);
 
       const assistantMsg = { role: "assistant", content: result.response };
       setMessages((prev) => [...prev, assistantMsg]);
       speak(result.response);
 
-      // Update choices for next question
       currentQuestionRef.current = result.nextQuestion;
       setChoices(result.nextQuestion.choices);
       setCorrectAnswer(result.nextQuestion.answer);
@@ -62,70 +62,60 @@ export default function ChatScreen({ progress, setProgress, videos, onBack }) {
 
       if (result.correct) {
         setProgress((prev) => {
-          const newStars = prev.stars + 1;
-          const newRewardCount =
-            newStars % STARS_PER_REWARD === 0
-              ? prev.rewardCount + 1
-              : prev.rewardCount;
+          const newModStars = (prev.moduleStars[moduleId] || 0) + 1;
+          const newTotalStars = prev.stars + 1;
           const updated = {
             ...prev,
-            stars: newStars,
-            streak: result.newStreak,
-            level: result.newLevel,
-            rewardCount: newRewardCount,
+            stars: newTotalStars,
+            moduleStars: { ...prev.moduleStars, [moduleId]: newModStars },
           };
           saveProgress(updated);
 
-          if (newStars % STARS_PER_REWARD === 0) {
+          if (newModStars % STARS_PER_REWARD === 0 && videoId) {
             setTimeout(() => setShowReward(true), 800);
           }
 
           return updated;
         });
-      } else {
-        setProgress((prev) => {
-          const updated = { ...prev, streak: 0 };
-          saveProgress(updated);
-          return updated;
-        });
       }
     },
-    [progress.level, progress.streak, speak, setProgress]
+    [moduleId, videoId, speak, setProgress]
   );
 
-  // Initial greeting
+  // Initial greeting + first question
   useEffect(() => {
     if (initializedRef.current) return;
     initializedRef.current = true;
 
-    const firstQ = generateQuestion(progress.level);
+    const firstQ = generateQuestion(moduleId);
     currentQuestionRef.current = firstQ;
     setChoices(firstQ.choices);
     setCorrectAnswer(firstQ.answer);
 
-    const greeting = getGreeting(progress.level, progress.stars, firstQ);
-    const greetingMsg = { role: "assistant", content: greeting };
-    setMessages([greetingMsg]);
+    const greeting = `${getGreeting(moduleId, mod?.title)} ${firstQ.question}`;
+    setMessages([{ role: "assistant", content: greeting }]);
     speak(greeting);
-  }, [progress.level, progress.stars, speak]);
+  }, [moduleId, mod?.title, speak]);
 
   return (
     <div className="screen chat-screen">
-      {/* Top bar */}
       <div className="chat-topbar">
         <button className="back-btn" onClick={onBack}>
           ←
         </button>
         <span className="topbar-mascot">🦊 Koko</span>
-        <span className="topbar-topic">
-          {LEVEL_NAMES[progress.level] || `Level ${progress.level}`}
-        </span>
+        <span className="topbar-topic">{mod?.title}</span>
       </div>
 
-      {/* Progress */}
-      <ProgressBar stars={progress.stars} level={progress.level} />
+      <div className="chat-progress-bar">
+        <span className="chat-stars">⭐ {modStars} in this module</span>
+        {videoId && (
+          <span className="chat-reward-hint">
+            {STARS_PER_REWARD - (modStars % STARS_PER_REWARD)} to next 🎬
+          </span>
+        )}
+      </div>
 
-      {/* Messages */}
       <div className="chat-messages">
         {messages.map((msg, i) => (
           <ChatBubble key={i} message={msg} />
@@ -133,7 +123,6 @@ export default function ChatScreen({ progress, setProgress, videos, onBack }) {
         <div ref={chatEndRef} />
       </div>
 
-      {/* Multiple choice answers */}
       <ChoiceButtons
         choices={choices}
         correctAnswer={correctAnswer}
@@ -141,11 +130,9 @@ export default function ChatScreen({ progress, setProgress, videos, onBack }) {
         disabled={answering}
       />
 
-      {/* Reward modal */}
       {showReward && (
         <RewardModal
-          rewardCount={progress.rewardCount}
-          videos={videos}
+          videoId={videoId}
           onDismiss={() => setShowReward(false)}
         />
       )}

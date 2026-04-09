@@ -1,16 +1,11 @@
-export default function RewardModal({ rewardCount, videos, onDismiss }) {
-  const videoId =
-    videos.length > 0
-      ? videos[(rewardCount - 1) % videos.length].id
-      : null;
-
+export default function RewardModal({ videoId, onDismiss }) {
   return (
     <div className="reward-overlay" onClick={onDismiss}>
       <div className="reward-modal" onClick={(e) => e.stopPropagation()}>
         <div className="reward-emojis">🎉⭐🏆</div>
         <h2 className="reward-title">Amazing Job, Keanu!</h2>
-        <p className="reward-subtitle">You earned a video reward! 🎬</p>
-        {videoId ? (
+        <p className="reward-subtitle">You earned a video reward!</p>
+        {videoId && (
           <div className="reward-video">
             <iframe
               width="100%"
@@ -22,8 +17,6 @@ export default function RewardModal({ rewardCount, videos, onDismiss }) {
               allowFullScreen
             />
           </div>
-        ) : (
-          <p className="reward-subtitle">No videos added yet. Ask a parent to add some!</p>
         )}
         <button className="btn-primary reward-dismiss" onClick={onDismiss}>
           Keep Learning! 📚

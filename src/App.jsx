@@ -1,25 +1,31 @@
 import { useState, useCallback } from "react";
 import WelcomeScreen from "./screens/WelcomeScreen";
 import ChatScreen from "./screens/ChatScreen";
-import { loadProgress } from "./utils/progress";
-import { loadVideos, saveVideos } from "./utils/videos";
+import { loadProgress, loadModuleVideos, saveModuleVideos } from "./utils/progress";
 
 export default function App() {
   const [screen, setScreen] = useState("welcome");
+  const [activeModule, setActiveModule] = useState(null);
   const [progress, setProgress] = useState(() => loadProgress());
-  const [videos, setVideos] = useState(() => loadVideos());
+  const [moduleVideos, setModuleVideos] = useState(() => loadModuleVideos());
 
-  const handleVideosChange = useCallback((newVideos) => {
-    setVideos(newVideos);
-    saveVideos(newVideos);
+  const handleModuleVideosChange = useCallback((newVideos) => {
+    setModuleVideos(newVideos);
+    saveModuleVideos(newVideos);
   }, []);
 
-  if (screen === "chat") {
+  const handleStartModule = useCallback((moduleId) => {
+    setActiveModule(moduleId);
+    setScreen("chat");
+  }, []);
+
+  if (screen === "chat" && activeModule) {
     return (
       <ChatScreen
+        moduleId={activeModule}
         progress={progress}
         setProgress={setProgress}
-        videos={videos}
+        moduleVideos={moduleVideos}
         onBack={() => setScreen("welcome")}
       />
     );
@@ -28,9 +34,9 @@ export default function App() {
   return (
     <WelcomeScreen
       progress={progress}
-      videos={videos}
-      onVideosChange={handleVideosChange}
-      onStart={() => setScreen("chat")}
+      moduleVideos={moduleVideos}
+      onModuleVideosChange={handleModuleVideosChange}
+      onStartModule={handleStartModule}
     />
   );
 }
