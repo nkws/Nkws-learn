@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Clock from "../components/Clock";
 import { MODULES } from "../utils/constants";
+import { MODULE_QUESTION_COUNTS } from "../utils/kokoEngine";
 import { extractVideoId } from "../utils/videos";
 
 export default function WelcomeScreen({
@@ -82,9 +83,9 @@ export default function WelcomeScreen({
                     {isCompleted ? "✓" : mod.id}
                   </span>
                   <h3 className="module-title">{mod.title}</h3>
-                  {modStars > 0 && (
-                    <span className="module-stars">⭐ {modStars}</span>
-                  )}
+                  <span className="module-stars">
+                    ⭐ {modStars} / {MODULE_QUESTION_COUNTS[mod.id] || 0}
+                  </span>
                 </div>
                 <p className="module-desc">{mod.description}</p>
 

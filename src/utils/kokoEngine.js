@@ -235,6 +235,9 @@ export function buildModuleQuestions(moduleId) {
   return builder ? builder() : [];
 }
 
+// Fixed question counts per module (avoids building full questions just to count)
+export const MODULE_QUESTION_COUNTS = { 1: 10, 2: 12, 3: 12, 4: 12, 5: 12, 6: 10, 7: 10 };
+
 // ============ RESPONSES ============
 
 const PRAISE = [

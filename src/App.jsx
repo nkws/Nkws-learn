@@ -21,11 +21,8 @@ export default function App() {
 
   const handleReattempt = useCallback((moduleId) => {
     setProgress((prev) => {
-      const oldModStars = prev.moduleStars[moduleId] || 0;
       const updated = {
         ...prev,
-        stars: prev.stars - oldModStars,
-        moduleStars: { ...prev.moduleStars, [moduleId]: 0 },
         completedModules: (prev.completedModules || []).filter((id) => id !== moduleId),
       };
       saveProgress(updated);

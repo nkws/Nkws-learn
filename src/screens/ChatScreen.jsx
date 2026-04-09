@@ -29,6 +29,7 @@ export default function ChatScreen({
 
   const mod = MODULES.find((m) => m.id === moduleId);
   const videoId = moduleVideos[moduleId] || null;
+  const totalQ = totalQuestionsRef.current;
 
   useEffect(() => {
     const qs = buildModuleQuestions(moduleId);
@@ -45,6 +46,28 @@ export default function ChatScreen({
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Save final score — replaces previous module stars, recalculates total
+  const saveModuleScore = useCallback(
+    (finalCorrect) => {
+      setProgress((prev) => {
+        const oldModStars = prev.moduleStars[moduleId] || 0;
+        const newTotal = prev.stars - oldModStars + finalCorrect;
+        const completed = prev.completedModules || [];
+        const updated = {
+          ...prev,
+          stars: newTotal,
+          moduleStars: { ...prev.moduleStars, [moduleId]: finalCorrect },
+          completedModules: completed.includes(moduleId)
+            ? completed
+            : [...completed, moduleId],
+        };
+        saveProgress(updated);
+        return updated;
+      });
+    },
+    [moduleId, setProgress]
+  );
+
   const handleChoice = useCallback(
     (choice) => {
       const currentQ = questions[questionIndex];
@@ -58,19 +81,11 @@ export default function ChatScreen({
 
       let responseText;
       let nextChoices = null;
+      let newCorrectCount = correctCount;
 
       if (correct) {
-        setCorrectCount((c) => c + 1);
-        setProgress((prev) => {
-          const newModStars = (prev.moduleStars[moduleId] || 0) + 1;
-          const updated = {
-            ...prev,
-            stars: prev.stars + 1,
-            moduleStars: { ...prev.moduleStars, [moduleId]: newModStars },
-          };
-          saveProgress(updated);
-          return updated;
-        });
+        newCorrectCount = correctCount + 1;
+        setCorrectCount(newCorrectCount);
 
         if (!isLast) {
           responseText = `${getPraise()} ${questions[nextIdx].question}`;
@@ -93,25 +108,16 @@ export default function ChatScreen({
         const wrongs = wrongThisRoundRef.current;
 
         if (wrongs.length === 0) {
-          // All correct — module complete!
-          const completeMsg = `${responseText} You got every question right! Amazing work, Keanu! You finished the ${mod?.title} module!`;
+          // All correct — module complete! Save score once.
+          const completeMsg = `${responseText} You got every question right! Amazing work, Keanu! You finished the ${mod?.title} module! ⭐ ${newCorrectCount} out of ${totalQ} stars!`;
           setMessages((prev) => [...prev, userMsg, { role: "assistant", content: completeMsg }]);
           speak(completeMsg);
           setModuleComplete(true);
-          setProgress((prev) => {
-            const completed = prev.completedModules || [];
-            if (!completed.includes(moduleId)) {
-              const updated = { ...prev, completedModules: [...completed, moduleId] };
-              saveProgress(updated);
-              return updated;
-            }
-            return prev;
-          });
+          saveModuleScore(newCorrectCount);
           if (videoId) {
             setTimeout(() => setShowReward(true), 1000);
           }
         } else {
-          // Start retry round with the wrong questions
           const retryMsg = `${responseText} Let's go over the ones you missed! You have ${wrongs.length} question${wrongs.length > 1 ? "s" : ""} to try again. ${wrongs[0].question}`;
           setMessages((prev) => [...prev, userMsg, { role: "assistant", content: retryMsg }]);
           speak(retryMsg, wrongs[0].choices);
@@ -130,7 +136,7 @@ export default function ChatScreen({
       speak(responseText, nextChoices);
       setAnswering(false);
     },
-    [questions, questionIndex, moduleId, mod?.title, videoId, speak, setProgress, answering]
+    [questions, questionIndex, correctCount, totalQ, moduleId, mod?.title, videoId, speak, saveModuleScore, answering]
   );
 
   const currentQ = questions[questionIndex] || null;
@@ -152,7 +158,7 @@ export default function ChatScreen({
             : `Question ${Math.min(questionIndex + 1, questions.length)} of ${questions.length}`}
         </span>
         <span className="chat-reward-hint">
-          ⭐ {correctCount} / {totalQuestionsRef.current}
+          ⭐ {correctCount} / {totalQ}
         </span>
       </div>
 
