@@ -1,4 +1,5 @@
 import { getSubjectsForLevel } from "../utils/constants";
+import AdSlot from "../components/AdSlot";
 
 export default function SubjectScreen({ level, progress, onSelectSubject, onBack }) {
   const subjects = getSubjectsForLevel(level);
@@ -31,6 +32,8 @@ export default function SubjectScreen({ level, progress, onSelectSubject, onBack
           </button>
         ))}
       </div>
+
+      <AdSlot />
     </div>
   );
 }

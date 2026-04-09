@@ -96,32 +96,27 @@ export default function ChatScreen({
       const nextIdx = questionIndex + 1;
       const isLast = nextIdx >= questions.length;
 
-      let responseText;
-      let nextChoices = null;
       let newCorrectCount = correctCount;
+      let replyText;
+      let questionText = null;
+      let nextChoices = null;
 
       if (correct) {
-        // Only count stars on first pass, not retries
         if (!isRetryRound) {
           newCorrectCount = correctCount + 1;
           setCorrectCount(newCorrectCount);
         }
-
+        replyText = getPraise(ttsLang);
         if (!isLast) {
-          responseText = `${getPraise(ttsLang)} ${questions[nextIdx].question}`;
+          questionText = questions[nextIdx].question;
           nextChoices = questions[nextIdx].choices;
-        } else {
-          responseText = getPraise(ttsLang);
         }
       } else {
         wrongThisRoundRef.current.push(currentQ);
-
+        replyText = getHint(currentQ.answer, ttsLang);
         if (!isLast) {
-          const nextPrompt = ttsLang === "zh" ? "我们来试下一题！" : "Let's try the next one!";
-          responseText = `${getHint(currentQ.answer, ttsLang)} ${nextPrompt} ${questions[nextIdx].question}`;
+          questionText = questions[nextIdx].question;
           nextChoices = questions[nextIdx].choices;
-        } else {
-          responseText = getHint(currentQ.answer, ttsLang);
         }
       }
 
@@ -129,37 +124,42 @@ export default function ChatScreen({
         const wrongs = wrongThisRoundRef.current;
 
         if (wrongs.length === 0) {
-          // All correct — module complete! Save score once.
           const isPerfect = newCorrectCount === totalQ;
-          const isZhLang = ttsLang === "zh";
-          const perfectMsg = isPerfect
-            ? isZhLang
-              ? `${responseText} 满分！每一道题都答对了！太厉害了！⭐ ${newCorrectCount} / ${totalQ} 星！`
-              : `${responseText} PERFECT SCORE! You got every single question right first time! Amazing work! ⭐ ${newCorrectCount} out of ${totalQ} stars!`
-            : isZhLang
-              ? `${responseText} 你完成了 ${mod?.title}！⭐ ${newCorrectCount} / ${totalQ} 星！`
-              : `${responseText} You finished the ${mod?.title} module! ⭐ ${newCorrectCount} out of ${totalQ} stars!`;
-          const videoPrompt = isPerfect && videoId
-            ? ""
+          const isZh = ttsLang === "zh";
+          const completeText = isPerfect
+            ? isZh
+              ? `满分！每一道题都答对了！太厉害了！ ⭐ ${newCorrectCount} / ${totalQ} 星！`
+              : `PERFECT SCORE! You got every question right first time! Amazing work! ⭐ ${newCorrectCount} out of ${totalQ} stars!`
+            : isZh
+              ? `你完成了 ${mod?.title}！ ⭐ ${newCorrectCount} / ${totalQ} 星！`
+              : `You finished the ${mod?.title} module! ⭐ ${newCorrectCount} out of ${totalQ} stars!`;
+          const videoPrompt = isPerfect && videoId ? ""
             : !isPerfect && videoId
-              ? isZhLang ? " 全部答对就能看视频奖励哦！" : " Get a perfect score to unlock the video reward!"
+              ? isZh ? " 全部答对就能看视频奖励哦！" : " Get a perfect score to unlock the video reward!"
               : "";
-          const completeMsg = perfectMsg + videoPrompt;
-          setMessages((prev) => [...prev, userMsg, { role: "assistant", content: completeMsg }]);
-          speak(completeMsg);
+          setMessages((prev) => [
+            ...prev, userMsg,
+            { role: "assistant", content: replyText },
+            { role: "assistant", content: completeText + videoPrompt },
+          ]);
+          speak(replyText);
+          setTimeout(() => speak(completeText + videoPrompt), 2000);
           setModuleComplete(true);
           saveModuleScore(newCorrectCount);
-          // Only show video on perfect score
           if (isPerfect && videoId) {
-            setTimeout(() => setShowReward(true), 1000);
+            setTimeout(() => setShowReward(true), 3000);
           }
         } else {
           const retryIntro = ttsLang === "zh"
             ? `我们来复习答错的题目吧！还有 ${wrongs.length} 道题要再试一次。`
             : `Let's go over the ones you missed! You have ${wrongs.length} question${wrongs.length > 1 ? "s" : ""} to try again.`;
-          const retryMsg = `${responseText} ${retryIntro} ${wrongs[0].question}`;
-          setMessages((prev) => [...prev, userMsg, { role: "assistant", content: retryMsg }]);
-          speak(retryMsg, wrongs[0].choices);
+          setMessages((prev) => [
+            ...prev, userMsg,
+            { role: "assistant", content: replyText },
+            { role: "assistant", content: `${retryIntro} ${wrongs[0].question}` },
+          ]);
+          speak(replyText);
+          setTimeout(() => speak(`${retryIntro} ${wrongs[0].question}`, wrongs[0].choices), 2000);
           setQuestions([...wrongs]);
           setQuestionIndex(0);
           setIsRetryRound(true);
@@ -170,9 +170,15 @@ export default function ChatScreen({
         return;
       }
 
+      // Normal flow: separate reply bubble and question bubble
       setQuestionIndex(nextIdx);
-      setMessages((prev) => [...prev, userMsg, { role: "assistant", content: responseText }]);
-      speak(responseText, nextChoices);
+      setMessages((prev) => [
+        ...prev, userMsg,
+        { role: "assistant", content: replyText },
+        { role: "assistant", content: questionText },
+      ]);
+      speak(replyText);
+      setTimeout(() => speak(questionText, nextChoices), 2000);
       setAnswering(false);
     },
     [questions, questionIndex, correctCount, totalQ, moduleId, mod?.title, videoId, speak, saveModuleScore, answering]

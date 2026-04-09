@@ -1,4 +1,5 @@
 import { getTotalStars } from "../utils/constants";
+import AdSlot from "../components/AdSlot";
 
 const LEVELS = [
   { id: "p1", title: "Primary 1", subtitle: "Age 6-7", icon: "1" },
@@ -41,6 +42,8 @@ export default function HomeScreen({ progress, onSelectLevel, onAbout }) {
           </button>
         ))}
       </div>
+
+      <AdSlot />
 
       <button className="about-link" onClick={onAbout}>
         About Koko's Classroom

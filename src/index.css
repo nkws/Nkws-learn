@@ -590,6 +590,8 @@ button {
   font-size: 16px;
   line-height: 1.5;
   word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
 }
 
 .bubble-koko {
@@ -626,6 +628,23 @@ button {
 }
 
 /* ============ ABOUT LINK ============ */
+/* ============ AD SLOT ============ */
+.ad-slot {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+  flex-shrink: 0;
+}
+
+.ad-placeholder {
+  width: 320px;
+  height: 50px;
+  border-radius: 8px;
+  background: #f0f0f0;
+}
+
 .reset-topic-btn {
   background: none;
   color: var(--coral);

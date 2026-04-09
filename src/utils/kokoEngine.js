@@ -133,6 +133,18 @@ function pick(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+// Pick without repeating the last used phrase
+let lastPraiseIdx = -1;
+let lastHintIdx = -1;
+
+function pickNoRepeat(arr, lastIdx) {
+  let idx;
+  do {
+    idx = Math.floor(Math.random() * arr.length);
+  } while (idx === lastIdx && arr.length > 1);
+  return { value: arr[idx], idx };
+}
+
 const PRAISE_EN = [
   "Correct! Well done!", "You got it! Great job!", "Well done! You're a champion!",
   "Great job! So clever!", "Exactly right! Awesome!", "Perfect! You're amazing!",
@@ -154,9 +166,17 @@ const HINTS_ZH = [
   "没关系，继续加油！",
 ];
 
-export function getPraise(lang = "en") { return pick(lang === "zh" ? PRAISE_ZH : PRAISE_EN); }
+export function getPraise(lang = "en") {
+  const arr = lang === "zh" ? PRAISE_ZH : PRAISE_EN;
+  const { value, idx } = pickNoRepeat(arr, lastPraiseIdx);
+  lastPraiseIdx = idx;
+  return value;
+}
+
 export function getHint(correctAnswer, lang = "en") {
-  const hint = pick(lang === "zh" ? HINTS_ZH : HINTS_EN);
+  const arr = lang === "zh" ? HINTS_ZH : HINTS_EN;
+  const { value, idx } = pickNoRepeat(arr, lastHintIdx);
+  lastHintIdx = idx;
   const answerLabel = lang === "zh" ? `答案是 ${correctAnswer}。` : `The answer was ${correctAnswer}.`;
-  return `${hint} ${answerLabel}`;
+  return `${value} ${answerLabel}`;
 }
