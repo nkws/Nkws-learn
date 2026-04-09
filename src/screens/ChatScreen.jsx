@@ -9,6 +9,7 @@ import { buildModuleQuestions, getPraise, getHint, getIntro } from "../utils/kok
 import IntroScreen from "./IntroScreen";
 
 export default function ChatScreen({
+  subjectId,
   topicId,
   moduleId,
   progress,
@@ -30,7 +31,7 @@ export default function ChatScreen({
   const chatEndRef = useRef(null);
   const { speak } = useTTS();
 
-  const mod = getModule(topicId, moduleId);
+  const mod = getModule(subjectId, topicId, moduleId);
   const videoId = moduleVideos[moduleId] || null;
   const intro = getIntro(moduleId);
   const totalQ = totalQuestionsRef.current;
@@ -123,12 +124,22 @@ export default function ChatScreen({
 
         if (wrongs.length === 0) {
           // All correct — module complete! Save score once.
-          const completeMsg = `${responseText} You got every question right! Amazing work, Keanu! You finished the ${mod?.title} module! ⭐ ${newCorrectCount} out of ${totalQ} stars!`;
+          const isPerfect = newCorrectCount === totalQ;
+          const perfectMsg = isPerfect
+            ? `${responseText} PERFECT SCORE! You got every single question right first time! Amazing work, Keanu! ⭐ ${newCorrectCount} out of ${totalQ} stars!`
+            : `${responseText} You finished the ${mod?.title} module! ⭐ ${newCorrectCount} out of ${totalQ} stars!`;
+          const videoPrompt = isPerfect && videoId
+            ? ""
+            : !isPerfect && videoId
+              ? " Get a perfect score to unlock the video reward!"
+              : "";
+          const completeMsg = perfectMsg + videoPrompt;
           setMessages((prev) => [...prev, userMsg, { role: "assistant", content: completeMsg }]);
           speak(completeMsg);
           setModuleComplete(true);
           saveModuleScore(newCorrectCount);
-          if (videoId) {
+          // Only show video on perfect score
+          if (isPerfect && videoId) {
             setTimeout(() => setShowReward(true), 1000);
           }
         } else {

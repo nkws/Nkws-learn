@@ -1,3 +1,4 @@
+// Math
 import { buildTimeQuestions, TIME_QUESTION_COUNTS, TIME_INTRO } from "../topics/time";
 import { buildAdditionQuestions, ADDITION_QUESTION_COUNTS, ADDITION_INTRO } from "../topics/addition";
 import { buildSubtractionQuestions, SUBTRACTION_QUESTION_COUNTS, SUBTRACTION_INTRO } from "../topics/subtraction";
@@ -8,18 +9,33 @@ import { buildShapesQuestions, SHAPES_QUESTION_COUNTS, SHAPES_INTRO } from "../t
 import { buildPatternsQuestions, PATTERNS_QUESTION_COUNTS, PATTERNS_INTRO } from "../topics/patterns";
 import { buildMeasurementQuestions, MEASUREMENT_QUESTION_COUNTS, MEASUREMENT_INTRO } from "../topics/measurement";
 import { buildMoneyQuestions, MONEY_QUESTION_COUNTS, MONEY_INTRO } from "../topics/money";
+// English
+import { buildSightWordsQuestions, SIGHTWORDS_QUESTION_COUNTS, SIGHTWORDS_INTRO } from "../topics/sightwords";
+import { buildPhonicsQuestions, PHONICS_QUESTION_COUNTS, PHONICS_INTRO } from "../topics/phonics";
+import { buildVocabularyQuestions, VOCABULARY_QUESTION_COUNTS } from "../topics/vocabulary";
+import { buildGrammarQuestions, GRAMMAR_QUESTION_COUNTS, GRAMMAR_INTRO } from "../topics/grammar";
+import { buildComprehensionQuestions, COMPREHENSION_QUESTION_COUNTS } from "../topics/comprehension";
+// Science
+import { buildLivingQuestions, LIVING_QUESTION_COUNTS, LIVING_INTRO } from "../topics/living";
+import { buildPlantsQuestions, PLANTS_QUESTION_COUNTS, PLANTS_INTRO } from "../topics/plants";
+import { buildAnimalsQuestions, ANIMALS_QUESTION_COUNTS, ANIMALS_INTRO } from "../topics/animals";
+import { buildBodyQuestions, BODY_QUESTION_COUNTS, BODY_INTRO } from "../topics/body";
+import { buildWeatherQuestions, WEATHER_QUESTION_COUNTS, WEATHER_INTRO } from "../topics/weather";
+// Chinese
+import { buildPinyinQuestions, PINYIN_QUESTION_COUNTS, PINYIN_INTRO } from "../topics/pinyin";
+import { buildCharactersQuestions, CHARACTERS_QUESTION_COUNTS, CHARACTERS_INTRO } from "../topics/characters";
+import { buildCnVocabQuestions, CNVOCAB_QUESTION_COUNTS } from "../topics/cnvocab";
+import { buildCnSentencesQuestions, CNSENTENCES_QUESTION_COUNTS } from "../topics/cnsentences";
 
 const BUILDERS = {
-  "time-": buildTimeQuestions,
-  "add-": buildAdditionQuestions,
-  "sub-": buildSubtractionQuestions,
-  "n20-": buildNumbers20Questions,
-  "as20-": buildAddSub20Questions,
-  "n100-": buildNumbers100Questions,
-  "shp-": buildShapesQuestions,
-  "pat-": buildPatternsQuestions,
-  "msr-": buildMeasurementQuestions,
-  "mon-": buildMoneyQuestions,
+  "time-": buildTimeQuestions, "add-": buildAdditionQuestions, "sub-": buildSubtractionQuestions,
+  "n20-": buildNumbers20Questions, "as20-": buildAddSub20Questions, "n100-": buildNumbers100Questions,
+  "shp-": buildShapesQuestions, "pat-": buildPatternsQuestions, "msr-": buildMeasurementQuestions,
+  "mon-": buildMoneyQuestions, "sw-": buildSightWordsQuestions, "ph-": buildPhonicsQuestions,
+  "vc-": buildVocabularyQuestions, "gr-": buildGrammarQuestions, "cp-": buildComprehensionQuestions,
+  "lv-": buildLivingQuestions, "pl-": buildPlantsQuestions, "an-": buildAnimalsQuestions,
+  "bd-": buildBodyQuestions, "wt-": buildWeatherQuestions, "py-": buildPinyinQuestions,
+  "ch-": buildCharactersQuestions, "cnv-": buildCnVocabQuestions, "cns-": buildCnSentencesQuestions,
 };
 
 export function buildModuleQuestions(moduleId) {
@@ -30,28 +46,22 @@ export function buildModuleQuestions(moduleId) {
 }
 
 export const MODULE_QUESTION_COUNTS = {
-  ...TIME_QUESTION_COUNTS,
-  ...ADDITION_QUESTION_COUNTS,
-  ...SUBTRACTION_QUESTION_COUNTS,
-  ...NUMBERS20_QUESTION_COUNTS,
-  ...ADDSUB20_QUESTION_COUNTS,
-  ...NUMBERS100_QUESTION_COUNTS,
-  ...SHAPES_QUESTION_COUNTS,
-  ...PATTERNS_QUESTION_COUNTS,
-  ...MEASUREMENT_QUESTION_COUNTS,
-  ...MONEY_QUESTION_COUNTS,
+  ...TIME_QUESTION_COUNTS, ...ADDITION_QUESTION_COUNTS, ...SUBTRACTION_QUESTION_COUNTS,
+  ...NUMBERS20_QUESTION_COUNTS, ...ADDSUB20_QUESTION_COUNTS, ...NUMBERS100_QUESTION_COUNTS,
+  ...SHAPES_QUESTION_COUNTS, ...PATTERNS_QUESTION_COUNTS, ...MEASUREMENT_QUESTION_COUNTS,
+  ...MONEY_QUESTION_COUNTS, ...SIGHTWORDS_QUESTION_COUNTS, ...PHONICS_QUESTION_COUNTS,
+  ...VOCABULARY_QUESTION_COUNTS, ...GRAMMAR_QUESTION_COUNTS, ...COMPREHENSION_QUESTION_COUNTS,
+  ...LIVING_QUESTION_COUNTS, ...PLANTS_QUESTION_COUNTS, ...ANIMALS_QUESTION_COUNTS,
+  ...BODY_QUESTION_COUNTS, ...WEATHER_QUESTION_COUNTS, ...PINYIN_QUESTION_COUNTS,
+  ...CHARACTERS_QUESTION_COUNTS, ...CNVOCAB_QUESTION_COUNTS, ...CNSENTENCES_QUESTION_COUNTS,
 };
 
 const ALL_INTROS = {
-  ...TIME_INTRO,
-  ...ADDITION_INTRO,
-  ...SUBTRACTION_INTRO,
-  ...NUMBERS20_INTRO,
-  ...NUMBERS100_INTRO,
-  ...SHAPES_INTRO,
-  ...PATTERNS_INTRO,
-  ...MEASUREMENT_INTRO,
-  ...MONEY_INTRO,
+  ...TIME_INTRO, ...ADDITION_INTRO, ...SUBTRACTION_INTRO, ...NUMBERS20_INTRO,
+  ...NUMBERS100_INTRO, ...SHAPES_INTRO, ...PATTERNS_INTRO, ...MEASUREMENT_INTRO,
+  ...MONEY_INTRO, ...SIGHTWORDS_INTRO, ...PHONICS_INTRO, ...GRAMMAR_INTRO,
+  ...LIVING_INTRO, ...PLANTS_INTRO, ...ANIMALS_INTRO, ...BODY_INTRO,
+  ...WEATHER_INTRO, ...PINYIN_INTRO, ...CHARACTERS_INTRO,
 };
 
 export function getIntro(moduleId) {
@@ -63,28 +73,16 @@ function pick(arr) {
 }
 
 const PRAISE = [
-  "Correct! Well done!",
-  "You got it! Great job!",
-  "Well done! You're a champion!",
-  "Great job, Keanu! So clever!",
-  "Exactly right! Awesome!",
-  "Perfect! You're amazing!",
-  "Brilliant! Koko is so proud of you!",
-  "Spot on! You're doing so well!",
+  "Correct! Well done!", "You got it! Great job!", "Well done! You're a champion!",
+  "Great job, Keanu! So clever!", "Exactly right! Awesome!", "Perfect! You're amazing!",
+  "Brilliant! Koko is so proud of you!", "Spot on! You're doing so well!",
 ];
 
 const HINTS = [
-  "Hmm, not quite! Have another look!",
-  "Almost! Let's think about it again!",
-  "Let's try again! You're so close!",
-  "So close! Don't worry, you're learning!",
+  "Hmm, not quite! Have another look!", "Almost! Let's think about it again!",
+  "Let's try again! You're so close!", "So close! Don't worry, you're learning!",
   "Not quite, but that's okay! Keep going!",
 ];
 
-export function getPraise() {
-  return pick(PRAISE);
-}
-
-export function getHint(correctAnswer) {
-  return `${pick(HINTS)} The answer was ${correctAnswer}.`;
-}
+export function getPraise() { return pick(PRAISE); }
+export function getHint(correctAnswer) { return `${pick(HINTS)} The answer was ${correctAnswer}.`; }

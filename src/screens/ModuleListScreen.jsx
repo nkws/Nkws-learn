@@ -4,6 +4,7 @@ import { MODULE_QUESTION_COUNTS } from "../utils/kokoEngine";
 import { extractVideoId } from "../utils/videos";
 
 export default function ModuleListScreen({
+  subjectId,
   topicId,
   progress,
   moduleVideos,
@@ -17,7 +18,7 @@ export default function ModuleListScreen({
   const [error, setError] = useState("");
   const [confirmModule, setConfirmModule] = useState(null);
 
-  const topic = getTopic(topicId);
+  const topic = getTopic(subjectId, topicId);
   const topicStars = getTopicStars(topicId, progress.moduleStars || {});
   const completedModules = progress.completedModules || [];
 
