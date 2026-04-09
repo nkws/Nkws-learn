@@ -1,37 +1,37 @@
 import { useCallback, useRef, useEffect } from "react";
 import { cleanForSpeech } from "../utils/parseClock";
 
-// Preferred voices — female English voices ranked by quality on iOS/macOS
-const PREFERRED_VOICES = [
-  "samantha",
-  "karen",
-  "moira",
-  "tessa",
-  "martha",
-  "fiona",
-  "google uk english female",
-  "google us english",
-];
+const PREFERRED_EN = ["samantha", "karen", "moira", "tessa", "martha", "fiona", "google uk english female"];
+const PREFERRED_ZH = ["tingting", "meijia", "sinji", "google 普通话", "google mandarin"];
 
-function pickBestVoice(voices) {
-  for (const pref of PREFERRED_VOICES) {
+const MALE_NAMES = ["male", "david", "daniel", "james", "tom", "alex", "fred", "ralph"];
+
+function pickVoice(voices, lang) {
+  const isZh = lang === "zh";
+  const langPrefix = isZh ? "zh" : "en";
+  const preferred = isZh ? PREFERRED_ZH : PREFERRED_EN;
+
+  // Try preferred voices first
+  for (const pref of preferred) {
     const match = voices.find(
-      (v) => v.name.toLowerCase().includes(pref) && v.lang.startsWith("en")
+      (v) => v.name.toLowerCase().includes(pref) && v.lang.toLowerCase().startsWith(langPrefix)
     );
     if (match) return match;
   }
-  // Fall back to any female-sounding English voice (heuristic: avoid "male"/"david"/"daniel"/"james")
-  const maleNames = ["male", "david", "daniel", "james", "tom", "alex", "fred", "ralph"];
+
+  // Fall back: any voice matching the language, avoiding male for English
+  if (isZh) {
+    return voices.find((v) => v.lang.toLowerCase().startsWith("zh")) || null;
+  }
+
   const nonMale = voices.find(
     (v) =>
       v.lang.startsWith("en") &&
-      !maleNames.some((m) => v.name.toLowerCase().includes(m))
+      !MALE_NAMES.some((m) => v.name.toLowerCase().includes(m))
   );
-  if (nonMale) return nonMale;
-  return voices.find((v) => v.lang.startsWith("en")) || null;
+  return nonMale || voices.find((v) => v.lang.startsWith("en")) || null;
 }
 
-// Promise that resolves once voices are loaded
 let voicesReady = null;
 function waitForVoices() {
   if (voicesReady) return voicesReady;
@@ -45,47 +45,59 @@ function waitForVoices() {
       resolve(synth.getVoices());
     };
     synth.addEventListener("voiceschanged", onchange);
-    // Timeout fallback — some browsers never fire voiceschanged
     setTimeout(() => resolve(synth.getVoices()), 1000);
   });
   return voicesReady;
 }
 
-export function useTTS() {
+export function useTTS(lang = "en") {
   const voiceRef = useRef(null);
   const readyRef = useRef(false);
+  const langRef = useRef(lang);
+  langRef.current = lang;
 
   useEffect(() => {
     waitForVoices().then((voices) => {
       if (voices.length > 0) {
-        voiceRef.current = pickBestVoice(voices);
+        voiceRef.current = pickVoice(voices, langRef.current);
       }
       readyRef.current = true;
     });
   }, []);
 
+  // Re-pick voice when language changes
+  useEffect(() => {
+    if (!readyRef.current) return;
+    const voices = window.speechSynthesis?.getVoices() || [];
+    if (voices.length > 0) {
+      voiceRef.current = pickVoice(voices, lang);
+    }
+  }, [lang]);
+
   const makeUtterance = useCallback((text) => {
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 1.0;
-    utterance.pitch = 1.3;
+    const isZh = langRef.current === "zh";
+    utterance.rate = isZh ? 0.85 : 1.0;
+    utterance.pitch = isZh ? 1.0 : 1.3;
     if (voiceRef.current) {
       utterance.voice = voiceRef.current;
     } else {
-      utterance.lang = "en-GB";
+      utterance.lang = isZh ? "zh-CN" : "en-GB";
     }
     return utterance;
   }, []);
 
-  // speak(text) or speak(text, choices) — choices are read after with pauses
   const speak = useCallback((text, choices) => {
     const synth = window.speechSynthesis;
     if (!synth) return;
     synth.cancel();
 
+    const isZh = langRef.current === "zh";
     const cleaned = cleanForSpeech(text);
-    const sentences = cleaned
-      .split(/(?<=[.!?])\s+/)
-      .filter((s) => s.trim().length > 0);
+
+    // For Chinese, split on Chinese punctuation too
+    const splitRegex = isZh ? /(?<=[.!?。！？])\s*/ : /(?<=[.!?])\s+/;
+    const sentences = cleaned.split(splitRegex).filter((s) => s.trim().length > 0);
 
     const doSpeak = () => {
       for (const sentence of sentences) {
@@ -93,9 +105,8 @@ export function useTTS() {
       }
 
       if (choices && choices.length > 0) {
-        // Brief pause then read "Your options are:"
-        synth.speak(makeUtterance("Your options are."));
         const labels = ["A", "B", "C", "D", "E"];
+        synth.speak(makeUtterance(isZh ? "选项是。" : "Your options are."));
         choices.forEach((choice, i) => {
           synth.speak(makeUtterance(`${labels[i]}. ${choice}.`));
         });
@@ -105,7 +116,7 @@ export function useTTS() {
     if (!readyRef.current) {
       waitForVoices().then((voices) => {
         if (!voiceRef.current && voices.length > 0) {
-          voiceRef.current = pickBestVoice(voices);
+          voiceRef.current = pickVoice(voices, langRef.current);
         }
         readyRef.current = true;
         doSpeak();
@@ -115,7 +126,6 @@ export function useTTS() {
     }
   }, [makeUtterance]);
 
-  // Call this during a user gesture to unlock speech on iOS
   const unlock = useCallback(() => {
     const synth = window.speechSynthesis;
     if (!synth) return;

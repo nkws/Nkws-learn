@@ -2,12 +2,12 @@ import { useState } from "react";
 import Clock from "../components/Clock";
 import { useTTS } from "../hooks/useSpeech";
 
-export default function IntroScreen({ intro, onFinish }) {
+export default function IntroScreen({ intro, lang = "en", onFinish }) {
   const [pageIndex, setPageIndex] = useState(0);
   const [speechUnlocked, setSpeechUnlocked] = useState(false);
   const page = intro.pages[pageIndex];
   const isLast = pageIndex === intro.pages.length - 1;
-  const { speak } = useTTS();
+  const { speak } = useTTS(lang);
 
   const goNext = () => {
     if (isLast) {

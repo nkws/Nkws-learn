@@ -29,7 +29,8 @@ export default function ChatScreen({
   const wrongThisRoundRef = useRef([]);
   const totalQuestionsRef = useRef(0);
   const chatEndRef = useRef(null);
-  const { speak } = useTTS();
+  const ttsLang = subjectId === "chinese" ? "zh" : "en";
+  const { speak } = useTTS(ttsLang);
 
   const mod = getModule(subjectId, topicId, moduleId);
   const videoId = moduleVideos[moduleId] || null;
@@ -168,7 +169,7 @@ export default function ChatScreen({
 
   // Show intro if module has one and we haven't started yet
   if (showIntro && intro) {
-    return <IntroScreen intro={intro} onFinish={startQuiz} />;
+    return <IntroScreen intro={intro} lang={ttsLang} onFinish={startQuiz} />;
   }
 
   return (
