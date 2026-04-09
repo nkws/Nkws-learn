@@ -1,11 +1,11 @@
 import { useState, useCallback, useRef } from "react";
-import { stripClockTags } from "../utils/parseClock";
+import { cleanForSpeech } from "../utils/parseClock";
 
 export function useTTS() {
   const speak = useCallback((text) => {
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
-    const cleaned = stripClockTags(text);
+    const cleaned = cleanForSpeech(text);
     const utterance = new SpeechSynthesisUtterance(cleaned);
     utterance.rate = 0.85;
     utterance.pitch = 1.1;

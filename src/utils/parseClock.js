@@ -25,6 +25,13 @@ export function parseClockTags(text) {
   return parts;
 }
 
-export function stripClockTags(text) {
-  return text.replace(CLOCK_REGEX, "look at the clock");
+// Remove emoji characters and clock tags for clean TTS
+const EMOJI_REGEX = /[\p{Emoji_Presentation}\p{Extended_Pictographic}\u200d\uFE0F]/gu;
+
+export function cleanForSpeech(text) {
+  return text
+    .replace(CLOCK_REGEX, "look at the clock")
+    .replace(EMOJI_REGEX, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
 }
