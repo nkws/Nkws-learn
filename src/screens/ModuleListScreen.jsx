@@ -150,19 +150,19 @@ export default function ModuleListScreen({
             </div>
           );
         })}
+
+        {topicStars > 0 && (
+          <button className="reset-topic-btn" onClick={() => setShowResetConfirm(true)}>
+            Reset all progress for this topic
+          </button>
+        )}
+
+        {topic.modules.some((m) => !!moduleVideos[m.id]) && (
+          <button className="reset-topic-btn" onClick={() => setShowClearVideosConfirm(true)}>
+            Clear all video links for this topic
+          </button>
+        )}
       </div>
-
-      {topicStars > 0 && (
-        <button className="reset-topic-btn" onClick={() => setShowResetConfirm(true)}>
-          Reset all progress for this topic
-        </button>
-      )}
-
-      {topic.modules.some((m) => !!moduleVideos[m.id]) && (
-        <button className="reset-topic-btn" onClick={() => setShowClearVideosConfirm(true)}>
-          Clear all video links for this topic
-        </button>
-      )}
 
       {showResetConfirm && (
         <div className="reward-overlay" onClick={() => setShowResetConfirm(false)}>
