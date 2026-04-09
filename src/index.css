@@ -121,6 +121,20 @@ button {
   flex-shrink: 0;
 }
 
+.level-icon {
+  background: linear-gradient(135deg, var(--coral), var(--orange));
+  color: white;
+  font-family: 'Fredoka One', cursive;
+  font-size: 28px;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
 .topic-info {
   flex: 1;
   min-width: 0;

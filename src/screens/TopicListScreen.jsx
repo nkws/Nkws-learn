@@ -4,6 +4,7 @@ import { extractVideoId } from "../utils/videos";
 
 export default function TopicListScreen({
   subjectId,
+  level,
   progress,
   topicVideos,
   onTopicVideosChange,
@@ -14,7 +15,7 @@ export default function TopicListScreen({
   const [videoInput, setVideoInput] = useState("");
   const [error, setError] = useState("");
 
-  const subject = getSubject(subjectId);
+  const subject = getSubject(subjectId, level);
   if (!subject) return null;
 
   const handleSaveVideo = (topicId) => {

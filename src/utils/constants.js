@@ -239,31 +239,234 @@ const CHINESE_TOPICS = [
   },
 ];
 
-// ============ SUBJECTS ============
-export const SUBJECTS = [
-  { id: "math", title: "Mathematics", icon: "🔢", description: "Numbers, shapes, time, and more!", topics: MATH_TOPICS },
-  { id: "english", title: "English", icon: "📖", description: "Words, grammar, reading, and phonics!", topics: ENGLISH_TOPICS },
-  { id: "science", title: "Science", icon: "🔬", description: "Living things, plants, animals, and weather!", topics: SCIENCE_TOPICS },
-  { id: "chinese", title: "华文", icon: "字", description: "拼音、汉字、词语、句子！", topics: CHINESE_TOPICS },
+// ============ P2 TOPICS ============
+const P2_MATH_TOPICS = [
+  { id: "p2-multiplication", title: "Multiplication", icon: "✖️", description: "Groups, times tables, and multiplying!",
+    modules: [
+      { id: "p2m-mul1", title: "Multiplication Concept", description: "3 groups of 2 is 6!", starsToUnlock: 0, hasIntro: true },
+      { id: "p2m-mul2", title: "Times Tables 2, 5, 10", description: "2x, 5x, 10x tables.", starsToUnlock: 0 },
+      { id: "p2m-mul3", title: "Times Tables 3, 4", description: "3x and 4x tables.", starsToUnlock: 8 },
+      { id: "p2m-mul4", title: "Mixed Multiplication", description: "Multiply any numbers!", starsToUnlock: 16 },
+    ] },
+  { id: "p2-division", title: "Division", icon: "➗", description: "Sharing equally and dividing!",
+    modules: [
+      { id: "p2m-div1", title: "What is Division?", description: "Sharing into equal groups.", starsToUnlock: 0, hasIntro: true },
+      { id: "p2m-div2", title: "Dividing by 2", description: "8 ÷ 2 = ?", starsToUnlock: 0 },
+      { id: "p2m-div3", title: "Dividing by 3, 4, 5", description: "More division facts!", starsToUnlock: 8 },
+      { id: "p2m-div4", title: "Mixed Division", description: "Divide any numbers!", starsToUnlock: 16 },
+    ] },
+  { id: "p2-fractions", title: "Fractions", icon: "🍕", description: "Halves, quarters, and thirds!",
+    modules: [
+      { id: "p2m-fr1", title: "What is a Fraction?", description: "Parts of a whole.", starsToUnlock: 0, hasIntro: true },
+      { id: "p2m-fr2", title: "Halves and Quarters", description: "Half of 8 is 4!", starsToUnlock: 0 },
+      { id: "p2m-fr3", title: "Thirds", description: "One third of 9 is 3!", starsToUnlock: 8 },
+    ] },
+  { id: "p2-measurement", title: "Measurement", icon: "📐", description: "Centimetres, metres, and kilograms!",
+    modules: [
+      { id: "p2m-ms1", title: "Centimetres", description: "Measuring small things.", starsToUnlock: 0, hasIntro: true },
+      { id: "p2m-ms2", title: "Metres", description: "Measuring bigger things.", starsToUnlock: 0 },
+      { id: "p2m-ms3", title: "Kilograms", description: "Weighing things.", starsToUnlock: 8 },
+    ] },
+  { id: "p2-money", title: "Money", icon: "💰", description: "Dollars, cents, and making change!",
+    modules: [
+      { id: "p2m-mn1", title: "Dollars and Cents", description: "$2.50 + $1.20 = ?", starsToUnlock: 0 },
+      { id: "p2m-mn2", title: "Making Change", description: "Pay $5 for a $3.50 item.", starsToUnlock: 0 },
+      { id: "p2m-mn3", title: "Money Word Problems", description: "Buying and selling!", starsToUnlock: 8 },
+    ] },
+  { id: "p2-graphs", title: "Graphs", icon: "📊", description: "Reading picture and bar graphs!",
+    modules: [
+      { id: "p2m-gr1", title: "Picture Graphs", description: "How many like apples?", starsToUnlock: 0, hasIntro: true },
+      { id: "p2m-gr2", title: "Bar Graphs", description: "Reading bars and values.", starsToUnlock: 0 },
+      { id: "p2m-gr3", title: "Comparing Data", description: "Which is the most popular?", starsToUnlock: 8 },
+    ] },
 ];
 
+const P2_ENGLISH_TOPICS = [
+  { id: "p2-tenses", title: "Past Tense", icon: "⏪", description: "Yesterday I walked, I ate, I ran!",
+    modules: [
+      { id: "p2e-tn1", title: "Past Tense -ed", description: "Walk → walked.", starsToUnlock: 0, hasIntro: true },
+      { id: "p2e-tn2", title: "Irregular Past Tense", description: "Eat → ate. Run → ran.", starsToUnlock: 0 },
+      { id: "p2e-tn3", title: "Present vs Past", description: "Which sentence is past tense?", starsToUnlock: 8 },
+    ] },
+  { id: "p2-grammar2", title: "Grammar 2", icon: "✏️", description: "Adjectives, conjunctions, and punctuation!",
+    modules: [
+      { id: "p2e-gr1", title: "Adjectives", description: "The big cat. The red ball.", starsToUnlock: 0 },
+      { id: "p2e-gr2", title: "Conjunctions", description: "And, but, or — joining words!", starsToUnlock: 0 },
+      { id: "p2e-gr3", title: "Punctuation", description: "Full stops, question marks, commas.", starsToUnlock: 8 },
+    ] },
+  { id: "p2-comprehension", title: "Comprehension", icon: "📖", description: "Read stories and answer questions!",
+    modules: [
+      { id: "p2e-cp1", title: "The Birthday Party", description: "Read and answer!", starsToUnlock: 0 },
+      { id: "p2e-cp2", title: "A Rainy Day", description: "Read and answer!", starsToUnlock: 0 },
+      { id: "p2e-cp3", title: "The Lost Puppy", description: "Read and answer!", starsToUnlock: 6 },
+    ] },
+];
+
+const P2_SCIENCE_TOPICS = [
+  { id: "p2-materials", title: "Materials", icon: "🧱", description: "Wood, metal, plastic, glass, fabric!",
+    modules: [
+      { id: "p2s-mt1", title: "Types of Materials", description: "What is it made of?", starsToUnlock: 0, hasIntro: true },
+      { id: "p2s-mt2", title: "Properties", description: "Hard, soft, transparent, flexible.", starsToUnlock: 0 },
+      { id: "p2s-mt3", title: "Uses of Materials", description: "Why rubber for tyres?", starsToUnlock: 8 },
+    ] },
+  { id: "p2-lifecycles", title: "Life Cycles", icon: "🦋", description: "How living things grow and change!",
+    modules: [
+      { id: "p2s-lc1", title: "Plant Life Cycle", description: "Seed → sprout → plant → flower.", starsToUnlock: 0, hasIntro: true },
+      { id: "p2s-lc2", title: "Butterfly Life Cycle", description: "Egg → caterpillar → chrysalis → butterfly.", starsToUnlock: 0 },
+      { id: "p2s-lc3", title: "Frog Life Cycle", description: "Egg → tadpole → froglet → frog.", starsToUnlock: 8 },
+    ] },
+];
+
+const P2_CHINESE_TOPICS = [
+  { id: "p2-characters2", title: "更多汉字", icon: "字", description: "日常用品、自然、时间。",
+    modules: [
+      { id: "p2c-ch1", title: "日常用品", description: "桌子、椅子、电话……", starsToUnlock: 0 },
+      { id: "p2c-ch2", title: "自然", description: "太阳、月亮、星星……", starsToUnlock: 0 },
+      { id: "p2c-ch3", title: "时间", description: "一年有几个月？", starsToUnlock: 8 },
+    ] },
+  { id: "p2-reading", title: "阅读理解", icon: "📖", description: "读短文，回答问题。",
+    modules: [
+      { id: "p2c-rd1", title: "短文一", description: "关于上学的故事。", starsToUnlock: 0 },
+      { id: "p2c-rd2", title: "短文二", description: "关于家庭出游的故事。", starsToUnlock: 0 },
+      { id: "p2c-rd3", title: "短文三", description: "关于宠物的故事。", starsToUnlock: 6 },
+    ] },
+];
+
+// ============ P3 TOPICS ============
+const P3_MATH_TOPICS = [
+  { id: "p3-timestables", title: "Times Tables", icon: "✖️", description: "Master all times tables 2-9!",
+    modules: [
+      { id: "p3m-tt1", title: "Times Tables 6, 7", description: "6 x 8 = ?", starsToUnlock: 0 },
+      { id: "p3m-tt2", title: "Times Tables 8, 9", description: "9 x 7 = ?", starsToUnlock: 0 },
+      { id: "p3m-tt3", title: "Mixed Times Tables", description: "Random from 2-9!", starsToUnlock: 8 },
+      { id: "p3m-tt4", title: "Division Facts", description: "56 ÷ 7 = ?", starsToUnlock: 16 },
+    ] },
+  { id: "p3-fractions", title: "Fractions", icon: "🍕", description: "Equivalent fractions, comparing, and adding!",
+    modules: [
+      { id: "p3m-fr1", title: "Fractions of a Whole", description: "3/4 of a pizza.", starsToUnlock: 0, hasIntro: true },
+      { id: "p3m-fr2", title: "Equivalent Fractions", description: "1/2 = 2/4.", starsToUnlock: 0 },
+      { id: "p3m-fr3", title: "Comparing Fractions", description: "Which is bigger: 1/3 or 1/2?", starsToUnlock: 8 },
+      { id: "p3m-fr4", title: "Adding Fractions", description: "1/4 + 2/4 = ?", starsToUnlock: 16 },
+    ] },
+  { id: "p3-measurement", title: "Area & Perimeter", icon: "📐", description: "Calculate area, perimeter, and volume!",
+    modules: [
+      { id: "p3m-ms1", title: "Area", description: "3 cm × 2 cm = ?", starsToUnlock: 0 },
+      { id: "p3m-ms2", title: "Perimeter", description: "Add up all the sides!", starsToUnlock: 0 },
+      { id: "p3m-ms3", title: "Volume", description: "How many cubes fit?", starsToUnlock: 8 },
+    ] },
+  { id: "p3-angles", title: "Angles", icon: "📏", description: "Right angles, acute, obtuse, and turns!",
+    modules: [
+      { id: "p3m-an1", title: "What is an Angle?", description: "Corners and turns.", starsToUnlock: 0, hasIntro: true },
+      { id: "p3m-an2", title: "Types of Angles", description: "Acute, right, obtuse.", starsToUnlock: 0 },
+      { id: "p3m-an3", title: "Turns and Directions", description: "Quarter turn = 90°.", starsToUnlock: 8 },
+    ] },
+  { id: "p3-money", title: "Money Problems", icon: "💰", description: "Word problems with dollars and cents!",
+    modules: [
+      { id: "p3m-mn1", title: "Money Word Problems", description: "3 pens at $1.50 each.", starsToUnlock: 0 },
+      { id: "p3m-mn2", title: "Making Change", description: "Pay $10, item is $6.80.", starsToUnlock: 0 },
+      { id: "p3m-mn3", title: "Comparing Prices", description: "Which is the better deal?", starsToUnlock: 8 },
+    ] },
+];
+
+const P3_ENGLISH_TOPICS = [
+  { id: "p3-tenses", title: "Continuous Tense", icon: "⏪", description: "She is running. He was reading.",
+    modules: [
+      { id: "p3e-tn1", title: "Present Continuous", description: "She is running.", starsToUnlock: 0 },
+      { id: "p3e-tn2", title: "Past Continuous", description: "He was reading.", starsToUnlock: 0 },
+      { id: "p3e-tn3", title: "Mixed Tenses", description: "Present, past, or continuous?", starsToUnlock: 8 },
+    ] },
+  { id: "p3-vocabulary", title: "Vocabulary", icon: "📚", description: "Synonyms, antonyms, and prepositions!",
+    modules: [
+      { id: "p3e-vc1", title: "Synonyms", description: "Happy = glad. Big = large.", starsToUnlock: 0 },
+      { id: "p3e-vc2", title: "Antonyms", description: "Hot ↔ cold. Big ↔ small.", starsToUnlock: 0 },
+      { id: "p3e-vc3", title: "Prepositions", description: "Under, on, in, behind.", starsToUnlock: 8 },
+    ] },
+  { id: "p3-comprehension", title: "Comprehension", icon: "📖", description: "Longer passages with deeper questions!",
+    modules: [
+      { id: "p3e-cp1", title: "The Science Fair", description: "Read and answer!", starsToUnlock: 0 },
+      { id: "p3e-cp2", title: "A Visit to the Zoo", description: "Read and answer!", starsToUnlock: 0 },
+      { id: "p3e-cp3", title: "The New Student", description: "Read and answer!", starsToUnlock: 6 },
+      { id: "p3e-cp4", title: "The Missing Lunchbox", description: "Read and answer!", starsToUnlock: 12 },
+    ] },
+];
+
+const P3_SCIENCE_TOPICS = [
+  { id: "p3-diversity", title: "Diversity", icon: "🌍", description: "Classifying living things and adaptations!",
+    modules: [
+      { id: "p3s-dv1", title: "Classifying Living Things", description: "Mammals, birds, fungi.", starsToUnlock: 0, hasIntro: true },
+      { id: "p3s-dv2", title: "Fungi & Bacteria", description: "Mushrooms are not plants!", starsToUnlock: 0 },
+      { id: "p3s-dv3", title: "Adaptations", description: "Cactus stores water.", starsToUnlock: 8 },
+    ] },
+  { id: "p3-systems", title: "Body Systems", icon: "🫀", description: "How plants and bodies work!",
+    modules: [
+      { id: "p3s-sy1", title: "Plant Systems", description: "Roots, stems, and leaves.", starsToUnlock: 0, hasIntro: true },
+      { id: "p3s-sy2", title: "Human Body Systems", description: "Heart, lungs, stomach.", starsToUnlock: 0 },
+      { id: "p3s-sy3", title: "Systems Working Together", description: "Breathing gives us oxygen.", starsToUnlock: 8 },
+    ] },
+];
+
+const P3_CHINESE_TOPICS = [
+  { id: "p3-grammar", title: "语法", icon: "✏️", description: "量词、造句、的地得。",
+    modules: [
+      { id: "p3c-gr1", title: "量词", description: "一本书、一只猫。", starsToUnlock: 0 },
+      { id: "p3c-gr2", title: "造句", description: "因为……所以……", starsToUnlock: 0 },
+      { id: "p3c-gr3", title: "的地得", description: "高兴地跳起来。", starsToUnlock: 8 },
+    ] },
+  { id: "p3-reading", title: "阅读理解", icon: "📖", description: "读短文，回答问题。",
+    modules: [
+      { id: "p3c-rd1", title: "阅读理解一", description: "关于学校活动的故事。", starsToUnlock: 0 },
+      { id: "p3c-rd2", title: "阅读理解二", description: "关于大自然的故事。", starsToUnlock: 0 },
+      { id: "p3c-rd3", title: "阅读理解三", description: "关于助人的故事。", starsToUnlock: 6 },
+    ] },
+];
+
+// ============ LEVELS → SUBJECTS ============
+export const LEVELS = {
+  p1: [
+    { id: "math", title: "Mathematics", icon: "🔢", description: "Numbers, shapes, time, and more!", topics: MATH_TOPICS },
+    { id: "english", title: "English", icon: "📖", description: "Words, grammar, reading, and phonics!", topics: ENGLISH_TOPICS },
+    { id: "science", title: "Science", icon: "🔬", description: "Living things, plants, animals, and weather!", topics: SCIENCE_TOPICS },
+    { id: "chinese", title: "华文", icon: "字", description: "拼音、汉字、词语、句子！", topics: CHINESE_TOPICS },
+  ],
+  p2: [
+    { id: "math", title: "Mathematics", icon: "🔢", description: "Multiplication, division, fractions, and more!", topics: P2_MATH_TOPICS },
+    { id: "english", title: "English", icon: "📖", description: "Past tense, adjectives, conjunctions, and comprehension!", topics: P2_ENGLISH_TOPICS },
+    { id: "science", title: "Science", icon: "🔬", description: "Materials, magnets, and life cycles!", topics: P2_SCIENCE_TOPICS },
+    { id: "chinese", title: "华文", icon: "字", description: "更多汉字、阅读理解！", topics: P2_CHINESE_TOPICS },
+  ],
+  p3: [
+    { id: "math", title: "Mathematics", icon: "🔢", description: "Times tables, fractions, area, perimeter, and angles!", topics: P3_MATH_TOPICS },
+    { id: "english", title: "English", icon: "📖", description: "Continuous tense, synonyms, antonyms, and comprehension!", topics: P3_ENGLISH_TOPICS },
+    { id: "science", title: "Science", icon: "🔬", description: "Diversity, adaptations, and body systems!", topics: P3_SCIENCE_TOPICS },
+    { id: "chinese", title: "华文", icon: "字", description: "量词、造句、阅读理解！", topics: P3_CHINESE_TOPICS },
+  ],
+};
+
+// Flat list of all subjects across all levels (for star counting)
+const ALL_SUBJECTS = [...LEVELS.p1, ...LEVELS.p2, ...LEVELS.p3];
+
 // ============ HELPERS ============
-export function getSubject(subjectId) {
-  return SUBJECTS.find((s) => s.id === subjectId);
+export function getSubjectsForLevel(level) {
+  return LEVELS[level] || [];
 }
 
-export function getTopic(subjectId, topicId) {
-  const subject = getSubject(subjectId);
+export function getSubject(subjectId, level) {
+  const subjects = LEVELS[level] || [];
+  return subjects.find((s) => s.id === subjectId);
+}
+
+export function getTopic(subjectId, topicId, level) {
+  const subject = getSubject(subjectId, level);
   return subject?.topics.find((t) => t.id === topicId);
 }
 
-export function getModule(subjectId, topicId, moduleId) {
-  const topic = getTopic(subjectId, topicId);
+export function getModule(subjectId, topicId, moduleId, level) {
+  const topic = getTopic(subjectId, topicId, level);
   return topic?.modules.find((m) => m.id === moduleId);
 }
 
 export function getTopicStars(topicId, moduleStars) {
-  for (const subject of SUBJECTS) {
+  for (const subject of ALL_SUBJECTS) {
     const topic = subject.topics.find((t) => t.id === topicId);
     if (topic) {
       return topic.modules.reduce((sum, mod) => sum + (moduleStars[mod.id] || 0), 0);
@@ -274,7 +477,7 @@ export function getTopicStars(topicId, moduleStars) {
 
 export function getTotalStars(moduleStars) {
   let total = 0;
-  for (const subject of SUBJECTS) {
+  for (const subject of ALL_SUBJECTS) {
     for (const topic of subject.topics) {
       for (const mod of topic.modules) {
         total += moduleStars[mod.id] || 0;

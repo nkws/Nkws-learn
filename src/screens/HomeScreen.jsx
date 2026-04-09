@@ -1,6 +1,12 @@
-import { SUBJECTS, getTotalStars } from "../utils/constants";
+import { getTotalStars } from "../utils/constants";
 
-export default function HomeScreen({ progress, onSelectSubject, onAbout }) {
+const LEVELS = [
+  { id: "p1", title: "Primary 1", subtitle: "Age 6-7", icon: "1" },
+  { id: "p2", title: "Primary 2", subtitle: "Age 7-8", icon: "2" },
+  { id: "p3", title: "Primary 3", subtitle: "Age 8-9", icon: "3" },
+];
+
+export default function HomeScreen({ progress, onSelectLevel, onAbout }) {
   const totalStars = getTotalStars(progress.moduleStars || {});
 
   return (
@@ -9,7 +15,7 @@ export default function HomeScreen({ progress, onSelectSubject, onAbout }) {
         <span className="home-mascot">🦊</span>
         <div>
           <h1 className="home-heading">Koko's Classroom</h1>
-          <p className="home-sub">Pick a subject to learn!</p>
+          <p className="home-sub">Pick your level!</p>
         </div>
       </div>
 
@@ -20,17 +26,16 @@ export default function HomeScreen({ progress, onSelectSubject, onAbout }) {
       )}
 
       <div className="topic-list">
-        {SUBJECTS.map((subject) => (
+        {LEVELS.map((level) => (
           <button
-            key={subject.id}
+            key={level.id}
             className="topic-card"
-            onClick={() => onSelectSubject(subject.id)}
+            onClick={() => onSelectLevel(level.id)}
           >
-            <span className="topic-icon">{subject.icon}</span>
+            <span className="level-icon">{level.icon}</span>
             <div className="topic-info">
-              <h2 className="topic-title">{subject.title}</h2>
-              <p className="topic-desc">{subject.description}</p>
-              <span className="topic-stars">{subject.topics.length} topics</span>
+              <h2 className="topic-title">{level.title}</h2>
+              <p className="topic-desc">{level.subtitle}</p>
             </div>
             <span className="topic-arrow">›</span>
           </button>

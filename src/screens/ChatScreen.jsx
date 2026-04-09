@@ -12,6 +12,7 @@ export default function ChatScreen({
   subjectId,
   topicId,
   moduleId,
+  level,
   progress,
   setProgress,
   moduleVideos,
@@ -32,7 +33,7 @@ export default function ChatScreen({
   const ttsLang = subjectId === "chinese" ? "zh" : "en";
   const { speak } = useTTS(ttsLang);
 
-  const mod = getModule(subjectId, topicId, moduleId);
+  const mod = getModule(subjectId, topicId, moduleId, level);
   const videoId = moduleVideos[moduleId] || null;
   const intro = getIntro(moduleId);
   const totalQ = totalQuestionsRef.current;

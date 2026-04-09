@@ -6,6 +6,7 @@ import { extractVideoId } from "../utils/videos";
 export default function ModuleListScreen({
   subjectId,
   topicId,
+  level,
   progress,
   moduleVideos,
   onModuleVideosChange,
@@ -18,7 +19,7 @@ export default function ModuleListScreen({
   const [error, setError] = useState("");
   const [confirmModule, setConfirmModule] = useState(null);
 
-  const topic = getTopic(subjectId, topicId);
+  const topic = getTopic(subjectId, topicId, level);
   const topicStars = getTopicStars(topicId, progress.moduleStars || {});
   const completedModules = progress.completedModules || [];
 

@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import HomeScreen from "./screens/HomeScreen";
+import SubjectScreen from "./screens/SubjectScreen";
 import TopicListScreen from "./screens/TopicListScreen";
 import ModuleListScreen from "./screens/ModuleListScreen";
 import ChatScreen from "./screens/ChatScreen";
@@ -12,6 +13,7 @@ import {
 
 export default function App() {
   const [screen, setScreen] = useState("home");
+  const [activeLevel, setActiveLevel] = useState(null);
   const [activeSubject, setActiveSubject] = useState(null);
   const [activeTopic, setActiveTopic] = useState(null);
   const [activeModule, setActiveModule] = useState(null);
@@ -21,16 +23,6 @@ export default function App() {
 
   const handleModuleVideosChange = useCallback((v) => { setModuleVideos(v); saveModuleVideos(v); }, []);
   const handleTopicVideosChange = useCallback((v) => { setTopicVideos(v); saveTopicVideos(v); }, []);
-
-  const handleSelectSubject = useCallback((subjectId) => {
-    setActiveSubject(subjectId);
-    setScreen("topics");
-  }, []);
-
-  const handleSelectTopic = useCallback((topicId) => {
-    setActiveTopic(topicId);
-    setScreen("modules");
-  }, []);
 
   const handleStartModule = useCallback((moduleId) => {
     setActiveModule(moduleId);
@@ -54,12 +46,13 @@ export default function App() {
     return <AboutScreen onBack={() => setScreen("home")} />;
   }
 
-  if (screen === "chat" && activeModule && activeTopic && activeSubject) {
+  if (screen === "chat" && activeModule && activeTopic && activeSubject && activeLevel) {
     return (
       <ChatScreen
         subjectId={activeSubject}
         topicId={activeTopic}
         moduleId={activeModule}
+        level={activeLevel}
         progress={progress}
         setProgress={setProgress}
         moduleVideos={moduleVideos}
@@ -68,11 +61,12 @@ export default function App() {
     );
   }
 
-  if (screen === "modules" && activeTopic && activeSubject) {
+  if (screen === "modules" && activeTopic && activeSubject && activeLevel) {
     return (
       <ModuleListScreen
         subjectId={activeSubject}
         topicId={activeTopic}
+        level={activeLevel}
         progress={progress}
         moduleVideos={moduleVideos}
         onModuleVideosChange={handleModuleVideosChange}
@@ -83,14 +77,26 @@ export default function App() {
     );
   }
 
-  if (screen === "topics" && activeSubject) {
+  if (screen === "topics" && activeSubject && activeLevel) {
     return (
       <TopicListScreen
         subjectId={activeSubject}
+        level={activeLevel}
         progress={progress}
         topicVideos={topicVideos}
         onTopicVideosChange={handleTopicVideosChange}
-        onSelectTopic={handleSelectTopic}
+        onSelectTopic={(topicId) => { setActiveTopic(topicId); setScreen("modules"); }}
+        onBack={() => setScreen("subjects")}
+      />
+    );
+  }
+
+  if (screen === "subjects" && activeLevel) {
+    return (
+      <SubjectScreen
+        level={activeLevel}
+        progress={progress}
+        onSelectSubject={(subjectId) => { setActiveSubject(subjectId); setScreen("topics"); }}
         onBack={() => setScreen("home")}
       />
     );
@@ -99,7 +105,7 @@ export default function App() {
   return (
     <HomeScreen
       progress={progress}
-      onSelectSubject={handleSelectSubject}
+      onSelectLevel={(level) => { setActiveLevel(level); setScreen("subjects"); }}
       onAbout={() => setScreen("about")}
     />
   );

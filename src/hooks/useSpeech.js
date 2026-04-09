@@ -77,7 +77,7 @@ export function useTTS(lang = "en") {
   const makeUtterance = useCallback((text) => {
     const utterance = new SpeechSynthesisUtterance(text);
     const isZh = langRef.current === "zh";
-    utterance.rate = isZh ? 0.85 : 1.0;
+    utterance.rate = isZh ? 0.8 : 0.9;
     utterance.pitch = isZh ? 1.0 : 1.3;
     if (voiceRef.current) {
       utterance.voice = voiceRef.current;
@@ -105,8 +105,8 @@ export function useTTS(lang = "en") {
       }
 
       if (choices && choices.length > 0) {
-        const labels = ["A", "B", "C", "D", "E"];
-        // Pause before options
+        // Spoken labels — avoids TTS saying "Capital A"
+        const labels = ["ay", "bee", "see", "dee", "ee"];
         const pause = new SpeechSynthesisUtterance(" ");
         pause.volume = 0;
         pause.rate = 0.1;
@@ -114,12 +114,10 @@ export function useTTS(lang = "en") {
 
         synth.speak(makeUtterance(isZh ? "选项是" : "Your options are"));
         choices.forEach((choice, i) => {
-          // Pause between each option
           const gap = new SpeechSynthesisUtterance(" ");
           gap.volume = 0;
           gap.rate = 0.1;
           synth.speak(gap);
-          // Speak label and choice as separate utterances for a natural gap
           synth.speak(makeUtterance(labels[i]));
           synth.speak(makeUtterance(choice));
         });
