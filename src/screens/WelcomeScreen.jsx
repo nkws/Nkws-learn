@@ -106,14 +106,14 @@ export default function WelcomeScreen({
                   </div>
                 ) : (
                   <button
-                    className="module-video-btn"
+                    className={`module-video-btn ${hasVideo ? "" : "no-video"}`}
                     onClick={() => {
                       setEditingModule(mod.id);
                       setVideoInput(moduleVideos[mod.id] || "");
                       setError("");
                     }}
                   >
-                    {hasVideo ? "🎬 Reward video set" : "🎬 Set reward video"}
+                    {hasVideo ? "✅ Video ready — tap to change" : "⚠️ No video — tap to add"}
                   </button>
                 )}
               </div>
