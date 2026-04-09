@@ -386,6 +386,41 @@ button {
   margin: 8px 0;
 }
 
+.speak-btn {
+  display: inline-block;
+  background: none;
+  font-size: 18px;
+  padding: 2px 4px;
+  margin-left: 6px;
+  opacity: 0.5;
+  vertical-align: middle;
+  transition: opacity 0.15s;
+}
+
+.speak-btn:active {
+  opacity: 1;
+}
+
+/* ============ MODULE DONE ============ */
+.module-done-bar {
+  padding: 16px;
+  padding-bottom: calc(16px + var(--safe-bottom));
+  background: white;
+  border-top: 2px solid #FFF3E0;
+  display: flex;
+  justify-content: center;
+}
+
+.confirm-cancel {
+  background: none;
+  color: #999;
+  font-size: 14px;
+  font-weight: 700;
+  margin-top: 12px;
+  padding: 8px;
+  text-decoration: underline;
+}
+
 /* ============ MULTIPLE CHOICE ============ */
 .choice-buttons {
   display: flex;

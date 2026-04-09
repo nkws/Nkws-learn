@@ -12,6 +12,7 @@ export default function WelcomeScreen({
   const [editingModule, setEditingModule] = useState(null);
   const [videoInput, setVideoInput] = useState("");
   const [error, setError] = useState("");
+  const [confirmModule, setConfirmModule] = useState(null);
 
   const handleSaveVideo = (moduleId) => {
     if (!videoInput.trim()) {
@@ -29,6 +30,15 @@ export default function WelcomeScreen({
     setEditingModule(null);
     setVideoInput("");
     setError("");
+  };
+
+  const handlePlay = (moduleId) => {
+    const hasVideo = !!moduleVideos[moduleId];
+    if (!hasVideo) {
+      setConfirmModule(moduleId);
+    } else {
+      onStartModule(moduleId);
+    }
   };
 
   return (
@@ -72,7 +82,6 @@ export default function WelcomeScreen({
                 </div>
                 <p className="module-desc">{mod.description}</p>
 
-                {/* Video setting for parent */}
                 {editingModule === mod.id ? (
                   <div className="module-video-edit">
                     <input
@@ -116,7 +125,7 @@ export default function WelcomeScreen({
               ) : (
                 <button
                   className="module-play-btn"
-                  onClick={() => onStartModule(mod.id)}
+                  onClick={() => handlePlay(mod.id)}
                 >
                   ▶
                 </button>
@@ -125,6 +134,31 @@ export default function WelcomeScreen({
           );
         })}
       </div>
+
+      {/* No-video warning */}
+      {confirmModule !== null && (
+        <div className="reward-overlay" onClick={() => setConfirmModule(null)}>
+          <div className="reward-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="reward-emojis">⚠️</div>
+            <h2 className="reward-title">No Reward Video</h2>
+            <p className="reward-subtitle">
+              No video has been set for this module. Keanu won't get a video reward at the end. You can set one using the "Set reward video" button.
+            </p>
+            <button
+              className="btn-primary reward-dismiss"
+              onClick={() => { setConfirmModule(null); onStartModule(confirmModule); }}
+            >
+              Start Anyway
+            </button>
+            <button
+              className="confirm-cancel"
+              onClick={() => setConfirmModule(null)}
+            >
+              Go Back
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -104,5 +104,14 @@ export function useTTS() {
     }
   }, []);
 
-  return { speak };
+  // Call this during a user gesture to unlock speech on iOS
+  const unlock = useCallback(() => {
+    const synth = window.speechSynthesis;
+    if (!synth) return;
+    const u = new SpeechSynthesisUtterance("");
+    u.volume = 0;
+    synth.speak(u);
+  }, []);
+
+  return { speak, unlock };
 }

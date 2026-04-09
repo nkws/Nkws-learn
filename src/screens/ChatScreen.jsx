@@ -3,13 +3,9 @@ import ChatBubble from "../components/ChatBubble";
 import ChoiceButtons from "../components/ChoiceButtons";
 import RewardModal from "../components/RewardModal";
 import { useTTS } from "../hooks/useSpeech";
-import { MODULES, STARS_PER_REWARD } from "../utils/constants";
+import { MODULES } from "../utils/constants";
 import { saveProgress } from "../utils/progress";
-import {
-  getGreeting,
-  evaluateAndRespond,
-  generateQuestion,
-} from "../utils/kokoEngine";
+import { buildModuleQuestions, getPraise, getHint } from "../utils/kokoEngine";
 
 export default function ChatScreen({
   moduleId,
@@ -19,83 +15,85 @@ export default function ChatScreen({
   onBack,
 }) {
   const [messages, setMessages] = useState([]);
-  const [choices, setChoices] = useState([]);
-  const [correctAnswer, setCorrectAnswer] = useState("");
+  const [questionIndex, setQuestionIndex] = useState(0);
+  const [questions, setQuestions] = useState([]);
   const [showReward, setShowReward] = useState(false);
+  const [moduleComplete, setModuleComplete] = useState(false);
   const [answering, setAnswering] = useState(false);
-  const currentQuestionRef = useRef(null);
   const chatEndRef = useRef(null);
   const { speak } = useTTS();
-  const initializedRef = useRef(false);
 
   const mod = MODULES.find((m) => m.id === moduleId);
-  const modStars = progress.moduleStars[moduleId] || 0;
   const videoId = moduleVideos[moduleId] || null;
 
-  const scrollToBottom = useCallback(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []);
+  useEffect(() => {
+    const qs = buildModuleQuestions(moduleId);
+    setQuestions(qs);
+    if (qs.length > 0) {
+      const greeting = `Let's learn about ${mod?.title}! Here's your first question. ${qs[0].question}`;
+      setMessages([{ role: "assistant", content: greeting }]);
+    }
+  }, [moduleId, mod?.title]);
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages, scrollToBottom]);
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const totalCount = questions.length;
 
   const handleChoice = useCallback(
     (choice) => {
+      const currentQ = questions[questionIndex];
+      if (!currentQ || answering) return;
       setAnswering(true);
+
       const userMsg = { role: "user", content: choice };
-      setMessages((prev) => [...prev, userMsg]);
+      const correct = choice === currentQ.answer;
 
-      const currentQ = currentQuestionRef.current;
-      if (!currentQ) return;
+      let responseText;
+      let nextIdx = questionIndex + 1;
+      const isLast = nextIdx >= totalCount;
 
-      const result = evaluateAndRespond(choice, currentQ, moduleId);
+      if (correct) {
+        if (isLast) {
+          responseText = `${getPraise()} You finished the ${mod?.title} module! Amazing work, Keanu!`;
+        } else {
+          responseText = `${getPraise()} ${questions[nextIdx].question}`;
+        }
 
-      const assistantMsg = { role: "assistant", content: result.response };
-      setMessages((prev) => [...prev, assistantMsg]);
-      speak(result.response);
-
-      currentQuestionRef.current = result.nextQuestion;
-      setChoices(result.nextQuestion.choices);
-      setCorrectAnswer(result.nextQuestion.answer);
-      setAnswering(false);
-
-      if (result.correct) {
         setProgress((prev) => {
           const newModStars = (prev.moduleStars[moduleId] || 0) + 1;
-          const newTotalStars = prev.stars + 1;
           const updated = {
             ...prev,
-            stars: newTotalStars,
+            stars: prev.stars + 1,
             moduleStars: { ...prev.moduleStars, [moduleId]: newModStars },
           };
           saveProgress(updated);
-
-          if (newModStars % STARS_PER_REWARD === 0 && videoId) {
-            setTimeout(() => setShowReward(true), 800);
-          }
-
           return updated;
         });
+      } else {
+        if (isLast) {
+          responseText = `${getHint(currentQ.answer)} That was the last question! Well done for trying, Keanu!`;
+        } else {
+          responseText = `${getHint(currentQ.answer)} Let's try the next one! ${questions[nextIdx].question}`;
+        }
       }
+
+      if (isLast) {
+        setModuleComplete(true);
+        if (videoId) {
+          setTimeout(() => setShowReward(true), 1000);
+        }
+      }
+
+      setQuestionIndex(nextIdx);
+      setMessages((prev) => [...prev, userMsg, { role: "assistant", content: responseText }]);
+      setAnswering(false);
     },
-    [moduleId, videoId, speak, setProgress]
+    [questions, questionIndex, totalCount, moduleId, mod?.title, videoId, setProgress, answering]
   );
 
-  // Initial greeting + first question
-  useEffect(() => {
-    if (initializedRef.current) return;
-    initializedRef.current = true;
-
-    const firstQ = generateQuestion(moduleId);
-    currentQuestionRef.current = firstQ;
-    setChoices(firstQ.choices);
-    setCorrectAnswer(firstQ.answer);
-
-    const greeting = `${getGreeting(moduleId, mod?.title)} ${firstQ.question}`;
-    setMessages([{ role: "assistant", content: greeting }]);
-    speak(greeting);
-  }, [moduleId, mod?.title, speak]);
+  const nextQ = questions[questionIndex] || null;
 
   return (
     <div className="screen chat-screen">
@@ -108,27 +106,36 @@ export default function ChatScreen({
       </div>
 
       <div className="chat-progress-bar">
-        <span className="chat-stars">⭐ {modStars} in this module</span>
-        {videoId && (
-          <span className="chat-reward-hint">
-            {STARS_PER_REWARD - (modStars % STARS_PER_REWARD)} to next 🎬
-          </span>
-        )}
+        <span className="chat-stars">
+          Question {Math.min(questionIndex + 1, totalCount)} of {totalCount}
+        </span>
+        <span className="chat-reward-hint">
+          ⭐ {progress.moduleStars[moduleId] || 0}
+        </span>
       </div>
 
       <div className="chat-messages">
         {messages.map((msg, i) => (
-          <ChatBubble key={i} message={msg} />
+          <ChatBubble key={i} message={msg} onSpeak={speak} />
         ))}
         <div ref={chatEndRef} />
       </div>
 
-      <ChoiceButtons
-        choices={choices}
-        correctAnswer={correctAnswer}
-        onSelect={handleChoice}
-        disabled={answering}
-      />
+      {moduleComplete ? (
+        <div className="module-done-bar">
+          <button className="btn-primary" onClick={onBack}>
+            Back to Modules
+          </button>
+        </div>
+      ) : nextQ ? (
+        <ChoiceButtons
+          key={questionIndex}
+          choices={nextQ.choices}
+          correctAnswer={nextQ.answer}
+          onSelect={handleChoice}
+          disabled={answering}
+        />
+      ) : null}
 
       {showReward && (
         <RewardModal

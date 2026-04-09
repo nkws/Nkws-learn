@@ -1,11 +1,3 @@
-function randomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function pick(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
 function formatTime(h, m) {
   return `${h}:${String(m).padStart(2, "0")}`;
 }
@@ -27,192 +19,223 @@ function shuffle(arr) {
   return a;
 }
 
-function generateChoices(correctAnswer, hours, minutes, moduleId) {
-  const wrongs = new Set();
-
-  if (moduleId <= 3) {
-    while (wrongs.size < 2) {
-      const fakeH = randomInt(1, 12);
-      if (fakeH === hours) continue;
-      wrongs.add(describeTime(fakeH, minutes));
-    }
-  } else if (moduleId === 4) {
-    const options = [15, 45];
-    while (wrongs.size < 2) {
-      const fakeH = randomInt(1, 12);
-      const fakeM = pick(options);
-      const desc = describeTime(fakeH, fakeM);
-      if (desc === correctAnswer) continue;
-      wrongs.add(desc);
-    }
-  } else if (moduleId === 5) {
-    const fiveMinOptions = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 0];
-    while (wrongs.size < 2) {
-      const fakeH = pick([hours, randomInt(1, 12)]);
-      const fakeM = pick(fiveMinOptions);
-      const desc = describeTime(fakeH, fakeM);
-      if (desc === correctAnswer) continue;
-      wrongs.add(desc);
-    }
-  } else {
-    while (wrongs.size < 2) {
-      const offset = pick([-2, -1, 1, 2]);
-      const fakeH = hours + offset;
-      if (fakeH < 1 || fakeH > 12) continue;
-      const desc = describeTime(fakeH, minutes);
-      if (desc === correctAnswer) continue;
-      wrongs.add(desc);
-    }
-  }
-
-  return shuffle([correctAnswer, ...wrongs]);
+function pick(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
 }
 
-// Module 1: Clock Face — teaching questions about the clock itself
-const CLOCK_FACE_QUESTIONS = [
-  {
-    question: "How many numbers are on a clock face?",
-    answer: "12",
-    choices: ["10", "12", "24"],
-    hours: 12, minutes: 0,
-  },
-  {
-    question: "Which hand is shorter, the hour hand or the minute hand?",
-    answer: "Hour hand",
-    choices: ["Hour hand", "Minute hand", "They're the same"],
-    hours: 3, minutes: 0,
-  },
-  {
-    question: "The short hand tells us the...?",
-    answer: "Hour",
-    choices: ["Hour", "Minutes", "Seconds"],
-    hours: 9, minutes: 0,
-  },
-  {
-    question: "The long hand tells us the...?",
-    answer: "Minutes",
-    choices: ["Hour", "Minutes", "Day"],
-    hours: 6, minutes: 30,
-  },
-  {
-    question: "What number is at the very top of the clock?",
-    answer: "12",
-    choices: ["1", "12", "6"],
-    hours: 12, minutes: 0,
-  },
-  {
-    question: "What number is at the very bottom of the clock?",
-    answer: "6",
-    choices: ["3", "6", "9"],
-    hours: 6, minutes: 0,
-  },
-  {
-    question: "When the long hand points to 12, it means...?",
-    answer: "Exactly o'clock",
-    choices: ["Exactly o'clock", "Half past", "Quarter past"],
-    hours: 3, minutes: 0,
-  },
-  {
-    question: "When the long hand points to 6, it means...?",
-    answer: "Half past",
-    choices: ["Exactly o'clock", "Half past", "Quarter to"],
-    hours: 8, minutes: 30,
-  },
-];
-
-export function generateQuestion(moduleId) {
-  if (moduleId === 1) {
-    const q = pick(CLOCK_FACE_QUESTIONS);
-    return {
-      question: `[CLOCK:${formatTime(q.hours, q.minutes)}] ${q.question}`,
-      answer: q.answer,
-      hours: q.hours,
-      minutes: q.minutes,
-      choices: shuffle([...q.choices]),
-    };
+// Build wrong choices that are plausible for the module
+function wrongChoices(correct, pool, count = 2) {
+  const wrongs = [];
+  const shuffled = shuffle(pool.filter((c) => c !== correct));
+  for (let i = 0; i < count && i < shuffled.length; i++) {
+    wrongs.push(shuffled[i]);
   }
-
-  const context = pick([
-    "Time to check the clock!",
-    "Look at the clock on the wall!",
-    "Koko checks the time!",
-    "The school bell is ringing!",
-    "Let's see what time it is!",
-  ]);
-
-  let hours, minutes, question, answer;
-
-  switch (moduleId) {
-    case 2: {
-      hours = randomInt(1, 12);
-      minutes = 0;
-      question = `${context} [CLOCK:${formatTime(hours, minutes)}] What time does this clock show?`;
-      answer = `${hours} o'clock`;
-      break;
-    }
-    case 3: {
-      hours = randomInt(1, 12);
-      minutes = 30;
-      question = `${context} [CLOCK:${formatTime(hours, minutes)}] Can you tell me what time this is?`;
-      answer = `half past ${hours}`;
-      break;
-    }
-    case 4: {
-      hours = randomInt(1, 12);
-      minutes = pick([15, 45]);
-      question = `${context} [CLOCK:${formatTime(hours, minutes)}] What time is it?`;
-      answer = describeTime(hours, minutes);
-      break;
-    }
-    case 5: {
-      hours = randomInt(1, 12);
-      minutes = pick([5, 10, 20, 25, 35, 40, 50, 55]);
-      question = `${context} [CLOCK:${formatTime(hours, minutes)}] What time does this clock show?`;
-      answer = describeTime(hours, minutes);
-      break;
-    }
-    case 6: {
-      hours = randomInt(1, 10);
-      const addHours = pick([1, 2, 3]);
-      minutes = pick([0, 30]);
-      const resultH = hours + addHours;
-      const resultM = minutes;
-      const scenario = pick([
-        `It's ${describeTime(hours, minutes)} now. Cartoon starts in ${addHours} hour${addHours > 1 ? "s" : ""}!`,
-        `School ends at ${describeTime(hours, minutes)}. Keanu plays for ${addHours} hour${addHours > 1 ? "s" : ""} after that!`,
-        `It's ${describeTime(hours, minutes)}. Dinner is in ${addHours} hour${addHours > 1 ? "s" : ""}!`,
-      ]);
-      question = `${scenario} [CLOCK:${formatTime(hours, minutes)}] What time will it be?`;
-      answer = describeTime(resultH, resultM);
-      const choices = generateChoices(answer, resultH, resultM, moduleId);
-      return { question, answer, hours, minutes, choices };
-    }
-    case 7: {
-      const resultH = randomInt(2, 11);
-      const subHours = pick([1, 2]);
-      const mins = pick([0, 30]);
-      hours = resultH + subHours;
-      const scenario = pick([
-        `Recess ends at ${describeTime(hours, mins)}. It started ${subHours} hour${subHours > 1 ? "s" : ""} ago!`,
-        `Bedtime is at ${describeTime(hours, mins)}. ${subHours} hour${subHours > 1 ? "s" : ""} ago Keanu was watching TV!`,
-        `It's ${describeTime(hours, mins)} now. ${subHours} hour${subHours > 1 ? "s" : ""} ago Keanu left school!`,
-      ]);
-      question = `${scenario} [CLOCK:${formatTime(hours, mins)}] What time was it?`;
-      answer = describeTime(resultH, mins);
-      const choices = generateChoices(answer, resultH, mins, moduleId);
-      return { question, answer, hours, minutes: mins, choices };
-    }
-    default: {
-      hours = randomInt(1, 12);
-      minutes = 0;
-      question = `[CLOCK:${formatTime(hours, minutes)}] What time is this?`;
-      answer = `${hours} o'clock`;
-    }
-  }
-
-  const choices = generateChoices(answer, hours, minutes, moduleId);
-  return { question, answer, hours, minutes, choices };
+  return wrongs;
 }
+
+// ============ MODULE QUESTION BANKS ============
+
+// Module 1: Clock Face Basics (8 questions)
+function buildModule1() {
+  return [
+    { q: "How many numbers are on a clock face?", a: "12", choices: ["10", "12", "24"], h: 12, m: 0 },
+    { q: "Which hand is shorter?", a: "Hour hand", choices: ["Hour hand", "Minute hand", "They're the same"], h: 3, m: 0 },
+    { q: "The short hand tells us the...?", a: "Hour", choices: ["Hour", "Minutes", "Seconds"], h: 9, m: 0 },
+    { q: "The long hand tells us the...?", a: "Minutes", choices: ["Hour", "Minutes", "Day"], h: 6, m: 30 },
+    { q: "What number is at the very top of the clock?", a: "12", choices: ["1", "12", "6"], h: 12, m: 0 },
+    { q: "What number is at the very bottom of the clock?", a: "6", choices: ["3", "6", "9"], h: 6, m: 0 },
+    { q: "When the long hand points to 12, it means...?", a: "Exactly o'clock", choices: ["Exactly o'clock", "Half past", "Quarter past"], h: 3, m: 0 },
+    { q: "When the long hand points to 6, it means...?", a: "Half past", choices: ["Exactly o'clock", "Half past", "Quarter to"], h: 8, m: 30 },
+    { q: "What number comes after 12 on a clock?", a: "1", choices: ["1", "13", "0"], h: 12, m: 0 },
+    { q: "How many hands does a clock have?", a: "2", choices: ["1", "2", "3"], h: 10, m: 10 },
+  ].map((item) => ({
+    question: `[CLOCK:${formatTime(item.h, item.m)}] ${item.q}`,
+    answer: item.a,
+    choices: shuffle([...item.choices]),
+    hours: item.h,
+    minutes: item.m,
+  }));
+}
+
+// Module 2: O'Clock (12 questions — one per hour)
+function buildModule2() {
+  const pool = [];
+  for (let h = 1; h <= 12; h++) {
+    pool.push(`${h} o'clock`);
+  }
+  return shuffle(
+    Array.from({ length: 12 }, (_, i) => {
+      const h = i + 1;
+      const answer = `${h} o'clock`;
+      return {
+        question: `[CLOCK:${formatTime(h, 0)}] What time does this clock show?`,
+        answer,
+        choices: shuffle([answer, ...wrongChoices(answer, pool)]),
+        hours: h,
+        minutes: 0,
+      };
+    })
+  );
+}
+
+// Module 3: Half Past (12 questions)
+function buildModule3() {
+  const pool = [];
+  for (let h = 1; h <= 12; h++) {
+    pool.push(`half past ${h}`);
+  }
+  return shuffle(
+    Array.from({ length: 12 }, (_, i) => {
+      const h = i + 1;
+      const answer = `half past ${h}`;
+      return {
+        question: `[CLOCK:${formatTime(h, 30)}] What time does this clock show?`,
+        answer,
+        choices: shuffle([answer, ...wrongChoices(answer, pool)]),
+        hours: h,
+        minutes: 30,
+      };
+    })
+  );
+}
+
+// Module 4: Quarter Past & Quarter To (12 questions — 6 quarter past, 6 quarter to)
+function buildModule4() {
+  const allChoices = [];
+  for (let h = 1; h <= 12; h++) {
+    allChoices.push(`quarter past ${h}`);
+    allChoices.push(`quarter to ${h}`);
+  }
+  const questions = [];
+  // 6 quarter past
+  const qpHours = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]).slice(0, 6);
+  for (const h of qpHours) {
+    const answer = `quarter past ${h}`;
+    questions.push({
+      question: `[CLOCK:${formatTime(h, 15)}] What time does this clock show?`,
+      answer,
+      choices: shuffle([answer, ...wrongChoices(answer, allChoices)]),
+      hours: h,
+      minutes: 15,
+    });
+  }
+  // 6 quarter to
+  const qtHours = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]).slice(0, 6);
+  for (const h of qtHours) {
+    const nextH = h === 12 ? 1 : h + 1;
+    const answer = `quarter to ${nextH}`;
+    questions.push({
+      question: `[CLOCK:${formatTime(h, 45)}] What time does this clock show?`,
+      answer,
+      choices: shuffle([answer, ...wrongChoices(answer, allChoices)]),
+      hours: h,
+      minutes: 45,
+    });
+  }
+  return shuffle(questions);
+}
+
+// Module 5: Five-Minute Intervals (12 questions)
+function buildModule5() {
+  const fiveMinValues = [5, 10, 20, 25, 35, 40, 50, 55];
+  const allChoices = [];
+  for (let h = 1; h <= 12; h++) {
+    for (const m of fiveMinValues) {
+      allChoices.push(describeTime(h, m));
+    }
+  }
+  const picked = shuffle(fiveMinValues).slice(0, 12);
+  const hours = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+  return shuffle(
+    picked.map((m, i) => {
+      const h = hours[i % 12];
+      const answer = describeTime(h, m);
+      return {
+        question: `[CLOCK:${formatTime(h, m)}] What time does this clock show?`,
+        answer,
+        choices: shuffle([answer, ...wrongChoices(answer, allChoices)]),
+        hours: h,
+        minutes: m,
+      };
+    })
+  );
+}
+
+// Module 6: Time Addition (10 questions)
+function buildModule6() {
+  const scenarios = [
+    { h: 2, m: 0, add: 1, ctx: "It's 2 o'clock. Cartoon starts in 1 hour!" },
+    { h: 3, m: 0, add: 2, ctx: "It's 3 o'clock. Dinner is in 2 hours!" },
+    { h: 1, m: 30, add: 1, ctx: "It's half past 1. School ends in 1 hour!" },
+    { h: 4, m: 0, add: 3, ctx: "It's 4 o'clock. Bedtime is in 3 hours!" },
+    { h: 7, m: 0, add: 2, ctx: "It's 7 o'clock. The movie starts in 2 hours!" },
+    { h: 5, m: 30, add: 2, ctx: "It's half past 5. Dad comes home in 2 hours!" },
+    { h: 9, m: 0, add: 1, ctx: "It's 9 o'clock. Recess is in 1 hour!" },
+    { h: 6, m: 0, add: 3, ctx: "It's 6 o'clock. Bedtime is in 3 hours!" },
+    { h: 8, m: 30, add: 1, ctx: "It's half past 8. The show starts in 1 hour!" },
+    { h: 10, m: 0, add: 2, ctx: "It's 10 o'clock. Lunch is in 2 hours!" },
+  ];
+  const allAnswers = scenarios.map((s) => describeTime(s.h + s.add, s.m));
+  return shuffle(
+    scenarios.map((s) => {
+      const answer = describeTime(s.h + s.add, s.m);
+      return {
+        question: `${s.ctx} [CLOCK:${formatTime(s.h, s.m)}] What time will it be?`,
+        answer,
+        choices: shuffle([answer, ...wrongChoices(answer, allAnswers)]),
+        hours: s.h,
+        minutes: s.m,
+      };
+    })
+  );
+}
+
+// Module 7: Time Subtraction (10 questions)
+function buildModule7() {
+  const scenarios = [
+    { h: 5, m: 0, sub: 1, ctx: "It's 5 o'clock. 1 hour ago Keanu was playing!" },
+    { h: 8, m: 0, sub: 2, ctx: "It's 8 o'clock. 2 hours ago Keanu had dinner!" },
+    { h: 4, m: 30, sub: 1, ctx: "It's half past 4. 1 hour ago school ended!" },
+    { h: 10, m: 0, sub: 3, ctx: "It's 10 o'clock. 3 hours ago Keanu woke up!" },
+    { h: 6, m: 0, sub: 2, ctx: "It's 6 o'clock. 2 hours ago it was recess!" },
+    { h: 9, m: 30, sub: 2, ctx: "It's half past 9. 2 hours ago Keanu was reading!" },
+    { h: 3, m: 0, sub: 1, ctx: "It's 3 o'clock. 1 hour ago Keanu had lunch!" },
+    { h: 7, m: 0, sub: 3, ctx: "It's 7 o'clock. 3 hours ago school started!" },
+    { h: 11, m: 0, sub: 2, ctx: "It's 11 o'clock. 2 hours ago the bus came!" },
+    { h: 12, m: 0, sub: 1, ctx: "It's 12 o'clock. 1 hour ago it was assembly!" },
+  ];
+  const allAnswers = scenarios.map((s) => describeTime(s.h - s.sub, s.m));
+  return shuffle(
+    scenarios.map((s) => {
+      const answer = describeTime(s.h - s.sub, s.m);
+      return {
+        question: `${s.ctx} [CLOCK:${formatTime(s.h, s.m)}] What time was it?`,
+        answer,
+        choices: shuffle([answer, ...wrongChoices(answer, allAnswers)]),
+        hours: s.h,
+        minutes: s.m,
+      };
+    })
+  );
+}
+
+// Build the full question bank for a module
+const MODULE_BUILDERS = {
+  1: buildModule1,
+  2: buildModule2,
+  3: buildModule3,
+  4: buildModule4,
+  5: buildModule5,
+  6: buildModule6,
+  7: buildModule7,
+};
+
+export function buildModuleQuestions(moduleId) {
+  const builder = MODULE_BUILDERS[moduleId];
+  return builder ? builder() : [];
+}
+
+// ============ RESPONSES ============
 
 const PRAISE = [
   "Correct! Well done!",
@@ -228,29 +251,15 @@ const PRAISE = [
 const HINTS = [
   "Hmm, not quite! Look at where the short hand is pointing. That tells us the hour!",
   "Almost! The short hand shows the hour, the long hand shows the minutes. Have another look!",
-  "Let's try again! Count the numbers the short hand is pointing to. What number is it near?",
+  "Let's try again! Count the numbers the short hand is pointing to.",
   "So close! Remember, when the long hand points to 12, it's exactly o'clock!",
   "Not quite, but that's okay! Keep looking at the hands on the clock!",
 ];
 
-export function getGreeting(moduleId, moduleTitle) {
-  return `Let's learn about ${moduleTitle}! Here's your first question.`;
+export function getPraise() {
+  return pick(PRAISE);
 }
 
-export function evaluateAndRespond(userAnswer, currentQ, moduleId) {
-  const correct = userAnswer === currentQ.answer;
-  const nextQ = generateQuestion(moduleId);
-
-  let response;
-  if (correct) {
-    response = `${pick(PRAISE)} ${nextQ.question}`;
-  } else {
-    response = `${pick(HINTS)} The answer was ${currentQ.answer}. Let's try this one! ${nextQ.question}`;
-  }
-
-  return {
-    response,
-    correct,
-    nextQuestion: nextQ,
-  };
+export function getHint(correctAnswer) {
+  return `${pick(HINTS)} The answer was ${correctAnswer}.`;
 }
