@@ -1,10 +1,12 @@
 import { useState } from "react";
 import Clock from "../components/Clock";
+import { useTTS } from "../hooks/useSpeech";
 
 export default function IntroScreen({ intro, onFinish }) {
   const [pageIndex, setPageIndex] = useState(0);
   const page = intro.pages[pageIndex];
   const isLast = pageIndex === intro.pages.length - 1;
+  const { speak } = useTTS();
 
   return (
     <div className="screen intro-screen">
@@ -24,7 +26,16 @@ export default function IntroScreen({ intro, onFinish }) {
           <div className="intro-emoji">{page.emoji}</div>
         )}
 
-        <p className="intro-text">{page.text}</p>
+        <p className="intro-text">
+          {page.text}
+          <button
+            className="speak-btn"
+            onClick={() => speak(page.text)}
+            aria-label="Read aloud"
+          >
+            🔊
+          </button>
+        </p>
       </div>
 
       <div className="intro-dots">
