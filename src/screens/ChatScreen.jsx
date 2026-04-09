@@ -95,8 +95,11 @@ export default function ChatScreen({
       let newCorrectCount = correctCount;
 
       if (correct) {
-        newCorrectCount = correctCount + 1;
-        setCorrectCount(newCorrectCount);
+        // Only count stars on first pass, not retries
+        if (!isRetryRound) {
+          newCorrectCount = correctCount + 1;
+          setCorrectCount(newCorrectCount);
+        }
 
         if (!isLast) {
           responseText = `${getPraise()} ${questions[nextIdx].question}`;
