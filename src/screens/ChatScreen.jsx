@@ -17,9 +17,13 @@ export default function ChatScreen({
   const [messages, setMessages] = useState([]);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [questions, setQuestions] = useState([]);
+  const [wrongQueue, setWrongQueue] = useState([]);
+  const [inRetryRound, setInRetryRound] = useState(false);
   const [showReward, setShowReward] = useState(false);
   const [moduleComplete, setModuleComplete] = useState(false);
   const [answering, setAnswering] = useState(false);
+  const [correctCount, setCorrectCount] = useState(0);
+  const totalQuestionsRef = useRef(0);
   const chatEndRef = useRef(null);
   const { speak } = useTTS();
 
@@ -29,6 +33,7 @@ export default function ChatScreen({
   useEffect(() => {
     const qs = buildModuleQuestions(moduleId);
     setQuestions(qs);
+    totalQuestionsRef.current = qs.length;
     if (qs.length > 0) {
       const greeting = `Let's learn about ${mod?.title}! Here's your first question. ${qs[0].question}`;
       setMessages([{ role: "assistant", content: greeting }]);
@@ -39,27 +44,25 @@ export default function ChatScreen({
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const totalCount = questions.length;
+  const currentList = inRetryRound ? wrongQueue : questions;
+  const currentQ = currentList[questionIndex] || null;
+  const totalInRound = currentList.length;
 
   const handleChoice = useCallback(
     (choice) => {
-      const currentQ = questions[questionIndex];
       if (!currentQ || answering) return;
       setAnswering(true);
 
       const userMsg = { role: "user", content: choice };
       const correct = choice === currentQ.answer;
+      const nextIdx = questionIndex + 1;
+      const isLastInRound = nextIdx >= totalInRound;
 
       let responseText;
-      let nextIdx = questionIndex + 1;
-      const isLast = nextIdx >= totalCount;
+      let nextChoices = null;
 
       if (correct) {
-        if (isLast) {
-          responseText = `${getPraise()} You finished the ${mod?.title} module! Amazing work, Keanu!`;
-        } else {
-          responseText = `${getPraise()} ${questions[nextIdx].question}`;
-        }
+        setCorrectCount((c) => c + 1);
 
         setProgress((prev) => {
           const newModStars = (prev.moduleStars[moduleId] || 0) + 1;
@@ -71,32 +74,77 @@ export default function ChatScreen({
           saveProgress(updated);
           return updated;
         });
-      } else {
-        if (isLast) {
-          responseText = `${getHint(currentQ.answer)} That was the last question! Well done for trying, Keanu!`;
+
+        if (isLastInRound) {
+          // Check if there are wrong answers to retry
+          // (from this round — we collect them via the wrongCollector below)
+          responseText = `${getPraise()}`;
+          // We'll handle end-of-round logic after updating wrongQueue
         } else {
-          responseText = `${getHint(currentQ.answer)} Let's try the next one! ${questions[nextIdx].question}`;
+          responseText = `${getPraise()} ${currentList[nextIdx].question}`;
+          nextChoices = currentList[nextIdx].choices;
+        }
+      } else {
+        // Add to retry queue
+        setWrongQueue((prev) => [...prev, currentQ]);
+
+        if (isLastInRound) {
+          responseText = `${getHint(currentQ.answer)}`;
+        } else {
+          responseText = `${getHint(currentQ.answer)} Let's try the next one! ${currentList[nextIdx].question}`;
+          nextChoices = currentList[nextIdx].choices;
         }
       }
 
-      if (isLast) {
-        setModuleComplete(true);
-        if (videoId) {
-          setTimeout(() => setShowReward(true), 1000);
-        }
+      // Handle end of round
+      if (isLastInRound) {
+        // We need to check wrongQueue AFTER this update settles.
+        // Use a callback pattern via setTimeout to let state update.
+        setQuestionIndex(0);
+
+        // Collect this round's wrongs (including possibly this question)
+        const thisWrong = !correct ? [currentQ] : [];
+
+        setWrongQueue((prev) => {
+          const allWrongs = [...prev, ...thisWrong];
+          // Remove duplicates that might have snuck in
+          const unique = allWrongs.filter(
+            (q, i, arr) => arr.findIndex((x) => x.question === q.question) === i
+          );
+
+          if (unique.length === 0) {
+            // All correct! Module complete!
+            const completeMsg = `${responseText} You got every question right! Amazing work, Keanu! You finished the ${mod?.title} module!`;
+            setMessages((prev2) => [...prev2, userMsg, { role: "assistant", content: completeMsg }]);
+            speak(completeMsg);
+            setModuleComplete(true);
+            if (videoId) {
+              setTimeout(() => setShowReward(true), 1000);
+            }
+          } else {
+            // Start retry round
+            const retryMsg = `${responseText} Let's go over the ones you missed! You have ${unique.length} question${unique.length > 1 ? "s" : ""} to try again. ${unique[0].question}`;
+            setMessages((prev2) => [...prev2, userMsg, { role: "assistant", content: retryMsg }]);
+            speak(retryMsg, unique[0].choices);
+            setInRetryRound(true);
+            setQuestionIndex(0);
+          }
+
+          // Reset wrongQueue for next retry round
+          return [];
+        });
+
+        setAnswering(false);
+        return;
       }
 
       setQuestionIndex(nextIdx);
       setMessages((prev) => [...prev, userMsg, { role: "assistant", content: responseText }]);
-      // Read response aloud, then read next question's choices
-      const nextChoices = !isLast ? questions[nextIdx]?.choices : null;
       speak(responseText, nextChoices);
       setAnswering(false);
     },
-    [questions, questionIndex, totalCount, moduleId, mod?.title, videoId, setProgress, answering]
+    [currentQ, questionIndex, totalInRound, currentList, moduleId, mod?.title, videoId, speak, setProgress, answering, inRetryRound]
   );
-
-  const nextQ = questions[questionIndex] || null;
 
   return (
     <div className="screen chat-screen">
@@ -110,10 +158,12 @@ export default function ChatScreen({
 
       <div className="chat-progress-bar">
         <span className="chat-stars">
-          Question {Math.min(questionIndex + 1, totalCount)} of {totalCount}
+          {inRetryRound
+            ? `Retry: ${Math.min(questionIndex + 1, totalInRound)} of ${totalInRound}`
+            : `Question ${Math.min(questionIndex + 1, totalInRound)} of ${totalInRound}`}
         </span>
         <span className="chat-reward-hint">
-          ⭐ {progress.moduleStars[moduleId] || 0}
+          ⭐ {correctCount} / {totalQuestionsRef.current}
         </span>
       </div>
 
@@ -136,11 +186,11 @@ export default function ChatScreen({
             Back to Modules
           </button>
         </div>
-      ) : nextQ ? (
+      ) : currentQ && !moduleComplete ? (
         <ChoiceButtons
-          key={questionIndex}
-          choices={nextQ.choices}
-          correctAnswer={nextQ.answer}
+          key={`${inRetryRound ? "r" : "q"}-${questionIndex}`}
+          choices={currentQ.choices}
+          correctAnswer={currentQ.answer}
           onSelect={handleChoice}
           disabled={answering}
         />
