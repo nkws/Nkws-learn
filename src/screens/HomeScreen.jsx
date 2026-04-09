@@ -7,16 +7,24 @@ const LEVELS = [
   { id: "p3", title: "Primary 3", subtitle: "Age 8-9", icon: "3" },
 ];
 
+const SUBJECTS_PREVIEW = ["Math", "English", "Science", "Chinese"];
+
 export default function HomeScreen({ progress, onSelectLevel, onAbout, onHowTo }) {
   const totalStars = getTotalStars(progress.moduleStars || {});
 
   return (
     <div className="screen home-screen">
-      <div className="home-header">
-        <span className="home-mascot">🦊</span>
-        <div>
-          <h1 className="home-heading">Koko's Classroom</h1>
-          <p className="home-sub">Pick your level!</p>
+      {/* Hero / Landing section */}
+      <div className="hero-section">
+        <span className="hero-mascot">🦊</span>
+        <h1 className="hero-title">Koko's Classroom</h1>
+        <p className="hero-tagline">
+          Free interactive learning for Primary 1–3, aligned to the Singapore MOE syllabus.
+        </p>
+        <div className="hero-subjects">
+          {SUBJECTS_PREVIEW.map((s) => (
+            <span key={s} className="hero-pill">{s}</span>
+          ))}
         </div>
       </div>
 
@@ -25,6 +33,8 @@ export default function HomeScreen({ progress, onSelectLevel, onAbout, onHowTo }
           <span>⭐ {totalStars} total stars</span>
         </div>
       )}
+
+      <p className="home-pick-label">Choose your level to start</p>
 
       <div className="topic-list">
         {LEVELS.map((level) => (
@@ -45,12 +55,15 @@ export default function HomeScreen({ progress, onSelectLevel, onAbout, onHowTo }
 
       <AdSlot />
 
-      <button className="about-link" onClick={onHowTo}>
-        How to Use
-      </button>
-      <button className="about-link" onClick={onAbout}>
-        About Koko's Classroom
-      </button>
+      <div className="home-links">
+        <button className="about-link" onClick={onHowTo}>
+          How to Use
+        </button>
+        <span className="home-link-dot">·</span>
+        <button className="about-link" onClick={onAbout}>
+          About
+        </button>
+      </div>
     </div>
   );
 }

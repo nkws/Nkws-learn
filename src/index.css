@@ -59,6 +59,67 @@ button {
   padding-bottom: var(--safe-bottom);
 }
 
+/* ============ HERO / LANDING ============ */
+.hero-section {
+  text-align: center;
+  padding: 8px 0 4px;
+}
+
+.hero-mascot {
+  font-size: 56px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.hero-title {
+  font-size: 30px;
+  color: var(--coral);
+  margin-bottom: 6px;
+}
+
+.hero-tagline {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+  max-width: 320px;
+  margin: 0 auto 10px;
+}
+
+.hero-subjects {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.hero-pill {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--teal);
+  background: var(--teal-light);
+  padding: 4px 12px;
+  border-radius: 12px;
+}
+
+.home-pick-label {
+  font-size: 13px;
+  color: #999;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.home-links {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.home-link-dot {
+  color: #ccc;
+  font-size: 16px;
+}
+
 /* ============ HOME SCREEN ============ */
 .home-screen {
   align-items: center;
