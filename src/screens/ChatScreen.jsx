@@ -88,6 +88,7 @@ export default function ChatScreen({
 
       setQuestionIndex(nextIdx);
       setMessages((prev) => [...prev, userMsg, { role: "assistant", content: responseText }]);
+      speak(responseText);
       setAnswering(false);
     },
     [questions, questionIndex, totalCount, moduleId, mod?.title, videoId, setProgress, answering]
@@ -116,7 +117,12 @@ export default function ChatScreen({
 
       <div className="chat-messages">
         {messages.map((msg, i) => (
-          <ChatBubble key={i} message={msg} onSpeak={speak} />
+          <ChatBubble
+            key={i}
+            message={msg}
+            showSpeakBtn={i === 0 && msg.role === "assistant"}
+            onSpeak={speak}
+          />
         ))}
         <div ref={chatEndRef} />
       </div>
