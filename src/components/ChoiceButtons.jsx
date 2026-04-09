@@ -13,9 +13,11 @@ export default function ChoiceButtons({ choices, correctAnswer, onSelect, disabl
     }, 600);
   };
 
+  const labels = ["A", "B", "C", "D", "E"];
+
   return (
     <div className="choice-buttons">
-      {choices.map((choice) => {
+      {choices.map((choice, i) => {
         let className = "choice-btn";
         if (selected !== null) {
           if (choice === correctAnswer) className += " choice-correct";
@@ -28,7 +30,7 @@ export default function ChoiceButtons({ choices, correctAnswer, onSelect, disabl
             onClick={() => handleTap(choice)}
             disabled={disabled || selected !== null}
           >
-            {choice}
+            <span className="choice-label">{labels[i]}</span> {choice}
           </button>
         );
       })}

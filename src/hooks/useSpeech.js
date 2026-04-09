@@ -95,8 +95,9 @@ export function useTTS() {
       if (choices && choices.length > 0) {
         // Brief pause then read "Your options are:"
         synth.speak(makeUtterance("Your options are."));
+        const labels = ["A", "B", "C", "D", "E"];
         choices.forEach((choice, i) => {
-          synth.speak(makeUtterance(`${i + 1}. ${choice}.`));
+          synth.speak(makeUtterance(`${labels[i]}. ${choice}.`));
         });
       }
     };

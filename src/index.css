@@ -457,6 +457,20 @@ button {
   opacity: 0.7;
 }
 
+.choice-label {
+  display: inline-block;
+  background: var(--orange);
+  color: white;
+  font-size: 14px;
+  width: 26px;
+  height: 26px;
+  line-height: 26px;
+  border-radius: 50%;
+  text-align: center;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
 .choice-correct {
   background: #C8E6C9;
   border-color: #4CAF50;
