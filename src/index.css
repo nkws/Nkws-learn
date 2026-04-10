@@ -689,6 +689,15 @@ button {
 }
 
 /* ============ ABOUT LINK ============ */
+/* ============ LOGIN ============ */
+.login-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+}
+
 /* ============ AD SLOT ============ */
 .ad-slot {
   width: 100%;
