@@ -1,3 +1,5 @@
+import { shuffle } from "../utils/helpers";
+
 function formatTime(h, m) {
   return `${h}:${String(m).padStart(2, "0")}`;
 }
@@ -9,16 +11,6 @@ function describeTime(h, m) {
   if (m === 45) return `quarter to ${h === 12 ? 1 : h + 1}`;
   return `${h}:${String(m).padStart(2, "0")}`;
 }
-
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
 // Generate nearby wrong hours (e.g. for hour 3, return [2, 4] not [9, 11])
 function nearbyHours(h, count = 2) {
   const wrongs = [];

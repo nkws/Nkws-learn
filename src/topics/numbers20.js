@@ -1,12 +1,4 @@
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
+import { shuffle } from "../utils/helpers";
 function nearby(n, min, max, count = 2) {
   const wrongs = new Set();
   const offsets = shuffle([-1, 1, -2, 2, -3, 3]);

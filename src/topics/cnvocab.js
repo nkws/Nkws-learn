@@ -1,12 +1,4 @@
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
+import { shuffle } from "../utils/helpers";
 function buildCnv1() {
   return shuffle([
     { q: "见到朋友要说什么？", a: "你好", choices: ["你好", "再见", "谢谢"] },

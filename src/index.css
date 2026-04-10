@@ -959,15 +959,6 @@ button {
   40% { transform: scale(1); }
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
-}
-
-.floating {
-  animation: float 3s ease-in-out infinite;
-}
-
 /* ============ CLOCK SVG ============ */
 .clock-svg {
   display: block;

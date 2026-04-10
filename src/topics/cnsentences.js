@@ -1,12 +1,4 @@
-function shuffle(arr) {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
+import { shuffle } from "../utils/helpers";
 function buildCns1() {
   return shuffle([
     { q: "我是_____。（你是男孩还是女孩？）", a: "男孩", choices: ["男孩", "老师", "小鸟"] },
