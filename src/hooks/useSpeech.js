@@ -113,7 +113,7 @@ export function useTTS(lang = "en") {
 
       if (choices && choices.length > 0) {
         // Spoken labels — avoids TTS saying "Capital A"
-        const labels = ["ay", "bee", "see", "dee", "ee"];
+        const labels = ["A.", "B.", "C.", "D.", "E."];
         const pause = new SpeechSynthesisUtterance(" ");
         pause.volume = 0;
         pause.rate = 0.1;
