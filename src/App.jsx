@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react";
+import { Analytics } from "@vercel/analytics/react";
 import HomeScreen from "./screens/HomeScreen";
 import SubjectScreen from "./screens/SubjectScreen";
 import TopicListScreen from "./screens/TopicListScreen";
@@ -74,76 +75,101 @@ export default function App() {
   }, [activeLevel]);
 
   if (screen === "howto") {
-    return <HowToScreen onBack={() => setScreen("home")} />;
+    return (
+      <>
+        <HowToScreen onBack={() => setScreen("home")} />
+        <Analytics />
+      </>
+    );
   }
 
   if (screen === "about") {
-    return <AboutScreen onBack={() => setScreen("home")} />;
+    return (
+      <>
+        <AboutScreen onBack={() => setScreen("home")} />
+        <Analytics />
+      </>
+    );
   }
 
   if (screen === "chat" && activeModule && activeTopic && activeSubject && activeLevel) {
     return (
-      <ChatScreen
-        subjectId={activeSubject}
-        topicId={activeTopic}
-        moduleId={activeModule}
-        level={activeLevel}
-        progress={progress}
-        setProgress={setProgress}
-        moduleVideos={moduleVideos}
-        onBack={() => setScreen("modules")}
-      />
+      <>
+        <ChatScreen
+          subjectId={activeSubject}
+          topicId={activeTopic}
+          moduleId={activeModule}
+          level={activeLevel}
+          progress={progress}
+          setProgress={setProgress}
+          moduleVideos={moduleVideos}
+          onBack={() => setScreen("modules")}
+        />
+        <Analytics />
+      </>
     );
   }
 
   if (screen === "modules" && activeTopic && activeSubject && activeLevel) {
     return (
-      <ModuleListScreen
-        subjectId={activeSubject}
-        topicId={activeTopic}
-        level={activeLevel}
-        progress={progress}
-        moduleVideos={moduleVideos}
-        onModuleVideosChange={handleModuleVideosChange}
-        onStartModule={handleStartModule}
-        onReattempt={handleReattempt}
-        onResetTopic={handleResetTopic}
-        onBack={() => setScreen("topics")}
-      />
+      <>
+        <ModuleListScreen
+          subjectId={activeSubject}
+          topicId={activeTopic}
+          level={activeLevel}
+          progress={progress}
+          moduleVideos={moduleVideos}
+          onModuleVideosChange={handleModuleVideosChange}
+          onStartModule={handleStartModule}
+          onReattempt={handleReattempt}
+          onResetTopic={handleResetTopic}
+          onBack={() => setScreen("topics")}
+        />
+        <Analytics />
+      </>
     );
   }
 
   if (screen === "topics" && activeSubject && activeLevel) {
     return (
-      <TopicListScreen
-        subjectId={activeSubject}
-        level={activeLevel}
-        progress={progress}
-        topicVideos={topicVideos}
-        onTopicVideosChange={handleTopicVideosChange}
-        onSelectTopic={(topicId) => { setActiveTopic(topicId); setScreen("modules"); }}
-        onBack={() => setScreen("subjects")}
-      />
+      <>
+        <TopicListScreen
+          subjectId={activeSubject}
+          level={activeLevel}
+          progress={progress}
+          topicVideos={topicVideos}
+          onTopicVideosChange={handleTopicVideosChange}
+          onSelectTopic={(topicId) => { setActiveTopic(topicId); setScreen("modules"); }}
+          onBack={() => setScreen("subjects")}
+        />
+        <Analytics />
+      </>
     );
   }
 
   if (screen === "subjects" && activeLevel) {
     return (
-      <SubjectScreen
-        level={activeLevel}
-        progress={progress}
-        onSelectSubject={(subjectId) => { setActiveSubject(subjectId); setScreen("topics"); }}
-        onBack={() => setScreen("home")}
-      />
+      <>
+        <SubjectScreen
+          level={activeLevel}
+          progress={progress}
+          onSelectSubject={(subjectId) => { setActiveSubject(subjectId); setScreen("topics"); }}
+          onBack={() => setScreen("home")}
+        />
+        <Analytics />
+      </>
     );
   }
 
   return (
-    <HomeScreen
-      progress={progress}
-      onSelectLevel={(level) => { setActiveLevel(level); setScreen("subjects"); }}
-      onHowTo={() => setScreen("howto")}
-      onAbout={() => setScreen("about")}
-    />
+    <>
+      <HomeScreen
+        progress={progress}
+        onSelectLevel={(level) => { setActiveLevel(level); setScreen("subjects"); }}
+        onHowTo={() => setScreen("howto")}
+        onAbout={() => setScreen("about")}
+      />
+      <Analytics />
+    </>
   );
 }
