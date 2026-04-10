@@ -13,7 +13,7 @@ export default function ChoiceButtons({ choices, correctAnswer, onSelect, disabl
     }, 600);
   };
 
-  const labels = ["A", "B", "C", "D", "E"];
+  const labels = ["a", "b", "c", "d", "e"];
 
   return (
     <div className="choice-buttons">
