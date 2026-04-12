@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { getTopic, getTopicStars } from "../utils/constants";
 import { MODULE_QUESTION_COUNTS } from "../utils/kokoEngine";
 import { extractVideoId } from "../utils/videos";
@@ -21,6 +21,21 @@ export default function ModuleListScreen({
   const [confirmModule, setConfirmModule] = useState(null);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [showClearVideosConfirm, setShowClearVideosConfirm] = useState(false);
+  const [showVideoTip, setShowVideoTip] = useState(false);
+
+  // Show video tip once if no videos set in any module of this topic
+  useEffect(() => {
+    const dismissed = localStorage.getItem("koko-video-tip-dismissed");
+    if (!dismissed) {
+      const anyVideoSet = topic?.modules.some((m) => !!moduleVideos[m.id]);
+      if (!anyVideoSet) setShowVideoTip(true);
+    }
+  }, [topic, moduleVideos]);
+
+  const dismissVideoTip = () => {
+    setShowVideoTip(false);
+    localStorage.setItem("koko-video-tip-dismissed", "1");
+  };
 
   const topic = getTopic(subjectId, topicId, level);
   const topicStars = getTopicStars(topicId, progress.moduleStars || {});
@@ -64,6 +79,15 @@ export default function ModuleListScreen({
           <p className="welcome-sub">⭐ {topicStars} stars earned</p>
         </div>
       </div>
+
+      {showVideoTip && (
+        <div className="video-tip-banner">
+          <p className="video-tip-text">
+            🎬 <strong>Tip for parents:</strong> Tap the video link on any module to add a YouTube reward. Your child earns it by getting a perfect score!
+          </p>
+          <button className="video-tip-dismiss" onClick={dismissVideoTip}>Got it</button>
+        </div>
+      )}
 
       <div className="module-list">
         {topic.modules.map((mod, idx) => {

@@ -133,10 +133,17 @@ export default function ChatScreen({
             : isZh
               ? `你完成了 ${mod?.title}！ ⭐ ${newCorrectCount} / ${totalQ} 星！`
               : `You finished the ${mod?.title} module! ⭐ ${newCorrectCount} out of ${totalQ} stars!`;
-          const videoPrompt = isPerfect && videoId ? ""
-            : !isPerfect && videoId
-              ? isZh ? " 全部答对就能看视频奖励哦！" : " Get a perfect score to unlock the video reward!"
-              : "";
+          let videoPrompt = "";
+          if (isPerfect && videoId) {
+            videoPrompt = "";
+          } else if (!isPerfect && videoId) {
+            videoPrompt = isZh ? " 全部答对就能看视频奖励哦！" : " Get a perfect score to unlock the video reward!";
+          } else if (!videoId && !localStorage.getItem("koko-video-completion-tip")) {
+            videoPrompt = isZh
+              ? " 家长可以在模块列表中添加视频奖励哦！"
+              : " Parents: you can add a YouTube video reward from the module list!";
+            localStorage.setItem("koko-video-completion-tip", "1");
+          }
           setMessages((prev) => [
             ...prev, userMsg,
             { role: "assistant", content: replyText },
