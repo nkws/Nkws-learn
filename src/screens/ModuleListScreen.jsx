@@ -136,6 +136,7 @@ export default function ModuleListScreen({
                 <button
                   className="module-redo-btn"
                   onClick={() => onReattempt(mod.id)}
+                  aria-label="Try again"
                 >
                   ↻
                 </button>
@@ -143,6 +144,7 @@ export default function ModuleListScreen({
                 <button
                   className="module-play-btn"
                   onClick={() => handlePlay(mod.id)}
+                  aria-label="Start module"
                 >
                   ▶
                 </button>
