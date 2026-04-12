@@ -29,14 +29,14 @@ export const SIGHTWORDS_INTRO = {
 
 function buildSw1() {
   return shuffle([
-    { q: "Which word is 'the'?", a: "the", choices: ["the", "teh", "tha"] },
-    { q: "Which word is 'and'?", a: "and", choices: ["and", "ant", "end"] },
-    { q: "Which word is 'is'?", a: "is", choices: ["is", "it", "in"] },
-    { q: "Which word is 'you'?", a: "you", choices: ["you", "yuo", "yew"] },
-    { q: "Which word is 'was'?", a: "was", choices: ["was", "saw", "waz"] },
-    { q: "Which word is 'are'?", a: "are", choices: ["are", "ear", "ore"] },
-    { q: "Which word is 'they'?", a: "they", choices: ["they", "thee", "trey"] },
-    { q: "Which word is 'said'?", a: "said", choices: ["said", "siad", "sayed"] },
+    { q: "I like ___ big red ball.", a: "the", choices: ["the", "a", "is"] },
+    { q: "I have a cat ___ a dog.", a: "and", choices: ["and", "but", "the"] },
+    { q: "She ___ my best friend.", a: "is", choices: ["is", "are", "was"] },
+    { q: "___ are a good student.", a: "You", choices: ["You", "They", "Was"] },
+    { q: "He ___ at school yesterday.", a: "was", choices: ["was", "is", "are"] },
+    { q: "We ___ going to the park.", a: "are", choices: ["are", "is", "was"] },
+    { q: "___ played in the garden.", a: "They", choices: ["They", "The", "Was"] },
+    { q: "Mum ___ it was bedtime.", a: "said", choices: ["said", "is", "are"] },
   ]).map((item) => ({
     question: item.q,
     answer: item.a,
