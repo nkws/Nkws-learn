@@ -48,7 +48,7 @@ function buildP3eVc3() {
     { q: "The bird flew __ the tree.", a: "over", choices: ["over", "is", "the"] },
     { q: "We are going __ the park.", a: "to", choices: ["to", "is", "the"] },
     { q: "The book is __ the shelf.", a: "on", choices: ["on", "is", "at"] },
-    { q: "She walked __ the bridge.", a: "across", choices: ["across", "is", "the"] },
+    { q: "She walked __ the street to the shop.", a: "across", choices: ["across", "is", "the"] },
     { q: "The dog is __ the garden.", a: "in", choices: ["in", "on", "the"] },
     { q: "He put the cup __ the table.", a: "on", choices: ["on", "is", "at"] },
   ]).map((item) => ({
