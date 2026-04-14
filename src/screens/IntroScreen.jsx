@@ -28,6 +28,10 @@ export default function IntroScreen({ intro, lang = "en", onFinish }) {
 
   return (
     <div className="screen intro-screen">
+      <button className="intro-skip-top" onClick={onFinish}>
+        Skip ➜
+      </button>
+
       <div className="intro-header">
         <span className="intro-mascot">🦊</span>
         <h1 className="intro-title">{intro.title}</h1>
@@ -68,9 +72,6 @@ export default function IntroScreen({ intro, lang = "en", onFinish }) {
       </div>
 
       <div className="intro-actions">
-        <button className="intro-back-btn" onClick={onFinish}>
-          Skip
-        </button>
         {pageIndex > 0 && (
           <button
             className="intro-back-btn"

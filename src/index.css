@@ -202,13 +202,13 @@ button {
 }
 
 .topic-title {
-  font-size: 18px;
+  font-size: 20px;
   color: var(--text);
   margin-bottom: 2px;
 }
 
 .topic-desc {
-  font-size: 14px;
+  font-size: 15px;
   color: #999;
   margin-bottom: 4px;
 }
@@ -234,6 +234,28 @@ button {
   padding: 24px;
   text-align: center;
   background: linear-gradient(160deg, #FFF8E1 0%, #FFECB3 50%, #FFE0B2 100%);
+  position: relative;
+}
+
+.intro-skip-top {
+  position: absolute;
+  top: calc(16px + var(--safe-top));
+  right: 16px;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--teal);
+  font-family: 'Nunito', sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  padding: 8px 18px;
+  border-radius: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  z-index: 10;
+  transition: transform 0.15s, background 0.15s;
+}
+
+.intro-skip-top:active {
+  transform: scale(0.95);
+  background: rgba(255, 255, 255, 1);
 }
 
 .intro-header {
@@ -243,11 +265,11 @@ button {
 }
 
 .intro-mascot {
-  font-size: 40px;
+  font-size: 44px;
 }
 
 .intro-title {
-  font-size: 24px;
+  font-size: 26px;
   color: var(--coral);
 }
 
@@ -267,13 +289,13 @@ button {
 }
 
 .intro-emoji {
-  font-size: 28px;
+  font-size: 32px;
   margin-bottom: 12px;
   line-height: 1.6;
 }
 
 .intro-text {
-  font-size: 20px;
+  font-size: 22px;
   line-height: 1.6;
   color: var(--text);
 }
@@ -303,13 +325,13 @@ button {
 .intro-back-btn {
   background: none;
   color: var(--teal);
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 700;
   padding: 12px 20px;
 }
 
 .intro-next-btn {
-  font-size: 18px;
+  font-size: 20px;
   padding: 14px 36px;
 }
 
@@ -404,7 +426,7 @@ button {
 }
 
 .module-title {
-  font-size: 18px;
+  font-size: 20px;
   color: var(--text);
   flex: 1;
   min-width: 0;
@@ -422,7 +444,7 @@ button {
 }
 
 .module-desc {
-  font-size: 14px;
+  font-size: 15px;
   color: #999;
   margin-bottom: 6px;
 }
@@ -618,13 +640,13 @@ button {
 }
 
 .chat-stars {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 800;
 }
 
 .chat-reward-hint {
   color: #999;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 /* ============ MESSAGES ============ */
@@ -660,10 +682,10 @@ button {
 }
 
 .chat-bubble {
-  padding: 12px 16px;
+  padding: 14px 18px;
   border-radius: var(--radius);
   max-width: 85%;
-  font-size: 18px;
+  font-size: 20px;
   line-height: 1.5;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -897,10 +919,10 @@ button {
   border: 3px solid var(--orange);
   color: var(--text);
   font-family: 'Fredoka One', cursive;
-  font-size: 22px;
-  padding: 16px;
+  font-size: 24px;
+  padding: 18px;
   border-radius: 16px;
-  min-height: 56px;
+  min-height: 58px;
   transition: background 0.15s, border-color 0.15s, transform 0.1s;
 }
 
