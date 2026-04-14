@@ -9,18 +9,23 @@ const LEVELS = [
 
 const SUBJECTS_PREVIEW = ["Math", "English", "Science", "Chinese"];
 
-export default function HomeScreen({ progress, onSelectLevel, onAbout, onHowTo }) {
+export default function HomeScreen({ progress, activeChild, user, onSelectLevel, onDashboard, onSwitchChild, onSignOut, onAbout, onHowTo }) {
   const totalStars = getTotalStars(progress.moduleStars || {});
 
   return (
     <div className="screen home-screen">
-      {/* Hero / Landing section */}
       <div className="hero-section">
         <span className="hero-mascot">🦊</span>
         <h1 className="hero-title">Koko's Classroom</h1>
-        <p className="hero-tagline">
-          Free interactive learning for Primary 1–3, aligned to the Singapore MOE syllabus.
-        </p>
+        {activeChild ? (
+          <p className="hero-tagline">
+            Welcome back, <strong>{activeChild.name}</strong>! {activeChild.avatar}
+          </p>
+        ) : (
+          <p className="hero-tagline">
+            Free interactive learning for Primary 1–3, aligned to the Singapore MOE syllabus.
+          </p>
+        )}
         <div className="hero-subjects">
           {SUBJECTS_PREVIEW.map((s) => (
             <span key={s} className="hero-pill">{s}</span>
@@ -56,6 +61,18 @@ export default function HomeScreen({ progress, onSelectLevel, onAbout, onHowTo }
       <AdSlot />
 
       <div className="home-links">
+        {activeChild && (
+          <>
+            <button className="about-link" onClick={onDashboard}>
+              Progress
+            </button>
+            <span className="home-link-dot">·</span>
+            <button className="about-link" onClick={onSwitchChild}>
+              Switch Child
+            </button>
+            <span className="home-link-dot">·</span>
+          </>
+        )}
         <button className="about-link" onClick={onHowTo}>
           How to Use
         </button>
@@ -63,6 +80,14 @@ export default function HomeScreen({ progress, onSelectLevel, onAbout, onHowTo }
         <button className="about-link" onClick={onAbout}>
           About
         </button>
+        {user && (
+          <>
+            <span className="home-link-dot">·</span>
+            <button className="about-link" onClick={onSignOut}>
+              Sign Out
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

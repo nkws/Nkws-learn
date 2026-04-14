@@ -994,6 +994,385 @@ button {
   display: block;
 }
 
+/* ============ PRIVACY NOTICE ============ */
+.privacy-notice {
+  font-size: 11px;
+  color: #999;
+  text-align: center;
+  max-width: 320px;
+  line-height: 1.5;
+  margin-top: 12px;
+}
+
+/* ============ CHILD PICKER ============ */
+.child-picker-screen {
+  align-items: center;
+  gap: 16px;
+  padding: 32px 16px;
+  background: linear-gradient(160deg, #FFF8E1 0%, #FFECB3 50%, #FFE0B2 100%);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.child-picker-header {
+  text-align: center;
+}
+
+.child-picker-title {
+  font-family: "Fredoka One", cursive;
+  font-size: 22px;
+  color: var(--text);
+  margin-top: 8px;
+}
+
+.child-list {
+  width: 100%;
+  max-width: 360px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.child-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: white;
+  border-radius: 18px;
+  padding: 16px 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.child-card:active {
+  transform: scale(0.97);
+}
+
+.child-avatar {
+  font-size: 36px;
+}
+
+.child-name {
+  flex: 1;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.child-edit-btn {
+  background: none;
+  font-size: 16px;
+  padding: 6px;
+  opacity: 0.5;
+}
+
+.child-add-btn {
+  width: 100%;
+  max-width: 360px;
+  font-size: 16px;
+  padding: 14px;
+}
+
+.child-form {
+  width: 100%;
+  max-width: 360px;
+  background: white;
+  border-radius: 18px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.child-form-title {
+  font-family: "Fredoka One", cursive;
+  font-size: 18px;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.avatar-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.avatar-option {
+  font-size: 28px;
+  padding: 6px;
+  border-radius: 12px;
+  background: none;
+  border: 2px solid transparent;
+  cursor: pointer;
+}
+
+.avatar-selected {
+  border-color: var(--teal);
+  background: var(--teal-light);
+}
+
+.child-name-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid #ddd;
+  border-radius: 14px;
+  font-size: 16px;
+  font-family: "Nunito", sans-serif;
+  margin-bottom: 12px;
+}
+
+.child-name-input:focus {
+  border-color: var(--teal);
+  outline: none;
+}
+
+.child-form-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.child-cancel-btn {
+  background: none;
+  color: #999;
+  font-size: 14px;
+  font-weight: 700;
+  padding: 10px 16px;
+}
+
+.child-delete-btn {
+  background: none;
+  color: var(--coral);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 10px 16px;
+  margin-left: auto;
+}
+
+.child-signout {
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+/* ============ DASHBOARD ============ */
+.dashboard-screen {
+  align-items: center;
+  gap: 16px;
+  padding: 20px 16px;
+  background: linear-gradient(160deg, #FFF8E1 0%, #FFECB3 50%, #FFE0B2 100%);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.dash-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.dash-title {
+  font-family: "Fredoka One", cursive;
+  font-size: 20px;
+  color: var(--text);
+}
+
+.dash-loading {
+  color: #999;
+  margin-top: 40px;
+}
+
+.dash-overview {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.dash-card {
+  flex: 1;
+  background: white;
+  border-radius: 16px;
+  padding: 16px 12px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.dash-card-value {
+  display: block;
+  font-family: "Fredoka One", cursive;
+  font-size: 20px;
+  color: var(--teal);
+}
+
+.dash-card-label {
+  display: block;
+  font-size: 13px;
+  color: #999;
+  margin-top: 4px;
+}
+
+.dash-section {
+  width: 100%;
+  max-width: 420px;
+  background: white;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.dash-section-title {
+  font-family: "Fredoka One", cursive;
+  font-size: 16px;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.dash-section-desc {
+  font-size: 13px;
+  color: #999;
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+.dash-trend-up {
+  color: var(--teal);
+  font-family: "Nunito", sans-serif;
+  font-size: 14px;
+}
+
+.dash-trend-down {
+  color: var(--orange);
+  font-family: "Nunito", sans-serif;
+  font-size: 14px;
+}
+
+/* Bar chart */
+.dash-chart {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  height: 120px;
+}
+
+.dash-bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  height: 100%;
+}
+
+.dash-bar-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--teal);
+}
+
+.dash-bar-track {
+  flex: 1;
+  width: 100%;
+  max-width: 40px;
+  background: #f0f0f0;
+  border-radius: 8px;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.dash-bar-fill {
+  width: 100%;
+  background: linear-gradient(180deg, var(--teal) 0%, var(--teal-light) 100%);
+  border-radius: 8px;
+  min-height: 4px;
+  transition: height 0.3s ease;
+}
+
+.dash-bar-week {
+  font-size: 11px;
+  color: #999;
+}
+
+/* Weak areas */
+.dash-weak-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.dash-weak-topic {
+  font-size: 14px;
+  font-weight: 600;
+  min-width: 100px;
+  color: var(--text);
+}
+
+.dash-weak-bar-track {
+  flex: 1;
+  height: 10px;
+  background: #f0f0f0;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.dash-weak-bar-fill {
+  height: 100%;
+  background: var(--orange);
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+
+.dash-weak-pct {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  min-width: 36px;
+  text-align: right;
+}
+
+/* Recent activity */
+.dash-recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dash-recent-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.dash-recent-title {
+  flex: 1;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.dash-recent-score {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--teal);
+}
+
+.dash-recent-date {
+  font-size: 13px;
+  color: #999;
+  min-width: 50px;
+  text-align: right;
+}
+
+.dash-empty {
+  text-align: center;
+  color: #999;
+  padding: 40px 16px;
+}
+
 /* ============ ANIMATIONS ============ */
 @keyframes fadeSlideIn {
   from { opacity: 0; transform: translateY(10px); }
