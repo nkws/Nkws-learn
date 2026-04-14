@@ -348,9 +348,11 @@ button {
   font-weight: 700;
   color: var(--teal);
   background: white;
-  padding: 6px 18px;
+  padding: 10px 24px;
   border-radius: 20px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  display: flex;
+  gap: 20px;
 }
 
 /* ============ MODULE LIST ============ */
