@@ -1,7 +1,7 @@
 {
-  "name": "Koko Time Tutor",
-  "short_name": "Time Tutor",
-  "description": "Learn to tell time with Koko the fox!",
+  "name": "Koko Tutor",
+  "short_name": "Koko Tutor",
+  "description": "Learn with Koko the fox!",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#FFF8E1",

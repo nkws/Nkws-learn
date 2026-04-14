@@ -114,10 +114,13 @@ export function useTTS(lang = "en") {
       if (choices && choices.length > 0) {
         // Spoken labels — avoids TTS saying "Capital A"
         const labels = ["a.", "b.", "c.", "d.", "e."];
-        const pause = new SpeechSynthesisUtterance(" ");
-        pause.volume = 0;
-        pause.rate = 0.1;
-        synth.speak(pause);
+        // Longer pause before reading options
+        for (let p = 0; p < 3; p++) {
+          const pause = new SpeechSynthesisUtterance(" ");
+          pause.volume = 0;
+          pause.rate = 0.1;
+          synth.speak(pause);
+        }
 
         synth.speak(makeUtterance(isZh ? "选项是" : "Your options are"));
         choices.forEach((choice, i) => {

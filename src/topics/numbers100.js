@@ -17,7 +17,7 @@ export const NUMBERS100_INTRO = {
       { text: "23 means 2 tens and 3 ones. That's 20 + 3!", emoji: "🔟🔟 + ●●● = 23" },
       { text: "50 means 5 tens and 0 ones.", emoji: "🔟🔟🔟🔟🔟 = 50" },
       { text: "100 means 10 tens!", emoji: "🔟 × 10 = 💯" },
-      { text: "Let's practice breaking numbers into tens and ones!", emoji: "🦊 🔢 💪" },
+      { text: "Let's practise breaking numbers into tens and ones!", emoji: "🦊 🔢 💪" },
     ],
   },
 };

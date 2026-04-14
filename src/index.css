@@ -93,7 +93,7 @@ button {
 }
 
 .hero-pill {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--teal);
   background: var(--teal-light);
@@ -208,13 +208,13 @@ button {
 }
 
 .topic-desc {
-  font-size: 12px;
+  font-size: 13px;
   color: #999;
   margin-bottom: 4px;
 }
 
 .topic-stars {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--orange);
 }
@@ -414,7 +414,7 @@ button {
 }
 
 .module-stars {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--orange);
   margin-left: auto;
@@ -422,14 +422,14 @@ button {
 }
 
 .module-desc {
-  font-size: 12px;
+  font-size: 13px;
   color: #999;
   margin-bottom: 6px;
 }
 
 .module-video-btn {
   background: none;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   padding: 0;
   text-align: left;
@@ -452,7 +452,7 @@ button {
   flex: 1;
   min-width: 120px;
   font-family: 'Nunito', sans-serif;
-  font-size: 12px;
+  font-size: 13px;
   padding: 6px 10px;
   border: 2px solid #eee;
   border-radius: 10px;
@@ -467,7 +467,7 @@ button {
 .mv-save {
   background: var(--teal);
   color: white;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   padding: 6px 12px;
   border-radius: 10px;
@@ -481,7 +481,7 @@ button {
 }
 
 .mv-error {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--coral);
   width: 100%;
 }
@@ -506,7 +506,7 @@ button {
 }
 
 .module-lock {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: #ccc;
   flex-shrink: 0;
@@ -623,7 +623,7 @@ button {
 
 .chat-reward-hint {
   color: #999;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 /* ============ MESSAGES ============ */

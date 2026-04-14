@@ -7,7 +7,7 @@ export const PATTERNS_INTRO = {
       { text: "Red, blue, red, blue — the next one must be RED!", emoji: "🔴🔵🔴🔵 ➡️ 🔴" },
       { text: "Patterns can use shapes too! Circle, square, circle, square...", emoji: "⭕⬜⭕⬜ ➡️ ⭕" },
       { text: "Patterns can use numbers! 2, 4, 6, 8... what comes next?", emoji: "2, 4, 6, 8 ➡️ 10" },
-      { text: "Let's practice finding patterns!", emoji: "🦊 🔁 💪" },
+      { text: "Let's practise finding patterns!", emoji: "🦊 🔁 💪" },
     ],
   },
 };

@@ -24,7 +24,7 @@ export const P2_DIVISION_INTRO = {
       { text: "If you have 6 cookies and share them equally among 2 friends, each gets 3!", emoji: "🍪🍪🍪 | 🍪🍪🍪" },
       { text: "We write this as 6 ÷ 2 = 3. The ÷ sign means divide or share!", emoji: "6 ÷ 2 = 3" },
       { text: "10 sweets shared among 5 children: each child gets 2!", emoji: "🍬🍬 🍬🍬 🍬🍬 🍬🍬 🍬🍬" },
-      { text: "Let's practice division! You can do it!", emoji: "🦊 ➗ 🧠 = 💪" },
+      { text: "Let's practise division! You can do it!", emoji: "🦊 ➗ 🧠 = 💪" },
     ],
   },
 };

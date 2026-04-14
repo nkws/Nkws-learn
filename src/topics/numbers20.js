@@ -18,7 +18,7 @@ export const NUMBERS20_INTRO = {
       { text: "After 10 comes 11, 12, 13, 14, 15, 16, 17, 18, 19, 20!", emoji: "1️⃣1️⃣ ➡️ 2️⃣0️⃣" },
       { text: "11 means 10 and 1 more. 15 means 10 and 5 more.", emoji: "10 + 1 = 11\n10 + 5 = 15" },
       { text: "20 means two groups of 10!", emoji: "🔟🔟 = 20" },
-      { text: "Let's practice counting and comparing numbers!", emoji: "🦊 🔢 💪" },
+      { text: "Let's practise counting and comparing numbers!", emoji: "🦊 🔢 💪" },
     ],
   },
 };

@@ -7,7 +7,7 @@ export const MEASUREMENT_INTRO = {
       { text: "A ruler is longer than a pencil. A bus is longer than a car!", emoji: "🚌 > 🚗" },
       { text: "We can compare: which is LONGER? Which is SHORTER?", emoji: "📐 ↔️" },
       { text: "We can also compare weight: which is HEAVIER? Which is LIGHTER?", emoji: "⚖️" },
-      { text: "Let's practice comparing things!", emoji: "🦊 📏 💪" },
+      { text: "Let's practise comparing things!", emoji: "🦊 📏 💪" },
     ],
   },
 };

@@ -24,7 +24,7 @@ export const P2_MULTIPLICATION_INTRO = {
       { text: "3 groups of 2 means 2 + 2 + 2 = 6. We write this as 3 x 2 = 6!", emoji: "🍎🍎 🍎🍎 🍎🍎" },
       { text: "The x sign means 'groups of' or 'times'.", emoji: "✖️" },
       { text: "4 groups of 5 means 5 + 5 + 5 + 5 = 20. So 4 x 5 = 20!", emoji: "⭐⭐⭐⭐⭐ x 4" },
-      { text: "Let's practice multiplication! You can do it!", emoji: "🦊 ✖️ 🧠 = 💪" },
+      { text: "Let's practise multiplication! You can do it!", emoji: "🦊 ✖️ 🧠 = 💪" },
     ],
   },
 };
