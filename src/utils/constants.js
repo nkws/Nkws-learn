@@ -506,6 +506,105 @@ const P6_SCIENCE_TOPICS = [
     ] },
 ];
 
+// P4 English, Math, Chinese
+const P4_ENGLISH_TOPICS = [
+  { id: "p4-grammar", title: "Grammar", icon: "✏️", description: "Tenses, agreement, prepositions, and conjunctions!",
+    modules: [
+      { id: "p4e-gr1", title: "Tenses and Agreement", description: "Past, present, future, and subject-verb agreement.", hasIntro: true },
+      { id: "p4e-gr2", title: "Prepositions and Conjunctions", description: "Under, on, but, although, so that." },
+    ] },
+  { id: "p4-vocabulary", title: "Vocabulary", icon: "📚", description: "Synonyms, antonyms, and word meanings!",
+    modules: [
+      { id: "p4e-vc1", title: "Synonyms and Antonyms", description: "Happy/glad, brave/cowardly." },
+    ] },
+];
+const P4_MATH_TOPICS = [
+  { id: "p4-factors", title: "Factors and Multiples", icon: "🔢", description: "Finding factors, multiples, and common factors!",
+    modules: [
+      { id: "p4m-fm1", title: "Factors and Multiples", description: "What are factors of 12? Common multiples?" },
+    ] },
+  { id: "p4-decimals", title: "Decimals", icon: "📊", description: "Place value, comparing, and operations with decimals!",
+    modules: [
+      { id: "p4m-dc1", title: "Decimals", description: "0.5 = 1/2, rounding, adding, multiplying." },
+    ] },
+];
+const P4_CHINESE_TOPICS = [
+  { id: "p4-cn-vocab", title: "词语", icon: "📖", description: "词语意思、量词、反义词！",
+    modules: [
+      { id: "p4c-vc1", title: "词语和量词", description: "勤劳、骄傲、一本书。" },
+    ] },
+  { id: "p4-cn-grammar", title: "语法", icon: "✏️", description: "关联词：因为所以、虽然但是！",
+    modules: [
+      { id: "p4c-gr1", title: "关联词和的地得", description: "因为...所以、虽然...但是。" },
+    ] },
+];
+
+// P5 English, Math, Chinese
+const P5_ENGLISH_TOPICS = [
+  { id: "p5-grammar", title: "Grammar", icon: "✏️", description: "Active/passive voice, direct/indirect speech!",
+    modules: [
+      { id: "p5e-gr1", title: "Voice and Speech", description: "Active to passive, direct to indirect.", hasIntro: true },
+      { id: "p5e-gr2", title: "Conjunctions and Relative Pronouns", description: "Although, unless, who, which, whose." },
+    ] },
+  { id: "p5-vocabulary", title: "Vocabulary", icon: "📚", description: "Phrasal verbs, synonyms, and word meanings!",
+    modules: [
+      { id: "p5e-vc1", title: "Vocabulary and Phrasal Verbs", description: "Reluctant, plummeted, give in, look into." },
+    ] },
+];
+const P5_MATH_TOPICS = [
+  { id: "p5-percentage", title: "Percentage", icon: "💯", description: "Converting, finding percentage, discounts!",
+    modules: [
+      { id: "p5m-pc1", title: "Percentage", description: "25% of 80 = 20. Discounts and conversions." },
+    ] },
+  { id: "p5-rate", title: "Rate", icon: "⏱️", description: "Rate, quantity, and time!",
+    modules: [
+      { id: "p5m-rt1", title: "Rate", description: "Speed, cost per item, quantity per time." },
+    ] },
+];
+const P5_CHINESE_TOPICS = [
+  { id: "p5-cn-vocab", title: "词语", icon: "📖", description: "词语意思、近义词、反义词！",
+    modules: [
+      { id: "p5c-vc1", title: "词语和量词", description: "坚持、感激、一头大象。" },
+    ] },
+  { id: "p5-cn-grammar", title: "语法", icon: "✏️", description: "把被句、关联词！",
+    modules: [
+      { id: "p5c-gr1", title: "把被句和关联词", description: "他把书放好了。书被弄坏了。" },
+    ] },
+];
+
+// P6 English, Math, Chinese
+const P6_ENGLISH_TOPICS = [
+  { id: "p6-grammar", title: "Grammar", icon: "✏️", description: "PSLE revision — conditionals, question tags, modals!",
+    modules: [
+      { id: "p6e-gr1", title: "PSLE Grammar Revision", description: "Conditionals, question tags, tenses.", hasIntro: true },
+      { id: "p6e-gr2", title: "Modals and Synthesis", description: "Should, might, must. Combining sentences." },
+    ] },
+  { id: "p6-vocabulary", title: "Vocabulary", icon: "📚", description: "Advanced vocabulary and phrasal verbs!",
+    modules: [
+      { id: "p6e-vc1", title: "Advanced Vocabulary", description: "Apprehensive, meticulous, persevere." },
+    ] },
+];
+const P6_MATH_TOPICS = [
+  { id: "p6-ratio", title: "Ratio", icon: "⚖️", description: "Equivalent ratios, simplifying, and sharing!",
+    modules: [
+      { id: "p6m-ra1", title: "Ratio", description: "Simplify 12:8. Share $60 in ratio 1:2." },
+    ] },
+  { id: "p6-algebra", title: "Algebra", icon: "🔤", description: "Expressions, substitution, and solving equations!",
+    modules: [
+      { id: "p6m-al1", title: "Algebra", description: "Simplify 3x + 2x. Solve x + 5 = 12." },
+    ] },
+];
+const P6_CHINESE_TOPICS = [
+  { id: "p6-cn-vocab", title: "成语", icon: "📖", description: "成语意思和用法！",
+    modules: [
+      { id: "p6c-vc1", title: "成语", description: "锲而不舍、一举两得、半途而废。" },
+    ] },
+  { id: "p6-cn-grammar", title: "语法", icon: "✏️", description: "关联词、把被句、的地得！",
+    modules: [
+      { id: "p6c-gr1", title: "关联词和的地得", description: "既...又、无论...还是。" },
+    ] },
+];
+
 export const LEVELS = {
   p1: [
     { id: "math", title: "Mathematics", icon: "🔢", description: "Numbers, shapes, time, and more!", topics: MATH_TOPICS },
@@ -526,13 +625,22 @@ export const LEVELS = {
     { id: "chinese", title: "华文", icon: "字", description: "量词、造句、阅读理解！", topics: P3_CHINESE_TOPICS },
   ],
   p4: [
+    { id: "math", title: "Mathematics", icon: "🔢", description: "Factors, multiples, decimals, and fractions!", topics: P4_MATH_TOPICS },
+    { id: "english", title: "English", icon: "📖", description: "Tenses, prepositions, conjunctions, and vocabulary!", topics: P4_ENGLISH_TOPICS },
     { id: "science", title: "Science", icon: "🔬", description: "Matter, heat, light, plants, and digestion!", topics: P4_SCIENCE_TOPICS },
+    { id: "chinese", title: "华文", icon: "字", description: "词语、量词、关联词！", topics: P4_CHINESE_TOPICS },
   ],
   p5: [
+    { id: "math", title: "Mathematics", icon: "🔢", description: "Percentage, rate, and fractions!", topics: P5_MATH_TOPICS },
+    { id: "english", title: "English", icon: "📖", description: "Active/passive voice, speech, conjunctions, and vocabulary!", topics: P5_ENGLISH_TOPICS },
     { id: "science", title: "Science", icon: "🔬", description: "Water cycle, reproduction, body systems, circuits, and energy!", topics: P5_SCIENCE_TOPICS },
+    { id: "chinese", title: "华文", icon: "字", description: "词语、把被句、关联词！", topics: P5_CHINESE_TOPICS },
   ],
   p6: [
+    { id: "math", title: "Mathematics", icon: "🔢", description: "Ratio, algebra, and percentage!", topics: P6_MATH_TOPICS },
+    { id: "english", title: "English", icon: "📖", description: "PSLE grammar revision, modals, and vocabulary!", topics: P6_ENGLISH_TOPICS },
     { id: "science", title: "Science", icon: "🔬", description: "Photosynthesis, forces, food chains, adaptations, and environment!", topics: P6_SCIENCE_TOPICS },
+    { id: "chinese", title: "华文", icon: "字", description: "成语、关联词、的地得！", topics: P6_CHINESE_TOPICS },
   ],
 };
 

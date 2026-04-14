@@ -77,6 +77,18 @@ import { buildPhotosynthesisQuestions, P6_PHOTOSYNTHESIS_QUESTION_COUNTS, P6_PHO
 import { buildForcesQuestions, P6_FORCES_QUESTION_COUNTS, P6_FORCES_INTRO } from "../topics/p6/sci-forces";
 import { buildFoodChainsQuestions, P6_FOODCHAINS_QUESTION_COUNTS, P6_FOODCHAINS_INTRO } from "../topics/p6/sci-foodchains";
 import { buildEnvironmentQuestions, P6_ENVIRONMENT_QUESTION_COUNTS, P6_ENVIRONMENT_INTRO } from "../topics/p6/sci-environment";
+// P4 English, Math, Chinese
+import { buildGrammar4Questions, P4_GRAMMAR4_QUESTION_COUNTS, P4_GRAMMAR4_INTRO } from "../topics/p4/eng-grammar4";
+import { buildMath4Questions, P4_MATH4_QUESTION_COUNTS } from "../topics/p4/math4";
+import { buildCnVocab4Questions, P4_CN_VOCAB4_QUESTION_COUNTS } from "../topics/p4/cn-vocab4";
+// P5 English, Math, Chinese
+import { buildGrammar5Questions, P5_GRAMMAR5_QUESTION_COUNTS, P5_GRAMMAR5_INTRO } from "../topics/p5/eng-grammar5";
+import { buildMath5Questions, P5_MATH5_QUESTION_COUNTS } from "../topics/p5/math5";
+import { buildCnVocab5Questions, P5_CN_VOCAB5_QUESTION_COUNTS } from "../topics/p5/cn-vocab5";
+// P6 English, Math, Chinese
+import { buildGrammar6Questions, P6_GRAMMAR6_QUESTION_COUNTS, P6_GRAMMAR6_INTRO } from "../topics/p6/eng-grammar6";
+import { buildMath6Questions, P6_MATH6_QUESTION_COUNTS } from "../topics/p6/math6";
+import { buildCnVocab6Questions, P6_CN_VOCAB6_QUESTION_COUNTS } from "../topics/p6/cn-vocab6";
 
 const BUILDERS = {
   // P1
@@ -109,6 +121,18 @@ const BUILDERS = {
   // P6
   "p6s-ph": buildPhotosynthesisQuestions, "p6s-fc": buildForcesQuestions,
   "p6s-fd": buildFoodChainsQuestions, "p6s-ev": buildEnvironmentQuestions,
+  // P4 English, Math, Chinese
+  "p4e-gr": buildGrammar4Questions, "p4e-vc": buildGrammar4Questions,
+  "p4m-fm": buildMath4Questions, "p4m-dc": buildMath4Questions,
+  "p4c-vc": buildCnVocab4Questions, "p4c-gr": buildCnVocab4Questions,
+  // P5 English, Math, Chinese
+  "p5e-gr": buildGrammar5Questions, "p5e-vc": buildGrammar5Questions,
+  "p5m-pc": buildMath5Questions, "p5m-rt": buildMath5Questions,
+  "p5c-vc": buildCnVocab5Questions, "p5c-gr": buildCnVocab5Questions,
+  // P6 English, Math, Chinese
+  "p6e-gr": buildGrammar6Questions, "p6e-vc": buildGrammar6Questions,
+  "p6m-ra": buildMath6Questions, "p6m-al": buildMath6Questions,
+  "p6c-vc": buildCnVocab6Questions, "p6c-gr": buildCnVocab6Questions,
 };
 
 export function buildModuleQuestions(moduleId) {
@@ -146,6 +170,10 @@ export const MODULE_QUESTION_COUNTS = {
   // P6
   ...P6_PHOTOSYNTHESIS_QUESTION_COUNTS, ...P6_FORCES_QUESTION_COUNTS,
   ...P6_FOODCHAINS_QUESTION_COUNTS, ...P6_ENVIRONMENT_QUESTION_COUNTS,
+  // P4-P6 English, Math, Chinese
+  ...P4_GRAMMAR4_QUESTION_COUNTS, ...P4_MATH4_QUESTION_COUNTS, ...P4_CN_VOCAB4_QUESTION_COUNTS,
+  ...P5_GRAMMAR5_QUESTION_COUNTS, ...P5_MATH5_QUESTION_COUNTS, ...P5_CN_VOCAB5_QUESTION_COUNTS,
+  ...P6_GRAMMAR6_QUESTION_COUNTS, ...P6_MATH6_QUESTION_COUNTS, ...P6_CN_VOCAB6_QUESTION_COUNTS,
 };
 
 const ALL_INTROS = {
@@ -167,6 +195,8 @@ const ALL_INTROS = {
   ...P5_ELECTRICAL_INTRO, ...P5_ENERGY_INTRO,
   // P6
   ...P6_PHOTOSYNTHESIS_INTRO, ...P6_FORCES_INTRO, ...P6_FOODCHAINS_INTRO, ...P6_ENVIRONMENT_INTRO,
+  // P4-P6 English
+  ...P4_GRAMMAR4_INTRO, ...P5_GRAMMAR5_INTRO, ...P6_GRAMMAR6_INTRO,
 };
 
 export function getIntro(moduleId) {
