@@ -15,37 +15,44 @@ export default function ChatScreen({
   topicId,
   moduleId,
   level,
-  progress,
   setProgress,
   moduleVideos,
   activeChild,
   onBack,
 }) {
-  const [showIntro, setShowIntro] = useState(true);
-  const [messages, setMessages] = useState([]);
+  const mod = getModule(subjectId, topicId, moduleId, level);
+  const videoId = moduleVideos[moduleId] || null;
+  const intro = getIntro(moduleId);
+  const ttsLang = subjectId === "chinese" ? "zh" : "en";
+  const { speak } = useTTS(ttsLang);
+
+  // If no intro, initialise quiz state eagerly to avoid an effect
+  const initialQuiz = !intro ? buildModuleQuestions(moduleId) : null;
+  const [showIntro, setShowIntro] = useState(!!intro);
+  const [messages, setMessages] = useState(() => {
+    if (!initialQuiz || initialQuiz.length === 0) return [];
+    const isZh = subjectId === "chinese";
+    const greeting = isZh
+      ? `这是你的第一道题。${initialQuiz[0].question}`
+      : `Here's your first question. ${initialQuiz[0].question}`;
+    return [{ role: "assistant", content: greeting }];
+  });
   const [questionIndex, setQuestionIndex] = useState(0);
-  const [questions, setQuestions] = useState([]);
+  const [questions, setQuestions] = useState(initialQuiz || []);
   const [showReward, setShowReward] = useState(false);
   const [moduleComplete, setModuleComplete] = useState(false);
   const [answering, setAnswering] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
   const [isRetryRound, setIsRetryRound] = useState(false);
+  const [totalQ, setTotalQ] = useState(initialQuiz ? initialQuiz.length : 0);
   const wrongThisRoundRef = useRef([]);
   const allWrongRef = useRef([]);
-  const totalQuestionsRef = useRef(0);
   const chatEndRef = useRef(null);
-  const ttsLang = subjectId === "chinese" ? "zh" : "en";
-  const { speak } = useTTS(ttsLang);
-
-  const mod = getModule(subjectId, topicId, moduleId, level);
-  const videoId = moduleVideos[moduleId] || null;
-  const intro = getIntro(moduleId);
-  const totalQ = totalQuestionsRef.current;
 
   const startQuiz = useCallback(() => {
     const qs = buildModuleQuestions(moduleId);
     setQuestions(qs);
-    totalQuestionsRef.current = qs.length;
+    setTotalQ(qs.length);
     wrongThisRoundRef.current = [];
     allWrongRef.current = [];
     if (qs.length > 0) {
@@ -56,14 +63,7 @@ export default function ChatScreen({
       setMessages([{ role: "assistant", content: greeting }]);
     }
     setShowIntro(false);
-  }, [moduleId]);
-
-  // If no intro, start quiz immediately
-  useEffect(() => {
-    if (!intro) {
-      startQuiz();
-    }
-  }, [intro, startQuiz]);
+  }, [moduleId, subjectId]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -198,7 +198,7 @@ export default function ChatScreen({
       speak(questionText, nextChoices, { cancel: false });
       setAnswering(false);
     },
-    [questions, questionIndex, correctCount, totalQ, moduleId, mod?.title, videoId, speak, saveModuleScore, answering]
+    [questions, questionIndex, correctCount, totalQ, moduleId, mod?.title, videoId, speak, saveModuleScore, answering, activeChild, isRetryRound, ttsLang]
   );
 
   const currentQ = questions[questionIndex] || null;
@@ -234,7 +234,6 @@ export default function ChatScreen({
           <ChatBubble
             key={i}
             message={msg}
-            showSpeakBtn={i === 0 && msg.role === "assistant"}
             speakChoices={i === 0 ? questions[0]?.choices : null}
             onSpeak={speak}
           />

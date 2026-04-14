@@ -4,14 +4,12 @@ import { supabase, isSupabaseConfigured } from "../utils/supabase";
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
+  const configured = isSupabaseConfigured();
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(configured);
 
   useEffect(() => {
-    if (!isSupabaseConfigured()) {
-      setLoading(false);
-      return;
-    }
+    if (!configured) return;
 
     // Check current session
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -27,7 +25,7 @@ export function AuthProvider({ children }) {
     );
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [configured]);
 
   const signInWithGoogle = async () => {
     if (!isSupabaseConfigured()) return;
@@ -50,6 +48,7 @@ export function AuthProvider({ children }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   return useContext(AuthContext);
 }

@@ -53,7 +53,6 @@ export default function TopicListScreen({
       <div className="module-list">
         {subject.topics.map((topic) => {
           const topicStars = getTopicStars(topic.id, progress.moduleStars || {});
-          const totalQ = topic.modules.reduce((s, m) => s + (m.starsToUnlock !== undefined ? 1 : 1), 0);
           const completedModules = progress.completedModules || [];
           const allCompleted = topic.modules.every((m) => completedModules.includes(m.id));
           const hasVideo = !!topicVideos[topic.id];

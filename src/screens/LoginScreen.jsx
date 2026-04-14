@@ -9,7 +9,7 @@ export default function LoginScreen({ onSkip }) {
         <span className="hero-mascot">🦊</span>
         <h1 className="hero-title">Koko's Classroom</h1>
         <p className="hero-tagline">
-          Free interactive learning for Primary 1–3, aligned to the Singapore MOE syllabus.
+          Free interactive learning for Primary 1–6, aligned to the Singapore MOE syllabus.
         </p>
       </div>
 
