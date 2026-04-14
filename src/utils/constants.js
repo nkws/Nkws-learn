@@ -421,6 +421,190 @@ const P3_CHINESE_TOPICS = [
 ];
 
 // ============ LEVELS → SUBJECTS ============
+// ============ P4 ============
+const P4_SCIENCE_TOPICS = [
+  { id: "p4-matter", title: "Matter", icon: "🧊", description: "States of matter, mass, volume, and changes of state!",
+    modules: [
+      { id: "p4s-mt1", title: "What is Matter?", description: "Solids, liquids, gases — and what is NOT matter.", hasIntro: true },
+      { id: "p4s-mt2", title: "Mass and Volume", description: "Measuring mass and volume, water displacement.", hasIntro: true },
+      { id: "p4s-mt3", title: "Changes of State", description: "Melting, freezing, boiling, evaporation, condensation." },
+    ] },
+  { id: "p4-heat", title: "Heat", icon: "🔥", description: "Heat flow, conductors, insulators, expansion and contraction!",
+    modules: [
+      { id: "p4s-ht1", title: "Heat Energy", description: "Heat flows from hot to cold. Sources of heat.", hasIntro: true },
+      { id: "p4s-ht2", title: "Conductors and Insulators", description: "Why pots are metal and handles are wood." },
+      { id: "p4s-ht3", title: "Expansion and Contraction", description: "Railway gaps, thermometers, balloons." },
+    ] },
+  { id: "p4-light", title: "Light", icon: "💡", description: "Light sources, shadows, reflection, and materials!",
+    modules: [
+      { id: "p4s-lg1", title: "Light Sources and Properties", description: "The Sun is a source, the Moon is not.", hasIntro: true },
+      { id: "p4s-lg2", title: "Shadows and Materials", description: "Opaque, translucent, transparent." },
+    ] },
+  { id: "p4-plants", title: "Plant Systems", icon: "🌱", description: "Roots, stems, leaves, flowers — and photosynthesis!",
+    modules: [
+      { id: "p4s-pl1", title: "Plant Parts and Functions", description: "Every part has an important job.", hasIntro: true },
+    ] },
+  { id: "p4-digestion", title: "Digestive System", icon: "🫃", description: "How our body breaks down food!",
+    modules: [
+      { id: "p4s-dg1", title: "Organs and Their Functions", description: "Mouth to large intestine.", hasIntro: true },
+      { id: "p4s-dg2", title: "Digestion Concepts", description: "Where digestion happens and why." },
+    ] },
+  { id: "p4-magnets", title: "Magnets", icon: "🧲", description: "Magnetic materials, poles, attraction and repulsion!",
+    modules: [
+      { id: "p4s-mg1", title: "Magnetic Materials", description: "Not all metals are magnetic!", hasIntro: true },
+      { id: "p4s-mg2", title: "Poles and Repulsion", description: "Like poles repel, unlike poles attract." },
+    ] },
+];
+
+// ============ P5 ============
+const P5_SCIENCE_TOPICS = [
+  { id: "p5-water-cycle", title: "Water Cycle", icon: "🌊", description: "Evaporation, condensation, and precipitation!",
+    modules: [
+      { id: "p5s-wc1", title: "The Water Cycle", description: "How water moves around Earth.", hasIntro: true },
+    ] },
+  { id: "p5-reproduction", title: "Reproduction", icon: "🌸", description: "How plants and animals reproduce!",
+    modules: [
+      { id: "p5s-rp1", title: "Plant Reproduction", description: "Pollination, seed formation, and dispersal.", hasIntro: true },
+      { id: "p5s-rp2", title: "Animal Reproduction", description: "Life cycles and metamorphosis.", hasIntro: true },
+    ] },
+  { id: "p5-body-systems", title: "Body Systems", icon: "🫁", description: "Respiratory and circulatory systems!",
+    modules: [
+      { id: "p5s-rs1", title: "Respiratory and Circulatory", description: "Breathing, heart, and blood vessels.", hasIntro: true },
+      { id: "p5s-rs2", title: "Systems Working Together", description: "Exercise, pulse, and gas exchange." },
+    ] },
+  { id: "p5-electrical", title: "Electrical Systems", icon: "⚡", description: "Circuits, conductors, and insulators!",
+    modules: [
+      { id: "p5s-el1", title: "Circuits", description: "Open, closed, series circuits.", hasIntro: true },
+      { id: "p5s-el2", title: "Electrical Safety", description: "Conductors, insulators, and safety." },
+    ] },
+  { id: "p5-energy", title: "Energy", icon: "🔋", description: "Forms of energy and energy conversion!",
+    modules: [
+      { id: "p5s-en1", title: "Forms and Conversion", description: "Light, heat, sound, kinetic, potential, electrical.", hasIntro: true },
+    ] },
+];
+
+// ============ P6 ============
+const P6_SCIENCE_TOPICS = [
+  { id: "p6-photosynthesis", title: "Photosynthesis", icon: "🌿", description: "How plants make food from sunlight!",
+    modules: [
+      { id: "p6s-ph1", title: "Photosynthesis", description: "Water + CO₂ + sunlight = glucose + oxygen.", hasIntro: true },
+    ] },
+  { id: "p6-forces", title: "Forces", icon: "💪", description: "Friction, gravity, and elastic spring force!",
+    modules: [
+      { id: "p6s-fc1", title: "Types of Forces", description: "Friction, gravity, elastic spring force.", hasIntro: true },
+      { id: "p6s-fc2", title: "Effects of Forces", description: "Mass vs weight, reducing friction." },
+    ] },
+  { id: "p6-food-chains", title: "Food Chains", icon: "🔗", description: "Producers, consumers, decomposers, and food webs!",
+    modules: [
+      { id: "p6s-fd1", title: "Food Chains", description: "How energy flows through living things.", hasIntro: true },
+      { id: "p6s-fd2", title: "Food Webs and Populations", description: "Interconnected chains and population changes." },
+    ] },
+  { id: "p6-environment", title: "Environment", icon: "🌍", description: "Adaptations, conservation, and human impact!",
+    modules: [
+      { id: "p6s-ev1", title: "Adaptations", description: "Structural and behavioural adaptations.", hasIntro: true },
+      { id: "p6s-ev2", title: "Man's Impact", description: "Pollution, deforestation, conservation." },
+    ] },
+];
+
+// P4 English, Math, Chinese
+const P4_ENGLISH_TOPICS = [
+  { id: "p4-grammar", title: "Grammar", icon: "✏️", description: "Tenses, agreement, prepositions, and conjunctions!",
+    modules: [
+      { id: "p4e-gr1", title: "Tenses and Agreement", description: "Past, present, future, and subject-verb agreement.", hasIntro: true },
+      { id: "p4e-gr2", title: "Prepositions and Conjunctions", description: "Under, on, but, although, so that." },
+    ] },
+  { id: "p4-vocabulary", title: "Vocabulary", icon: "📚", description: "Synonyms, antonyms, and word meanings!",
+    modules: [
+      { id: "p4e-vc1", title: "Synonyms and Antonyms", description: "Happy/glad, brave/cowardly." },
+    ] },
+];
+const P4_MATH_TOPICS = [
+  { id: "p4-factors", title: "Factors and Multiples", icon: "🔢", description: "Finding factors, multiples, and common factors!",
+    modules: [
+      { id: "p4m-fm1", title: "Factors and Multiples", description: "What are factors of 12? Common multiples?" },
+    ] },
+  { id: "p4-decimals", title: "Decimals", icon: "📊", description: "Place value, comparing, and operations with decimals!",
+    modules: [
+      { id: "p4m-dc1", title: "Decimals", description: "0.5 = 1/2, rounding, adding, multiplying." },
+    ] },
+];
+const P4_CHINESE_TOPICS = [
+  { id: "p4-cn-vocab", title: "词语", icon: "📖", description: "词语意思、量词、反义词！",
+    modules: [
+      { id: "p4c-vc1", title: "词语和量词", description: "勤劳、骄傲、一本书。" },
+    ] },
+  { id: "p4-cn-grammar", title: "语法", icon: "✏️", description: "关联词：因为所以、虽然但是！",
+    modules: [
+      { id: "p4c-gr1", title: "关联词和的地得", description: "因为...所以、虽然...但是。" },
+    ] },
+];
+
+// P5 English, Math, Chinese
+const P5_ENGLISH_TOPICS = [
+  { id: "p5-grammar", title: "Grammar", icon: "✏️", description: "Active/passive voice, direct/indirect speech!",
+    modules: [
+      { id: "p5e-gr1", title: "Voice and Speech", description: "Active to passive, direct to indirect.", hasIntro: true },
+      { id: "p5e-gr2", title: "Conjunctions and Relative Pronouns", description: "Although, unless, who, which, whose." },
+    ] },
+  { id: "p5-vocabulary", title: "Vocabulary", icon: "📚", description: "Phrasal verbs, synonyms, and word meanings!",
+    modules: [
+      { id: "p5e-vc1", title: "Vocabulary and Phrasal Verbs", description: "Reluctant, plummeted, give in, look into." },
+    ] },
+];
+const P5_MATH_TOPICS = [
+  { id: "p5-percentage", title: "Percentage", icon: "💯", description: "Converting, finding percentage, discounts!",
+    modules: [
+      { id: "p5m-pc1", title: "Percentage", description: "25% of 80 = 20. Discounts and conversions." },
+    ] },
+  { id: "p5-rate", title: "Rate", icon: "⏱️", description: "Rate, quantity, and time!",
+    modules: [
+      { id: "p5m-rt1", title: "Rate", description: "Speed, cost per item, quantity per time." },
+    ] },
+];
+const P5_CHINESE_TOPICS = [
+  { id: "p5-cn-vocab", title: "词语", icon: "📖", description: "词语意思、近义词、反义词！",
+    modules: [
+      { id: "p5c-vc1", title: "词语和量词", description: "坚持、感激、一头大象。" },
+    ] },
+  { id: "p5-cn-grammar", title: "语法", icon: "✏️", description: "把被句、关联词！",
+    modules: [
+      { id: "p5c-gr1", title: "把被句和关联词", description: "他把书放好了。书被弄坏了。" },
+    ] },
+];
+
+// P6 English, Math, Chinese
+const P6_ENGLISH_TOPICS = [
+  { id: "p6-grammar", title: "Grammar", icon: "✏️", description: "PSLE revision — conditionals, question tags, modals!",
+    modules: [
+      { id: "p6e-gr1", title: "PSLE Grammar Revision", description: "Conditionals, question tags, tenses.", hasIntro: true },
+      { id: "p6e-gr2", title: "Modals and Synthesis", description: "Should, might, must. Combining sentences." },
+    ] },
+  { id: "p6-vocabulary", title: "Vocabulary", icon: "📚", description: "Advanced vocabulary and phrasal verbs!",
+    modules: [
+      { id: "p6e-vc1", title: "Advanced Vocabulary", description: "Apprehensive, meticulous, persevere." },
+    ] },
+];
+const P6_MATH_TOPICS = [
+  { id: "p6-ratio", title: "Ratio", icon: "⚖️", description: "Equivalent ratios, simplifying, and sharing!",
+    modules: [
+      { id: "p6m-ra1", title: "Ratio", description: "Simplify 12:8. Share $60 in ratio 1:2." },
+    ] },
+  { id: "p6-algebra", title: "Algebra", icon: "🔤", description: "Expressions, substitution, and solving equations!",
+    modules: [
+      { id: "p6m-al1", title: "Algebra", description: "Simplify 3x + 2x. Solve x + 5 = 12." },
+    ] },
+];
+const P6_CHINESE_TOPICS = [
+  { id: "p6-cn-vocab", title: "成语", icon: "📖", description: "成语意思和用法！",
+    modules: [
+      { id: "p6c-vc1", title: "成语", description: "锲而不舍、一举两得、半途而废。" },
+    ] },
+  { id: "p6-cn-grammar", title: "语法", icon: "✏️", description: "关联词、把被句、的地得！",
+    modules: [
+      { id: "p6c-gr1", title: "关联词和的地得", description: "既...又、无论...还是。" },
+    ] },
+];
+
 export const LEVELS = {
   p1: [
     { id: "math", title: "Mathematics", icon: "🔢", description: "Numbers, shapes, time, and more!", topics: MATH_TOPICS },
@@ -440,10 +624,28 @@ export const LEVELS = {
     { id: "science", title: "Science", icon: "🔬", description: "Diversity, adaptations, and body systems!", topics: P3_SCIENCE_TOPICS },
     { id: "chinese", title: "华文", icon: "字", description: "量词、造句、阅读理解！", topics: P3_CHINESE_TOPICS },
   ],
+  p4: [
+    { id: "math", title: "Mathematics", icon: "🔢", description: "Factors, multiples, decimals, and fractions!", topics: P4_MATH_TOPICS },
+    { id: "english", title: "English", icon: "📖", description: "Tenses, prepositions, conjunctions, and vocabulary!", topics: P4_ENGLISH_TOPICS },
+    { id: "science", title: "Science", icon: "🔬", description: "Matter, heat, light, plants, and digestion!", topics: P4_SCIENCE_TOPICS },
+    { id: "chinese", title: "华文", icon: "字", description: "词语、量词、关联词！", topics: P4_CHINESE_TOPICS },
+  ],
+  p5: [
+    { id: "math", title: "Mathematics", icon: "🔢", description: "Percentage, rate, and fractions!", topics: P5_MATH_TOPICS },
+    { id: "english", title: "English", icon: "📖", description: "Active/passive voice, speech, conjunctions, and vocabulary!", topics: P5_ENGLISH_TOPICS },
+    { id: "science", title: "Science", icon: "🔬", description: "Water cycle, reproduction, body systems, circuits, and energy!", topics: P5_SCIENCE_TOPICS },
+    { id: "chinese", title: "华文", icon: "字", description: "词语、把被句、关联词！", topics: P5_CHINESE_TOPICS },
+  ],
+  p6: [
+    { id: "math", title: "Mathematics", icon: "🔢", description: "Ratio, algebra, and percentage!", topics: P6_MATH_TOPICS },
+    { id: "english", title: "English", icon: "📖", description: "PSLE grammar revision, modals, and vocabulary!", topics: P6_ENGLISH_TOPICS },
+    { id: "science", title: "Science", icon: "🔬", description: "Photosynthesis, forces, food chains, adaptations, and environment!", topics: P6_SCIENCE_TOPICS },
+    { id: "chinese", title: "华文", icon: "字", description: "成语、关联词、的地得！", topics: P6_CHINESE_TOPICS },
+  ],
 };
 
 // Flat list of all subjects across all levels (for star counting)
-const ALL_SUBJECTS = [...LEVELS.p1, ...LEVELS.p2, ...LEVELS.p3];
+const ALL_SUBJECTS = [...LEVELS.p1, ...LEVELS.p2, ...LEVELS.p3, ...LEVELS.p4, ...LEVELS.p5, ...LEVELS.p6];
 
 // ============ HELPERS ============
 export function getSubjectsForLevel(level) {
