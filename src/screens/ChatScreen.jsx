@@ -6,6 +6,7 @@ import { useTTS } from "../hooks/useSpeech";
 import { getModule, getTotalStars } from "../utils/constants";
 import { saveProgress } from "../utils/progress";
 import { buildModuleQuestions, getPraise, getHint, getIntro } from "../utils/kokoEngine";
+import { recordQuizAttempt } from "../utils/cloudSync";
 import IntroScreen from "./IntroScreen";
 
 export default function ChatScreen({
@@ -16,6 +17,7 @@ export default function ChatScreen({
   progress,
   setProgress,
   moduleVideos,
+  activeChild,
   onBack,
 }) {
   const [showIntro, setShowIntro] = useState(true);
@@ -28,6 +30,7 @@ export default function ChatScreen({
   const [correctCount, setCorrectCount] = useState(0);
   const [isRetryRound, setIsRetryRound] = useState(false);
   const wrongThisRoundRef = useRef([]);
+  const allWrongRef = useRef([]);
   const totalQuestionsRef = useRef(0);
   const chatEndRef = useRef(null);
   const ttsLang = subjectId === "chinese" ? "zh" : "en";
@@ -43,6 +46,7 @@ export default function ChatScreen({
     setQuestions(qs);
     totalQuestionsRef.current = qs.length;
     wrongThisRoundRef.current = [];
+    allWrongRef.current = [];
     if (qs.length > 0) {
       const isZh = subjectId === "chinese";
       const greeting = isZh
@@ -113,6 +117,7 @@ export default function ChatScreen({
         }
       } else {
         wrongThisRoundRef.current.push(currentQ);
+        allWrongRef.current.push({ question: currentQ.question, userAnswer: choice, correctAnswer: currentQ.answer });
         replyText = getHint(currentQ.answer, ttsLang);
         if (!isLast) {
           questionText = questions[nextIdx].question;
@@ -153,6 +158,9 @@ export default function ChatScreen({
           speak(completeText + videoPrompt, null, { cancel: false });
           setModuleComplete(true);
           saveModuleScore(newCorrectCount);
+          if (activeChild) {
+            recordQuizAttempt(activeChild.id, moduleId, newCorrectCount, totalQ, allWrongRef.current);
+          }
           if (isPerfect && videoId) {
             setTimeout(() => setShowReward(true), 3000);
           }

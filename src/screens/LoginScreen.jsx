@@ -21,6 +21,9 @@ export default function LoginScreen({ onSkip }) {
           <button className="about-link" onClick={onSkip}>
             Continue without signing in
           </button>
+          <p className="privacy-notice">
+            We store your email and your children's learning progress to sync across devices. We don't share your data with third parties. By signing in, you agree to this.
+          </p>
         </div>
       ) : (
         <div className="login-actions">

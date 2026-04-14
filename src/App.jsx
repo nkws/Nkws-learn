@@ -6,6 +6,10 @@ import ModuleListScreen from "./screens/ModuleListScreen";
 import ChatScreen from "./screens/ChatScreen";
 import AboutScreen from "./screens/AboutScreen";
 import HowToScreen from "./screens/HowToScreen";
+import LoginScreen from "./screens/LoginScreen";
+import ChildPickerScreen from "./screens/ChildPickerScreen";
+import DashboardScreen from "./screens/DashboardScreen";
+import { useAuth } from "./contexts/AuthContext";
 import { getSubjectsForLevel, getTotalStars } from "./utils/constants";
 import {
   loadProgress, saveProgress,
@@ -13,11 +17,24 @@ import {
   loadTopicVideos, saveTopicVideos,
   loadNavState, saveNavState,
 } from "./utils/progress";
+import {
+  fetchChildren, createChild, updateChild, deleteChild,
+  fetchProgress, saveCloudProgress,
+  cloudProgressToLocal, cloudToNavState, cloudToModuleVideos, cloudToTopicVideos,
+} from "./utils/cloudSync";
 
 export default function App() {
+  const { user, loading, signInWithGoogle, signOut, isConfigured } = useAuth();
+
+  // Auth & child state
+  const [skippedLogin, setSkippedLogin] = useState(false);
+  const [children, setChildren] = useState([]);
+  const [activeChild, setActiveChild] = useState(null);
+  const [childrenLoaded, setChildrenLoaded] = useState(false);
+
+  // Nav state — restored from localStorage or cloud
   const [nav] = useState(() => {
     const saved = loadNavState();
-    // Don't restore into chat — resume at the module list instead
     if (saved && saved.screen === "chat") return { ...saved, screen: "modules" };
     return saved;
   });
@@ -35,8 +52,120 @@ export default function App() {
     saveNavState({ screen, level: activeLevel, subject: activeSubject, topic: activeTopic });
   }, [screen, activeLevel, activeSubject, activeTopic]);
 
-  const handleModuleVideosChange = useCallback((v) => { setModuleVideos(v); saveModuleVideos(v); }, []);
-  const handleTopicVideosChange = useCallback((v) => { setTopicVideos(v); saveTopicVideos(v); }, []);
+  // Load children when user logs in
+  useEffect(() => {
+    if (!user) { setChildrenLoaded(false); return; }
+    fetchChildren(user.id).then((kids) => {
+      setChildren(kids);
+      setChildrenLoaded(true);
+    });
+  }, [user]);
+
+  // Cloud sync: save progress when it changes (if child selected)
+  const syncToCloud = useCallback((prog, modVids, topVids) => {
+    if (!activeChild) return;
+    saveCloudProgress(activeChild.id, {
+      stars: prog.stars,
+      moduleStars: prog.moduleStars,
+      completedModules: prog.completedModules,
+      navState: { screen, level: activeLevel, subject: activeSubject, topic: activeTopic },
+      moduleVideos: modVids,
+      topicVideos: topVids,
+    });
+  }, [activeChild, screen, activeLevel, activeSubject, activeTopic]);
+
+  // When a child is selected, load their cloud progress
+  const handleSelectChild = useCallback(async (child) => {
+    setActiveChild(child);
+    const cloudData = await fetchProgress(child.id);
+    if (cloudData) {
+      const localProg = cloudProgressToLocal(cloudData);
+      const navState = cloudToNavState(cloudData);
+      const modVids = cloudToModuleVideos(cloudData);
+      const topVids = cloudToTopicVideos(cloudData);
+      if (localProg) {
+        setProgress(localProg);
+        saveProgress(localProg);
+      }
+      if (navState) {
+        setScreen(navState.screen === "chat" ? "modules" : (navState.screen || "home"));
+        setActiveLevel(navState.level || null);
+        setActiveSubject(navState.subject || null);
+        setActiveTopic(navState.topic || null);
+      } else {
+        setScreen("home");
+        setActiveLevel(null);
+        setActiveSubject(null);
+        setActiveTopic(null);
+      }
+      if (modVids) { setModuleVideos(modVids); saveModuleVideos(modVids); }
+      if (topVids) { setTopicVideos(topVids); saveTopicVideos(topVids); }
+    } else {
+      // No cloud data — start fresh
+      const fresh = { stars: 0, moduleStars: {}, completedModules: [], completedTopics: [], lastSession: null };
+      setProgress(fresh);
+      saveProgress(fresh);
+      setScreen("home");
+      setActiveLevel(null);
+      setActiveSubject(null);
+      setActiveTopic(null);
+    }
+  }, []);
+
+  const handleAddChild = useCallback(async (name, avatar) => {
+    if (!user) return;
+    const child = await createChild(user.id, name, avatar);
+    if (child) setChildren((prev) => [...prev, child]);
+  }, [user]);
+
+  const handleEditChild = useCallback(async (childId, updates) => {
+    const updated = await updateChild(childId, updates);
+    if (updated) {
+      setChildren((prev) => prev.map((c) => c.id === childId ? updated : c));
+      if (activeChild?.id === childId) setActiveChild(updated);
+    }
+  }, [activeChild]);
+
+  const handleDeleteChild = useCallback(async (childId) => {
+    const ok = await deleteChild(childId);
+    if (ok) {
+      setChildren((prev) => prev.filter((c) => c.id !== childId));
+      if (activeChild?.id === childId) setActiveChild(null);
+    }
+  }, [activeChild]);
+
+  const handleSignOut = useCallback(async () => {
+    await signOut();
+    setActiveChild(null);
+    setChildren([]);
+    setChildrenLoaded(false);
+    setSkippedLogin(false);
+    setScreen("home");
+    setActiveLevel(null);
+    setActiveSubject(null);
+    setActiveTopic(null);
+  }, [signOut]);
+
+  const handleModuleVideosChange = useCallback((v) => {
+    setModuleVideos(v);
+    saveModuleVideos(v);
+    syncToCloud(progress, v, topicVideos);
+  }, [progress, topicVideos, syncToCloud]);
+
+  const handleTopicVideosChange = useCallback((v) => {
+    setTopicVideos(v);
+    saveTopicVideos(v);
+    syncToCloud(progress, moduleVideos, v);
+  }, [progress, moduleVideos, syncToCloud]);
+
+  const handleSetProgress = useCallback((updater) => {
+    setProgress((prev) => {
+      const updated = typeof updater === "function" ? updater(prev) : updater;
+      saveProgress(updated);
+      syncToCloud(updated, moduleVideos, topicVideos);
+      return updated;
+    });
+  }, [moduleVideos, topicVideos, syncToCloud]);
 
   const handleStartModule = useCallback((moduleId) => {
     setActiveModule(moduleId);
@@ -44,21 +173,19 @@ export default function App() {
   }, []);
 
   const handleReattempt = useCallback((moduleId) => {
-    setProgress((prev) => {
+    handleSetProgress((prev) => {
       const updated = {
         ...prev,
         completedModules: (prev.completedModules || []).filter((id) => id !== moduleId),
       };
-      saveProgress(updated);
       return updated;
     });
     setActiveModule(moduleId);
     setScreen("chat");
-  }, []);
+  }, [handleSetProgress]);
 
   const handleResetTopic = useCallback((topicId) => {
-    setProgress((prev) => {
-      // Find all module IDs for this topic in the active level
+    handleSetProgress((prev) => {
       const subjects = getSubjectsForLevel(activeLevel) || [];
       const allModuleIds = [];
       for (const subject of subjects) {
@@ -74,16 +201,61 @@ export default function App() {
         const idx = newCompleted.indexOf(id);
         if (idx !== -1) newCompleted.splice(idx, 1);
       }
-      const updated = {
+      return {
         ...prev,
         moduleStars: newModuleStars,
         completedModules: newCompleted,
         stars: getTotalStars(newModuleStars),
       };
-      saveProgress(updated);
-      return updated;
     });
-  }, [activeLevel]);
+  }, [activeLevel, handleSetProgress]);
+
+  // Show loading spinner while auth initialises
+  if (loading) {
+    return (
+      <div className="screen home-screen" style={{ justifyContent: "center" }}>
+        <span className="hero-mascot">🦊</span>
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  // Auth gate: show login if Supabase is configured and user not logged in
+  if (isConfigured && !user && !skippedLogin) {
+    return <LoginScreen onSkip={() => setSkippedLogin(true)} />;
+  }
+
+  // Child picker: show if logged in but no child selected
+  if (isConfigured && user && !activeChild) {
+    if (!childrenLoaded) {
+      return (
+        <div className="screen home-screen" style={{ justifyContent: "center" }}>
+          <span className="hero-mascot">🦊</span>
+          <p>Loading profiles...</p>
+        </div>
+      );
+    }
+    return (
+      <ChildPickerScreen
+        children={children}
+        onSelectChild={handleSelectChild}
+        onAddChild={handleAddChild}
+        onEditChild={handleEditChild}
+        onDeleteChild={handleDeleteChild}
+        onSignOut={handleSignOut}
+      />
+    );
+  }
+
+  if (screen === "dashboard" && activeChild) {
+    return (
+      <DashboardScreen
+        child={activeChild}
+        progress={progress}
+        onBack={() => setScreen("home")}
+      />
+    );
+  }
 
   if (screen === "howto") {
     return <HowToScreen onBack={() => setScreen("home")} />;
@@ -101,8 +273,9 @@ export default function App() {
         moduleId={activeModule}
         level={activeLevel}
         progress={progress}
-        setProgress={setProgress}
+        setProgress={handleSetProgress}
         moduleVideos={moduleVideos}
+        activeChild={activeChild}
         onBack={() => setScreen("modules")}
       />
     );
@@ -153,7 +326,12 @@ export default function App() {
   return (
     <HomeScreen
       progress={progress}
+      activeChild={activeChild}
+      user={user}
       onSelectLevel={(level) => { setActiveLevel(level); setScreen("subjects"); }}
+      onDashboard={() => setScreen("dashboard")}
+      onSwitchChild={() => setActiveChild(null)}
+      onSignOut={handleSignOut}
       onHowTo={() => setScreen("howto")}
       onAbout={() => setScreen("about")}
     />
