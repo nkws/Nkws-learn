@@ -1,4 +1,5 @@
 import { getTotalStars } from "../utils/constants";
+import { loadStreak } from "../utils/progress";
 import AdSlot from "../components/AdSlot";
 
 const LEVELS = [
@@ -11,6 +12,7 @@ const SUBJECTS_PREVIEW = ["Math", "English", "Science", "Chinese"];
 
 export default function HomeScreen({ progress, activeChild, user, onSelectLevel, onDashboard, onSwitchChild, onSignOut, onAbout, onHowTo }) {
   const totalStars = getTotalStars(progress.moduleStars || {});
+  const streak = loadStreak();
 
   return (
     <div className="screen home-screen">
@@ -33,9 +35,10 @@ export default function HomeScreen({ progress, activeChild, user, onSelectLevel,
         </div>
       </div>
 
-      {totalStars > 0 && (
+      {(totalStars > 0 || streak.count > 0) && (
         <div className="welcome-progress">
-          <span>⭐ {totalStars} total stars</span>
+          {totalStars > 0 && <span>⭐ {totalStars} total stars</span>}
+          {streak.count > 0 && <span>🔥 {streak.count} day streak!</span>}
         </div>
       )}
 

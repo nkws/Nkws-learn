@@ -2,6 +2,7 @@ import { useState } from "react";
 import { getTopic, getTopicStars } from "../utils/constants";
 import { MODULE_QUESTION_COUNTS } from "../utils/kokoEngine";
 import { extractVideoId } from "../utils/videos";
+import AdSlot from "../components/AdSlot";
 
 export default function ModuleListScreen({
   subjectId,
@@ -170,6 +171,8 @@ export default function ModuleListScreen({
           </button>
         )}
       </div>
+
+      <AdSlot />
 
       {showResetConfirm && (
         <div className="reward-overlay" onClick={() => setShowResetConfirm(false)}>
