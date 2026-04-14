@@ -18,7 +18,7 @@ export default function ChatBubble({ message, showSpeakBtn, speakChoices, onSpea
             <span key={i}>{part.content}</span>
           )
         )}
-        {showSpeakBtn && onSpeak && (
+        {isKoko && onSpeak && (
           <button
             className="speak-btn"
             onClick={() => onSpeak(message.content, speakChoices)}
