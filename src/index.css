@@ -72,7 +72,7 @@ button {
 }
 
 .hero-title {
-  font-size: 30px;
+  font-size: 32px;
   color: var(--coral);
   margin-bottom: 6px;
 }
@@ -208,7 +208,7 @@ button {
 }
 
 .topic-desc {
-  font-size: 12px;
+  font-size: 14px;
   color: #999;
   margin-bottom: 4px;
 }
@@ -273,7 +273,7 @@ button {
 }
 
 .intro-text {
-  font-size: 18px;
+  font-size: 20px;
   line-height: 1.6;
   color: var(--text);
 }
@@ -404,7 +404,7 @@ button {
 }
 
 .module-title {
-  font-size: 16px;
+  font-size: 18px;
   color: var(--text);
   flex: 1;
   min-width: 0;
@@ -414,7 +414,7 @@ button {
 }
 
 .module-stars {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--orange);
   margin-left: auto;
@@ -422,7 +422,7 @@ button {
 }
 
 .module-desc {
-  font-size: 12px;
+  font-size: 14px;
   color: #999;
   margin-bottom: 6px;
 }
@@ -618,12 +618,13 @@ button {
 }
 
 .chat-stars {
+  font-size: 14px;
   font-weight: 800;
 }
 
 .chat-reward-hint {
   color: #999;
-  font-size: 11px;
+  font-size: 14px;
 }
 
 /* ============ MESSAGES ============ */
@@ -662,7 +663,7 @@ button {
   padding: 12px 16px;
   border-radius: var(--radius);
   max-width: 85%;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 1.5;
   word-wrap: break-word;
   overflow-wrap: break-word;
@@ -729,7 +730,7 @@ button {
 }
 
 .video-tip-text {
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.5;
   color: #555;
   flex: 1;
@@ -816,7 +817,7 @@ button {
 }
 
 .about-section p {
-  font-size: 15px;
+  font-size: 16px;
   line-height: 1.7;
   color: #555;
   margin-bottom: 8px;
@@ -896,7 +897,7 @@ button {
   border: 3px solid var(--orange);
   color: var(--text);
   font-family: 'Fredoka One', cursive;
-  font-size: 20px;
+  font-size: 22px;
   padding: 16px;
   border-radius: 16px;
   min-height: 56px;
@@ -917,7 +918,7 @@ button {
   color: white;
   font-family: 'Nunito', sans-serif;
   font-weight: 800;
-  font-size: 14px;
+  font-size: 16px;
   width: 26px;
   height: 26px;
   line-height: 26px;
@@ -1044,7 +1045,7 @@ button:focus-visible {
 
 /* ============ MOBILE FIXES (375px) ============ */
 @media (max-width: 420px) {
-  .hero-title { font-size: 26px; }
+  .hero-title { font-size: 28px; }
   .hero-tagline { max-width: 90vw; }
   .module-video-edit { flex-direction: column; gap: 8px; }
   .mv-input { width: 100%; min-width: unset; }
