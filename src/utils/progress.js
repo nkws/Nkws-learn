@@ -47,3 +47,15 @@ export function loadTopicVideos() {
 export function saveTopicVideos(videos) {
   try { localStorage.setItem(TOPIC_VIDEOS_KEY, JSON.stringify(videos)); } catch { /* ignore */ }
 }
+
+const SKIP_INTROS_KEY = "koko-skip-intros";
+
+export function loadSkipIntros() {
+  try {
+    return localStorage.getItem(SKIP_INTROS_KEY) === "1";
+  } catch { return false; }
+}
+
+export function saveSkipIntros(skip) {
+  try { localStorage.setItem(SKIP_INTROS_KEY, skip ? "1" : "0"); } catch { /* ignore */ }
+}

@@ -716,6 +716,25 @@ button {
 }
 
 /* ============ VIDEO TIP BANNER ============ */
+.skip-intros-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #555;
+  cursor: pointer;
+  width: 100%;
+  max-width: 420px;
+  padding: 0 4px;
+}
+
+.skip-intros-toggle input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--teal);
+  cursor: pointer;
+}
+
 .video-tip-banner {
   background: #FFF3E0;
   border: 2px solid var(--orange);

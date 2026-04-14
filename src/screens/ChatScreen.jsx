@@ -16,6 +16,7 @@ export default function ChatScreen({
   progress,
   setProgress,
   moduleVideos,
+  skipIntros,
   onBack,
 }) {
   const [showIntro, setShowIntro] = useState(true);
@@ -53,12 +54,12 @@ export default function ChatScreen({
     setShowIntro(false);
   }, [moduleId]);
 
-  // If no intro, start quiz immediately
+  // If no intro or skip intros enabled, start quiz immediately
   useEffect(() => {
-    if (!intro) {
+    if (!intro || skipIntros) {
       startQuiz();
     }
-  }, [intro, startQuiz]);
+  }, [intro, skipIntros, startQuiz]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -194,7 +195,7 @@ export default function ChatScreen({
   const currentQ = questions[questionIndex] || null;
 
   // Show intro if module has one and we haven't started yet
-  if (showIntro && intro) {
+  if (showIntro && intro && !skipIntros) {
     return <IntroScreen intro={intro} lang={ttsLang} onFinish={startQuiz} />;
   }
 

@@ -9,6 +9,8 @@ export default function ModuleListScreen({
   level,
   progress,
   moduleVideos,
+  skipIntros,
+  onSkipIntrosChange,
   onModuleVideosChange,
   onStartModule,
   onReattempt,
@@ -79,6 +81,15 @@ export default function ModuleListScreen({
           <p className="welcome-sub">⭐ {topicStars} stars earned</p>
         </div>
       </div>
+
+      <label className="skip-intros-toggle">
+        <input
+          type="checkbox"
+          checked={skipIntros}
+          onChange={(e) => onSkipIntrosChange(e.target.checked)}
+        />
+        Skip introductions
+      </label>
 
       {showVideoTip && (
         <div className="video-tip-banner">

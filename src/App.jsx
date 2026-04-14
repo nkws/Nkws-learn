@@ -11,6 +11,7 @@ import {
   loadProgress, saveProgress,
   loadModuleVideos, saveModuleVideos,
   loadTopicVideos, saveTopicVideos,
+  loadSkipIntros, saveSkipIntros,
 } from "./utils/progress";
 
 export default function App() {
@@ -22,6 +23,9 @@ export default function App() {
   const [progress, setProgress] = useState(() => loadProgress());
   const [moduleVideos, setModuleVideos] = useState(() => loadModuleVideos());
   const [topicVideos, setTopicVideos] = useState(() => loadTopicVideos());
+  const [skipIntros, setSkipIntros] = useState(() => loadSkipIntros());
+
+  const handleSkipIntrosChange = useCallback((v) => { setSkipIntros(v); saveSkipIntros(v); }, []);
 
   const handleModuleVideosChange = useCallback((v) => { setModuleVideos(v); saveModuleVideos(v); }, []);
   const handleTopicVideosChange = useCallback((v) => { setTopicVideos(v); saveTopicVideos(v); }, []);
@@ -91,6 +95,7 @@ export default function App() {
         progress={progress}
         setProgress={setProgress}
         moduleVideos={moduleVideos}
+        skipIntros={skipIntros}
         onBack={() => setScreen("modules")}
       />
     );
@@ -104,6 +109,8 @@ export default function App() {
         level={activeLevel}
         progress={progress}
         moduleVideos={moduleVideos}
+        skipIntros={skipIntros}
+        onSkipIntrosChange={handleSkipIntrosChange}
         onModuleVideosChange={handleModuleVideosChange}
         onStartModule={handleStartModule}
         onReattempt={handleReattempt}
