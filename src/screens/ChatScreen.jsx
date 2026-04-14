@@ -150,7 +150,7 @@ export default function ChatScreen({
             { role: "assistant", content: completeText + videoPrompt },
           ]);
           speak(replyText);
-          speak(completeText + videoPrompt, null, false);
+          setTimeout(() => speak(completeText + videoPrompt), 2000);
           setModuleComplete(true);
           saveModuleScore(newCorrectCount);
           if (isPerfect && videoId) {
@@ -166,7 +166,7 @@ export default function ChatScreen({
             { role: "assistant", content: `${retryIntro} ${wrongs[0].question}` },
           ]);
           speak(replyText);
-          speak(`${retryIntro} ${wrongs[0].question}`, wrongs[0].choices, false);
+          setTimeout(() => speak(`${retryIntro} ${wrongs[0].question}`, wrongs[0].choices), 2000);
           setQuestions([...wrongs]);
           setQuestionIndex(0);
           setIsRetryRound(true);
@@ -185,7 +185,7 @@ export default function ChatScreen({
         { role: "assistant", content: questionText },
       ]);
       speak(replyText);
-      speak(questionText, nextChoices, false);
+      setTimeout(() => speak(questionText, nextChoices), 2000);
       setAnswering(false);
     },
     [questions, questionIndex, correctCount, totalQ, moduleId, mod?.title, videoId, speak, saveModuleScore, answering]

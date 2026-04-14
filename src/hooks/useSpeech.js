@@ -87,11 +87,10 @@ export function useTTS(lang = "en") {
     return utterance;
   }, []);
 
-  // cancelPrevious: true (default) cancels any ongoing speech. false = queue after current.
-  const speak = useCallback((text, choices, cancelPrevious = true) => {
+  const speak = useCallback((text, choices) => {
     const synth = window.speechSynthesis;
     if (!synth) return;
-    if (cancelPrevious) synth.cancel();
+    synth.cancel();
 
     const isZh = langRef.current === "zh";
     const cleaned = cleanForSpeech(text);
