@@ -1476,11 +1476,13 @@ button:focus-visible {
     margin-right: 4px;
   }
 
-  /* Compact module-done bar */
+  /* Compact module-done bar — side by side in landscape */
   .module-done-bar {
+    flex-direction: row;
+    justify-content: center;
     padding: 8px;
     padding-bottom: calc(8px + var(--safe-bottom));
-    gap: 4px;
+    gap: 12px;
   }
 
   /* Give messages area more room */
