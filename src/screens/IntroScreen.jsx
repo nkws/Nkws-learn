@@ -68,7 +68,10 @@ export default function IntroScreen({ intro, lang = "en", onFinish }) {
       </div>
 
       <div className="intro-actions">
-        {pageIndex > 0 ? (
+        <button className="intro-back-btn" onClick={onFinish}>
+          Skip
+        </button>
+        {pageIndex > 0 && (
           <button
             className="intro-back-btn"
             onClick={() => {
@@ -78,10 +81,6 @@ export default function IntroScreen({ intro, lang = "en", onFinish }) {
             }}
           >
             ← Back
-          </button>
-        ) : (
-          <button className="intro-back-btn" onClick={onFinish}>
-            Skip
           </button>
         )}
         <button
