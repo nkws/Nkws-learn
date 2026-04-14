@@ -1,7 +1,7 @@
 import { getSubjectsForLevel } from "../utils/constants";
 import AdSlot from "../components/AdSlot";
 
-export default function SubjectScreen({ level, progress, onSelectSubject, onBack }) {
+export default function SubjectScreen({ level, onSelectSubject, onBack }) {
   const subjects = getSubjectsForLevel(level);
   const levelLabel = level.toUpperCase();
 

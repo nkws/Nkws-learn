@@ -1,7 +1,7 @@
 import Clock from "./Clock";
 import { parseClockTags } from "../utils/parseClock";
 
-export default function ChatBubble({ message, showSpeakBtn, speakChoices, onSpeak }) {
+export default function ChatBubble({ message, speakChoices, onSpeak }) {
   const isKoko = message.role === "assistant";
   const parts = parseClockTags(message.content);
 

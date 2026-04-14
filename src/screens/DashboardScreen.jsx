@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { getTotalStars, LEVELS } from "../utils/constants";
-import { MODULE_QUESTION_COUNTS } from "../utils/kokoEngine";
 import { fetchRecentAttempts, fetchWeeklyStats } from "../utils/cloudSync";
 
 function getModuleTitle(moduleId) {
@@ -90,7 +89,6 @@ export default function DashboardScreen({ child, progress, onBack }) {
 
   const totalStars = getTotalStars(progress.moduleStars || {});
   const completedCount = (progress.completedModules || []).length;
-  const totalModules = Object.keys(MODULE_QUESTION_COUNTS).length;
   const weeklyGroups = groupByWeek(weeklyData);
   const weakAreas = findWeakAreas(recentAttempts);
   const maxAvg = Math.max(...weeklyGroups.map((w) => w.avg), 1);

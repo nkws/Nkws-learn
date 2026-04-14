@@ -24,7 +24,7 @@ import {
 } from "./utils/cloudSync";
 
 export default function App() {
-  const { user, loading, signInWithGoogle, signOut, isConfigured } = useAuth();
+  const { user, loading, signOut, isConfigured } = useAuth();
 
   // Auth & child state
   const [skippedLogin, setSkippedLogin] = useState(false);
@@ -52,13 +52,17 @@ export default function App() {
     saveNavState({ screen, level: activeLevel, subject: activeSubject, topic: activeTopic });
   }, [screen, activeLevel, activeSubject, activeTopic]);
 
-  // Load children when user logs in
+  // Load children when user logs in; reset on user change via cleanup
   useEffect(() => {
-    if (!user) { setChildrenLoaded(false); return; }
+    if (!user) return;
+    let cancelled = false;
     fetchChildren(user.id).then((kids) => {
-      setChildren(kids);
-      setChildrenLoaded(true);
+      if (!cancelled) {
+        setChildren(kids);
+        setChildrenLoaded(true);
+      }
     });
+    return () => { cancelled = true; setChildrenLoaded(false); };
   }, [user]);
 
   // Cloud sync: save progress when it changes (if child selected)
@@ -272,7 +276,6 @@ export default function App() {
         topicId={activeTopic}
         moduleId={activeModule}
         level={activeLevel}
-        progress={progress}
         setProgress={handleSetProgress}
         moduleVideos={moduleVideos}
         activeChild={activeChild}
@@ -316,7 +319,6 @@ export default function App() {
     return (
       <SubjectScreen
         level={activeLevel}
-        progress={progress}
         onSelectSubject={(subjectId) => { setActiveSubject(subjectId); setScreen("topics"); }}
         onBack={() => setScreen("home")}
       />

@@ -28,7 +28,7 @@ export default function HomeScreen({ progress, activeChild, user, onSelectLevel,
           </p>
         ) : (
           <p className="hero-tagline">
-            Free interactive learning for Primary 1–3, aligned to the Singapore MOE syllabus.
+            Free interactive learning for Primary 1–6, aligned to the Singapore MOE syllabus.
           </p>
         )}
         <div className="hero-subjects">

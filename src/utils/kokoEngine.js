@@ -203,10 +203,6 @@ export function getIntro(moduleId) {
   return ALL_INTROS[moduleId] || null;
 }
 
-function pick(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
 // Pick without repeating the last used phrase
 let lastPraiseIdx = -1;
 let lastHintIdx = -1;

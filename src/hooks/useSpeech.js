@@ -54,7 +54,10 @@ export function useTTS(lang = "en") {
   const voiceRef = useRef(null);
   const readyRef = useRef(false);
   const langRef = useRef(lang);
-  langRef.current = lang;
+
+  useEffect(() => {
+    langRef.current = lang;
+  }, [lang]);
 
   useEffect(() => {
     waitForVoices().then((voices) => {

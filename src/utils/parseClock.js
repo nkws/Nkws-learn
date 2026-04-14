@@ -26,7 +26,7 @@ export function parseClockTags(text) {
 }
 
 // Remove emoji characters and clock tags for clean TTS
-const EMOJI_REGEX = /[\p{Emoji_Presentation}\p{Extended_Pictographic}\u200d\uFE0F]/gu;
+const EMOJI_REGEX = /\p{Emoji_Presentation}|\p{Extended_Pictographic}|\u200d|\uFE0F/gu;
 
 export function cleanForSpeech(text) {
   return text
