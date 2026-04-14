@@ -87,10 +87,20 @@ export function useTTS(lang = "en") {
     return utterance;
   }, []);
 
-  const speak = useCallback((text, choices) => {
+  const speak = useCallback((text, choices, { cancel = true } = {}) => {
     const synth = window.speechSynthesis;
     if (!synth) return;
-    synth.cancel();
+    if (cancel) synth.cancel();
+
+    // Add a pause before queued messages so they don't run together
+    if (!cancel) {
+      for (let p = 0; p < 3; p++) {
+        const gap = new SpeechSynthesisUtterance(" ");
+        gap.volume = 0;
+        gap.rate = 0.1;
+        synth.speak(gap);
+      }
+    }
 
     const isZh = langRef.current === "zh";
     const cleaned = cleanForSpeech(text);
