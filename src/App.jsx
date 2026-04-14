@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import HomeScreen from "./screens/HomeScreen";
 import SubjectScreen from "./screens/SubjectScreen";
 import TopicListScreen from "./screens/TopicListScreen";
@@ -11,17 +11,29 @@ import {
   loadProgress, saveProgress,
   loadModuleVideos, saveModuleVideos,
   loadTopicVideos, saveTopicVideos,
+  loadNavState, saveNavState,
 } from "./utils/progress";
 
 export default function App() {
-  const [screen, setScreen] = useState("home");
-  const [activeLevel, setActiveLevel] = useState(null);
-  const [activeSubject, setActiveSubject] = useState(null);
-  const [activeTopic, setActiveTopic] = useState(null);
+  const [nav] = useState(() => {
+    const saved = loadNavState();
+    // Don't restore into chat — resume at the module list instead
+    if (saved && saved.screen === "chat") return { ...saved, screen: "modules" };
+    return saved;
+  });
+  const [screen, setScreen] = useState(nav?.screen || "home");
+  const [activeLevel, setActiveLevel] = useState(nav?.level || null);
+  const [activeSubject, setActiveSubject] = useState(nav?.subject || null);
+  const [activeTopic, setActiveTopic] = useState(nav?.topic || null);
   const [activeModule, setActiveModule] = useState(null);
   const [progress, setProgress] = useState(() => loadProgress());
   const [moduleVideos, setModuleVideos] = useState(() => loadModuleVideos());
   const [topicVideos, setTopicVideos] = useState(() => loadTopicVideos());
+
+  // Save navigation state on every screen change
+  useEffect(() => {
+    saveNavState({ screen, level: activeLevel, subject: activeSubject, topic: activeTopic });
+  }, [screen, activeLevel, activeSubject, activeTopic]);
 
   const handleModuleVideosChange = useCallback((v) => { setModuleVideos(v); saveModuleVideos(v); }, []);
   const handleTopicVideosChange = useCallback((v) => { setTopicVideos(v); saveTopicVideos(v); }, []);

@@ -47,3 +47,17 @@ export function loadTopicVideos() {
 export function saveTopicVideos(videos) {
   try { localStorage.setItem(TOPIC_VIDEOS_KEY, JSON.stringify(videos)); } catch { /* ignore */ }
 }
+
+const NAV_STATE_KEY = "koko-nav-state";
+
+export function loadNavState() {
+  try {
+    const saved = localStorage.getItem(NAV_STATE_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch { /* ignore */ }
+  return null;
+}
+
+export function saveNavState(state) {
+  try { localStorage.setItem(NAV_STATE_KEY, JSON.stringify(state)); } catch { /* ignore */ }
+}
