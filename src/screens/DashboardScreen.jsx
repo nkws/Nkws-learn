@@ -115,15 +115,15 @@ export default function DashboardScreen({ child, progress, onBack }) {
         <>
           {/* Overview Cards */}
           <div className="dash-overview">
-            <div className="dash-card">
+            <div className="dash-card" title="Stars earned from questions answered correctly on the first try">
               <span className="dash-card-value">⭐ {totalStars}</span>
               <span className="dash-card-label">Total Stars</span>
             </div>
-            <div className="dash-card">
+            <div className="dash-card" title="Number of modules completed at least once">
               <span className="dash-card-value">{completedCount}</span>
               <span className="dash-card-label">Modules Done</span>
             </div>
-            <div className="dash-card">
+            <div className="dash-card" title="Total number of quizzes taken, including retries">
               <span className="dash-card-value">{recentAttempts.length}</span>
               <span className="dash-card-label">Quiz Attempts</span>
             </div>
@@ -137,6 +137,7 @@ export default function DashboardScreen({ child, progress, onBack }) {
                 {trend > 5 && <span className="dash-trend-up"> — Improving!</span>}
                 {trend < -5 && <span className="dash-trend-down"> — Keep practising!</span>}
               </h2>
+              <p className="dash-section-desc">Average percentage of questions answered correctly each week. Higher bars mean better accuracy.</p>
               <div className="dash-chart">
                 {weeklyGroups.map((w) => (
                   <div key={w.week} className="dash-bar-col">
@@ -158,6 +159,7 @@ export default function DashboardScreen({ child, progress, onBack }) {
           {weakAreas.length > 0 && (
             <div className="dash-section">
               <h2 className="dash-section-title">Areas to Focus On</h2>
+              <p className="dash-section-desc">Topics with the lowest average scores from recent quizzes. These are good candidates for extra practise.</p>
               {weakAreas.map((area) => (
                 <div key={area.topic} className="dash-weak-item">
                   <span className="dash-weak-topic">{area.topic}</span>
@@ -177,6 +179,7 @@ export default function DashboardScreen({ child, progress, onBack }) {
           {recentAttempts.length > 0 && (
             <div className="dash-section">
               <h2 className="dash-section-title">Recent Activity</h2>
+              <p className="dash-section-desc">The last 10 quizzes completed, showing the score for each attempt.</p>
               <div className="dash-recent-list">
                 {recentAttempts.slice(0, 10).map((a) => (
                   <div key={a.id} className="dash-recent-item">

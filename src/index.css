@@ -1226,6 +1226,13 @@ button {
   font-family: "Fredoka One", cursive;
   font-size: 16px;
   color: var(--text);
+  margin-bottom: 4px;
+}
+
+.dash-section-desc {
+  font-size: 13px;
+  color: #999;
+  line-height: 1.4;
   margin-bottom: 12px;
 }
 
