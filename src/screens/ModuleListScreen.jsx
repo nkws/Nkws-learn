@@ -23,6 +23,8 @@ export default function ModuleListScreen({
   const [showClearVideosConfirm, setShowClearVideosConfirm] = useState(false);
   const [showVideoTip, setShowVideoTip] = useState(false);
 
+  const topic = getTopic(subjectId, topicId, level);
+
   // Show video tip once if no videos set in any module of this topic
   useEffect(() => {
     const dismissed = localStorage.getItem("koko-video-tip-dismissed");
@@ -36,8 +38,6 @@ export default function ModuleListScreen({
     setShowVideoTip(false);
     localStorage.setItem("koko-video-tip-dismissed", "1");
   };
-
-  const topic = getTopic(subjectId, topicId, level);
   const topicStars = getTopicStars(topicId, progress.moduleStars || {});
   const completedModules = progress.completedModules || [];
 
