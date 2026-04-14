@@ -6,6 +6,7 @@ const LEVELS = [
   { id: "p1", title: "Primary 1", subtitle: "Age 6-7", icon: "1" },
   { id: "p2", title: "Primary 2", subtitle: "Age 7-8", icon: "2" },
   { id: "p3", title: "Primary 3", subtitle: "Age 8-9", icon: "3" },
+  { id: "p4", title: "Primary 4", subtitle: "Age 9-10", icon: "4" },
 ];
 
 const SUBJECTS_PREVIEW = ["Math", "English", "Science", "Chinese"];

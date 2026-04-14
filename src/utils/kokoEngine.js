@@ -59,6 +59,8 @@ import { buildSystemsQuestions, P3_SYSTEMS_QUESTION_COUNTS, P3_SYSTEMS_INTRO } f
 // P3 Chinese
 import { buildCnGrammarQuestions, P3_CN_GRAMMAR_QUESTION_COUNTS } from "../topics/p3/cn-grammar";
 import { buildCnReading2Questions, P3_CN_READING2_QUESTION_COUNTS } from "../topics/p3/cn-reading2";
+// P4 Science
+import { buildMatterQuestions, P4_MATTER_QUESTION_COUNTS, P4_MATTER_INTRO } from "../topics/p4/sci-matter";
 
 const BUILDERS = {
   // P1
@@ -82,6 +84,8 @@ const BUILDERS = {
   "p3e-tn": buildTenses2Questions, "p3e-vc": buildVocabulary2Questions, "p3e-cp": buildComprehension3Questions,
   "p3s-dv": buildDiversityQuestions, "p3s-sy": buildSystemsQuestions,
   "p3c-gr": buildCnGrammarQuestions, "p3c-rd": buildCnReading2Questions,
+  // P4
+  "p4s-mt": buildMatterQuestions,
 };
 
 export function buildModuleQuestions(moduleId) {
@@ -110,6 +114,8 @@ export const MODULE_QUESTION_COUNTS = {
   ...P3_TENSES2_QUESTION_COUNTS, ...P3_VOCABULARY2_QUESTION_COUNTS, ...P3_COMPREHENSION3_QUESTION_COUNTS,
   ...P3_DIVERSITY_QUESTION_COUNTS, ...P3_SYSTEMS_QUESTION_COUNTS,
   ...P3_CN_GRAMMAR_QUESTION_COUNTS, ...P3_CN_READING2_QUESTION_COUNTS,
+  // P4
+  ...P4_MATTER_QUESTION_COUNTS,
 };
 
 const ALL_INTROS = {
@@ -123,6 +129,8 @@ const ALL_INTROS = {
   ...P2_MATERIALS_INTRO, ...P2_LIFECYCLES_INTRO,
   ...P3_FRACTIONS2_INTRO, ...P3_ANGLES_INTRO,
   ...P3_DIVERSITY_INTRO, ...P3_SYSTEMS_INTRO,
+  // P4
+  ...P4_MATTER_INTRO,
 };
 
 export function getIntro(moduleId) {

@@ -421,6 +421,16 @@ const P3_CHINESE_TOPICS = [
 ];
 
 // ============ LEVELS → SUBJECTS ============
+// ============ P4 ============
+const P4_SCIENCE_TOPICS = [
+  { id: "p4-matter", title: "Matter", icon: "🧊", description: "States of matter, mass, volume, and changes of state!",
+    modules: [
+      { id: "p4s-mt1", title: "What is Matter?", description: "Solids, liquids, gases — and what is NOT matter.", hasIntro: true },
+      { id: "p4s-mt2", title: "Mass and Volume", description: "Measuring mass and volume, water displacement.", hasIntro: true },
+      { id: "p4s-mt3", title: "Changes of State", description: "Melting, freezing, boiling, evaporation, condensation." },
+    ] },
+];
+
 export const LEVELS = {
   p1: [
     { id: "math", title: "Mathematics", icon: "🔢", description: "Numbers, shapes, time, and more!", topics: MATH_TOPICS },
@@ -440,10 +450,13 @@ export const LEVELS = {
     { id: "science", title: "Science", icon: "🔬", description: "Diversity, adaptations, and body systems!", topics: P3_SCIENCE_TOPICS },
     { id: "chinese", title: "华文", icon: "字", description: "量词、造句、阅读理解！", topics: P3_CHINESE_TOPICS },
   ],
+  p4: [
+    { id: "science", title: "Science", icon: "🔬", description: "Matter, heat, light, plants, and digestion!", topics: P4_SCIENCE_TOPICS },
+  ],
 };
 
 // Flat list of all subjects across all levels (for star counting)
-const ALL_SUBJECTS = [...LEVELS.p1, ...LEVELS.p2, ...LEVELS.p3];
+const ALL_SUBJECTS = [...LEVELS.p1, ...LEVELS.p2, ...LEVELS.p3, ...LEVELS.p4];
 
 // ============ HELPERS ============
 export function getSubjectsForLevel(level) {
