@@ -61,6 +61,11 @@ import { buildCnGrammarQuestions, P3_CN_GRAMMAR_QUESTION_COUNTS } from "../topic
 import { buildCnReading2Questions, P3_CN_READING2_QUESTION_COUNTS } from "../topics/p3/cn-reading2";
 // P4 Science
 import { buildMatterQuestions, P4_MATTER_QUESTION_COUNTS, P4_MATTER_INTRO } from "../topics/p4/sci-matter";
+import { buildHeatQuestions, P4_HEAT_QUESTION_COUNTS, P4_HEAT_INTRO } from "../topics/p4/sci-heat";
+import { buildLightQuestions, P4_LIGHT_QUESTION_COUNTS, P4_LIGHT_INTRO } from "../topics/p4/sci-light";
+import { buildP4PlantsQuestions, P4_PLANTS_QUESTION_COUNTS, P4_PLANTS_INTRO } from "../topics/p4/sci-plants";
+import { buildDigestionQuestions, P4_DIGESTION_QUESTION_COUNTS, P4_DIGESTION_INTRO } from "../topics/p4/sci-digestion";
+import { buildMagnetsQuestions, P4_MAGNETS_QUESTION_COUNTS, P4_MAGNETS_INTRO } from "../topics/p4/sci-magnets";
 
 const BUILDERS = {
   // P1
@@ -85,7 +90,8 @@ const BUILDERS = {
   "p3s-dv": buildDiversityQuestions, "p3s-sy": buildSystemsQuestions,
   "p3c-gr": buildCnGrammarQuestions, "p3c-rd": buildCnReading2Questions,
   // P4
-  "p4s-mt": buildMatterQuestions,
+  "p4s-mt": buildMatterQuestions, "p4s-ht": buildHeatQuestions, "p4s-lg": buildLightQuestions,
+  "p4s-pl": buildP4PlantsQuestions, "p4s-dg": buildDigestionQuestions, "p4s-mg": buildMagnetsQuestions,
 };
 
 export function buildModuleQuestions(moduleId) {
@@ -115,7 +121,8 @@ export const MODULE_QUESTION_COUNTS = {
   ...P3_DIVERSITY_QUESTION_COUNTS, ...P3_SYSTEMS_QUESTION_COUNTS,
   ...P3_CN_GRAMMAR_QUESTION_COUNTS, ...P3_CN_READING2_QUESTION_COUNTS,
   // P4
-  ...P4_MATTER_QUESTION_COUNTS,
+  ...P4_MATTER_QUESTION_COUNTS, ...P4_HEAT_QUESTION_COUNTS, ...P4_LIGHT_QUESTION_COUNTS,
+  ...P4_PLANTS_QUESTION_COUNTS, ...P4_DIGESTION_QUESTION_COUNTS, ...P4_MAGNETS_QUESTION_COUNTS,
 };
 
 const ALL_INTROS = {
@@ -130,7 +137,8 @@ const ALL_INTROS = {
   ...P3_FRACTIONS2_INTRO, ...P3_ANGLES_INTRO,
   ...P3_DIVERSITY_INTRO, ...P3_SYSTEMS_INTRO,
   // P4
-  ...P4_MATTER_INTRO,
+  ...P4_MATTER_INTRO, ...P4_HEAT_INTRO, ...P4_LIGHT_INTRO,
+  ...P4_PLANTS_INTRO, ...P4_DIGESTION_INTRO, ...P4_MAGNETS_INTRO,
 };
 
 export function getIntro(moduleId) {

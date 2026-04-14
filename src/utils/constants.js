@@ -429,6 +429,31 @@ const P4_SCIENCE_TOPICS = [
       { id: "p4s-mt2", title: "Mass and Volume", description: "Measuring mass and volume, water displacement.", hasIntro: true },
       { id: "p4s-mt3", title: "Changes of State", description: "Melting, freezing, boiling, evaporation, condensation." },
     ] },
+  { id: "p4-heat", title: "Heat", icon: "🔥", description: "Heat flow, conductors, insulators, expansion and contraction!",
+    modules: [
+      { id: "p4s-ht1", title: "Heat Energy", description: "Heat flows from hot to cold. Sources of heat.", hasIntro: true },
+      { id: "p4s-ht2", title: "Conductors and Insulators", description: "Why pots are metal and handles are wood." },
+      { id: "p4s-ht3", title: "Expansion and Contraction", description: "Railway gaps, thermometers, balloons." },
+    ] },
+  { id: "p4-light", title: "Light", icon: "💡", description: "Light sources, shadows, reflection, and materials!",
+    modules: [
+      { id: "p4s-lg1", title: "Light Sources and Properties", description: "The Sun is a source, the Moon is not.", hasIntro: true },
+      { id: "p4s-lg2", title: "Shadows and Materials", description: "Opaque, translucent, transparent." },
+    ] },
+  { id: "p4-plants", title: "Plant Systems", icon: "🌱", description: "Roots, stems, leaves, flowers — and photosynthesis!",
+    modules: [
+      { id: "p4s-pl1", title: "Plant Parts and Functions", description: "Every part has an important job.", hasIntro: true },
+    ] },
+  { id: "p4-digestion", title: "Digestive System", icon: "🫃", description: "How our body breaks down food!",
+    modules: [
+      { id: "p4s-dg1", title: "Organs and Their Functions", description: "Mouth to large intestine.", hasIntro: true },
+      { id: "p4s-dg2", title: "Digestion Concepts", description: "Where digestion happens and why." },
+    ] },
+  { id: "p4-magnets", title: "Magnets", icon: "🧲", description: "Magnetic materials, poles, attraction and repulsion!",
+    modules: [
+      { id: "p4s-mg1", title: "Magnetic Materials", description: "Not all metals are magnetic!", hasIntro: true },
+      { id: "p4s-mg2", title: "Poles and Repulsion", description: "Like poles repel, unlike poles attract." },
+    ] },
 ];
 
 export const LEVELS = {
