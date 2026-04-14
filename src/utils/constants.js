@@ -456,6 +456,56 @@ const P4_SCIENCE_TOPICS = [
     ] },
 ];
 
+// ============ P5 ============
+const P5_SCIENCE_TOPICS = [
+  { id: "p5-water-cycle", title: "Water Cycle", icon: "🌊", description: "Evaporation, condensation, and precipitation!",
+    modules: [
+      { id: "p5s-wc1", title: "The Water Cycle", description: "How water moves around Earth.", hasIntro: true },
+    ] },
+  { id: "p5-reproduction", title: "Reproduction", icon: "🌸", description: "How plants and animals reproduce!",
+    modules: [
+      { id: "p5s-rp1", title: "Plant Reproduction", description: "Pollination, seed formation, and dispersal.", hasIntro: true },
+      { id: "p5s-rp2", title: "Animal Reproduction", description: "Life cycles and metamorphosis.", hasIntro: true },
+    ] },
+  { id: "p5-body-systems", title: "Body Systems", icon: "🫁", description: "Respiratory and circulatory systems!",
+    modules: [
+      { id: "p5s-rs1", title: "Respiratory and Circulatory", description: "Breathing, heart, and blood vessels.", hasIntro: true },
+      { id: "p5s-rs2", title: "Systems Working Together", description: "Exercise, pulse, and gas exchange." },
+    ] },
+  { id: "p5-electrical", title: "Electrical Systems", icon: "⚡", description: "Circuits, conductors, and insulators!",
+    modules: [
+      { id: "p5s-el1", title: "Circuits", description: "Open, closed, series circuits.", hasIntro: true },
+      { id: "p5s-el2", title: "Electrical Safety", description: "Conductors, insulators, and safety." },
+    ] },
+  { id: "p5-energy", title: "Energy", icon: "🔋", description: "Forms of energy and energy conversion!",
+    modules: [
+      { id: "p5s-en1", title: "Forms and Conversion", description: "Light, heat, sound, kinetic, potential, electrical.", hasIntro: true },
+    ] },
+];
+
+// ============ P6 ============
+const P6_SCIENCE_TOPICS = [
+  { id: "p6-photosynthesis", title: "Photosynthesis", icon: "🌿", description: "How plants make food from sunlight!",
+    modules: [
+      { id: "p6s-ph1", title: "Photosynthesis", description: "Water + CO₂ + sunlight = glucose + oxygen.", hasIntro: true },
+    ] },
+  { id: "p6-forces", title: "Forces", icon: "💪", description: "Friction, gravity, and elastic spring force!",
+    modules: [
+      { id: "p6s-fc1", title: "Types of Forces", description: "Friction, gravity, elastic spring force.", hasIntro: true },
+      { id: "p6s-fc2", title: "Effects of Forces", description: "Mass vs weight, reducing friction." },
+    ] },
+  { id: "p6-food-chains", title: "Food Chains", icon: "🔗", description: "Producers, consumers, decomposers, and food webs!",
+    modules: [
+      { id: "p6s-fd1", title: "Food Chains", description: "How energy flows through living things.", hasIntro: true },
+      { id: "p6s-fd2", title: "Food Webs and Populations", description: "Interconnected chains and population changes." },
+    ] },
+  { id: "p6-environment", title: "Environment", icon: "🌍", description: "Adaptations, conservation, and human impact!",
+    modules: [
+      { id: "p6s-ev1", title: "Adaptations", description: "Structural and behavioural adaptations.", hasIntro: true },
+      { id: "p6s-ev2", title: "Man's Impact", description: "Pollution, deforestation, conservation." },
+    ] },
+];
+
 export const LEVELS = {
   p1: [
     { id: "math", title: "Mathematics", icon: "🔢", description: "Numbers, shapes, time, and more!", topics: MATH_TOPICS },
@@ -478,10 +528,16 @@ export const LEVELS = {
   p4: [
     { id: "science", title: "Science", icon: "🔬", description: "Matter, heat, light, plants, and digestion!", topics: P4_SCIENCE_TOPICS },
   ],
+  p5: [
+    { id: "science", title: "Science", icon: "🔬", description: "Water cycle, reproduction, body systems, circuits, and energy!", topics: P5_SCIENCE_TOPICS },
+  ],
+  p6: [
+    { id: "science", title: "Science", icon: "🔬", description: "Photosynthesis, forces, food chains, adaptations, and environment!", topics: P6_SCIENCE_TOPICS },
+  ],
 };
 
 // Flat list of all subjects across all levels (for star counting)
-const ALL_SUBJECTS = [...LEVELS.p1, ...LEVELS.p2, ...LEVELS.p3, ...LEVELS.p4];
+const ALL_SUBJECTS = [...LEVELS.p1, ...LEVELS.p2, ...LEVELS.p3, ...LEVELS.p4, ...LEVELS.p5, ...LEVELS.p6];
 
 // ============ HELPERS ============
 export function getSubjectsForLevel(level) {

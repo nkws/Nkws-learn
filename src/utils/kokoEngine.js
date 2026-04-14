@@ -66,6 +66,17 @@ import { buildLightQuestions, P4_LIGHT_QUESTION_COUNTS, P4_LIGHT_INTRO } from ".
 import { buildP4PlantsQuestions, P4_PLANTS_QUESTION_COUNTS, P4_PLANTS_INTRO } from "../topics/p4/sci-plants";
 import { buildDigestionQuestions, P4_DIGESTION_QUESTION_COUNTS, P4_DIGESTION_INTRO } from "../topics/p4/sci-digestion";
 import { buildMagnetsQuestions, P4_MAGNETS_QUESTION_COUNTS, P4_MAGNETS_INTRO } from "../topics/p4/sci-magnets";
+// P5 Science
+import { buildWaterCycleQuestions, P5_WATER_CYCLE_QUESTION_COUNTS, P5_WATER_CYCLE_INTRO } from "../topics/p5/sci-water-cycle";
+import { buildReproductionQuestions, P5_REPRODUCTION_QUESTION_COUNTS, P5_REPRODUCTION_INTRO } from "../topics/p5/sci-reproduction";
+import { buildRespiratoryQuestions, P5_RESPIRATORY_QUESTION_COUNTS, P5_RESPIRATORY_INTRO } from "../topics/p5/sci-respiratory";
+import { buildElectricalQuestions, P5_ELECTRICAL_QUESTION_COUNTS, P5_ELECTRICAL_INTRO } from "../topics/p5/sci-electrical";
+import { buildEnergyQuestions, P5_ENERGY_QUESTION_COUNTS, P5_ENERGY_INTRO } from "../topics/p5/sci-energy";
+// P6 Science
+import { buildPhotosynthesisQuestions, P6_PHOTOSYNTHESIS_QUESTION_COUNTS, P6_PHOTOSYNTHESIS_INTRO } from "../topics/p6/sci-photosynthesis";
+import { buildForcesQuestions, P6_FORCES_QUESTION_COUNTS, P6_FORCES_INTRO } from "../topics/p6/sci-forces";
+import { buildFoodChainsQuestions, P6_FOODCHAINS_QUESTION_COUNTS, P6_FOODCHAINS_INTRO } from "../topics/p6/sci-foodchains";
+import { buildEnvironmentQuestions, P6_ENVIRONMENT_QUESTION_COUNTS, P6_ENVIRONMENT_INTRO } from "../topics/p6/sci-environment";
 
 const BUILDERS = {
   // P1
@@ -92,6 +103,12 @@ const BUILDERS = {
   // P4
   "p4s-mt": buildMatterQuestions, "p4s-ht": buildHeatQuestions, "p4s-lg": buildLightQuestions,
   "p4s-pl": buildP4PlantsQuestions, "p4s-dg": buildDigestionQuestions, "p4s-mg": buildMagnetsQuestions,
+  // P5
+  "p5s-wc": buildWaterCycleQuestions, "p5s-rp": buildReproductionQuestions, "p5s-rs": buildRespiratoryQuestions,
+  "p5s-el": buildElectricalQuestions, "p5s-en": buildEnergyQuestions,
+  // P6
+  "p6s-ph": buildPhotosynthesisQuestions, "p6s-fc": buildForcesQuestions,
+  "p6s-fd": buildFoodChainsQuestions, "p6s-ev": buildEnvironmentQuestions,
 };
 
 export function buildModuleQuestions(moduleId) {
@@ -123,6 +140,12 @@ export const MODULE_QUESTION_COUNTS = {
   // P4
   ...P4_MATTER_QUESTION_COUNTS, ...P4_HEAT_QUESTION_COUNTS, ...P4_LIGHT_QUESTION_COUNTS,
   ...P4_PLANTS_QUESTION_COUNTS, ...P4_DIGESTION_QUESTION_COUNTS, ...P4_MAGNETS_QUESTION_COUNTS,
+  // P5
+  ...P5_WATER_CYCLE_QUESTION_COUNTS, ...P5_REPRODUCTION_QUESTION_COUNTS, ...P5_RESPIRATORY_QUESTION_COUNTS,
+  ...P5_ELECTRICAL_QUESTION_COUNTS, ...P5_ENERGY_QUESTION_COUNTS,
+  // P6
+  ...P6_PHOTOSYNTHESIS_QUESTION_COUNTS, ...P6_FORCES_QUESTION_COUNTS,
+  ...P6_FOODCHAINS_QUESTION_COUNTS, ...P6_ENVIRONMENT_QUESTION_COUNTS,
 };
 
 const ALL_INTROS = {
@@ -139,6 +162,11 @@ const ALL_INTROS = {
   // P4
   ...P4_MATTER_INTRO, ...P4_HEAT_INTRO, ...P4_LIGHT_INTRO,
   ...P4_PLANTS_INTRO, ...P4_DIGESTION_INTRO, ...P4_MAGNETS_INTRO,
+  // P5
+  ...P5_WATER_CYCLE_INTRO, ...P5_REPRODUCTION_INTRO, ...P5_RESPIRATORY_INTRO,
+  ...P5_ELECTRICAL_INTRO, ...P5_ENERGY_INTRO,
+  // P6
+  ...P6_PHOTOSYNTHESIS_INTRO, ...P6_FORCES_INTRO, ...P6_FOODCHAINS_INTRO, ...P6_ENVIRONMENT_INTRO,
 };
 
 export function getIntro(moduleId) {
