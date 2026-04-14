@@ -43,6 +43,12 @@ export default function TopicListScreen({
         </div>
       </div>
 
+      <div className="video-tip-banner">
+        <p className="video-tip-text">
+          🎬 <strong>Tip for parents:</strong> Tap the video link on any topic to add a YouTube reward. Your child earns it by getting a perfect score!
+        </p>
+      </div>
+
       <div className="module-list">
         {subject.topics.map((topic) => {
           const topicStars = getTopicStars(topic.id, progress.moduleStars || {});
