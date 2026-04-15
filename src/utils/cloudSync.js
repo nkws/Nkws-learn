@@ -169,12 +169,21 @@ export async function fetchSubscriptionStatus(userId) {
 }
 
 export async function createCheckoutSession(userId, email) {
-  const res = await fetch("/api/create-checkout", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, email }),
-  });
-  if (!res.ok) return null;
-  const data = await res.json();
-  return data.url;
+  try {
+    const res = await fetch("/api/create-checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, email }),
+    });
+    if (!res.ok) {
+      const err = await res.text();
+      console.error("createCheckoutSession failed:", res.status, err);
+      return null;
+    }
+    const data = await res.json();
+    return data.url;
+  } catch (err) {
+    console.error("createCheckoutSession error:", err);
+    return null;
+  }
 }
