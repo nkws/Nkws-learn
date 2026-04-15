@@ -159,12 +159,11 @@ export async function fetchWeeklyStats(childId, weeks = 4) {
 
 export async function fetchSubscriptionStatus(userId) {
   if (!isSupabaseConfigured()) return null;
-  const { data, error } = await supabase
+  const { data } = await supabase
     .from("user_subscriptions")
     .select("status")
     .eq("user_id", userId)
-    .single();
-  if (error) return null;
+    .maybeSingle();
   return data?.status || null;
 }
 
