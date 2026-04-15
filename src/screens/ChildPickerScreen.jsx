@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 const AVATARS = ["🦊", "🐼", "🐰", "🦁", "🐸", "🐱", "🐶", "🦄", "🐧", "🐻"];
+const FREE_CHILD_LIMIT = 1;
 
 export default function ChildPickerScreen({ children, onSelectChild, onAddChild, onEditChild, onDeleteChild, onSignOut }) {
   const [adding, setAdding] = useState(false);
@@ -8,6 +9,9 @@ export default function ChildPickerScreen({ children, onSelectChild, onAddChild,
   const [nameInput, setNameInput] = useState("");
   const [avatarInput, setAvatarInput] = useState("🦊");
   const [confirmDelete, setConfirmDelete] = useState(null);
+  const [showUpgrade, setShowUpgrade] = useState(false);
+
+  const atLimit = children.length >= FREE_CHILD_LIMIT;
 
   const handleAdd = () => {
     if (!nameInput.trim()) return;
@@ -56,7 +60,13 @@ export default function ChildPickerScreen({ children, onSelectChild, onAddChild,
       </div>
 
       {!adding && !editing && (
-        <button className="btn-primary child-add-btn" onClick={() => { setAdding(true); setEditing(null); }}>
+        <button
+          className="btn-primary child-add-btn"
+          onClick={() => {
+            if (atLimit) { setShowUpgrade(true); }
+            else { setAdding(true); setEditing(null); }
+          }}
+        >
           + Add Child
         </button>
       )}
@@ -120,6 +130,30 @@ export default function ChildPickerScreen({ children, onSelectChild, onAddChild,
             </button>
             <button className="confirm-cancel" onClick={() => setConfirmDelete(null)}>
               Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showUpgrade && (
+        <div className="reward-overlay" onClick={() => setShowUpgrade(false)}>
+          <div className="reward-modal upgrade-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="reward-emojis">⭐</div>
+            <h2 className="reward-title">Koko Plus</h2>
+            <p className="reward-subtitle">
+              Free accounts include 1 child profile. Upgrade to Koko Plus to add unlimited profiles and unlock more features.
+            </p>
+            <ul className="upgrade-features">
+              <li>Unlimited child profiles</li>
+              <li>Detailed progress reports</li>
+              <li>Achievement badges</li>
+              <li>Avatar & theme customisation</li>
+            </ul>
+            <button className="btn-primary reward-dismiss upgrade-btn" disabled>
+              Coming Soon
+            </button>
+            <button className="confirm-cancel" onClick={() => setShowUpgrade(false)}>
+              Maybe Later
             </button>
           </div>
         </div>
