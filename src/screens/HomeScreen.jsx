@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { getTotalStars } from "../utils/constants";
 import { loadStreak } from "../utils/progress";
+import { createCheckoutSession } from "../utils/cloudSync";
 import SupportLink from "../components/AdSlot";
 
 const LEVELS = [
@@ -16,6 +18,8 @@ const SUBJECTS_PREVIEW = ["Math", "English", "Science", "Chinese"];
 export default function HomeScreen({ progress, activeChild, user, isPlus, onSelectLevel, onDashboard, onSwitchChild, onManageSubscription, onSignOut, onAbout, onHowTo }) {
   const totalStars = getTotalStars(progress.moduleStars || {});
   const streak = loadStreak();
+  const [showUpgrade, setShowUpgrade] = useState(false);
+  const [upgradeLoading, setUpgradeLoading] = useState(false);
 
   return (
     <div className="screen home-screen">
@@ -77,10 +81,18 @@ export default function HomeScreen({ progress, activeChild, user, isPlus, onSele
             <span className="home-link-dot">·</span>
           </>
         )}
-        {isPlus && onManageSubscription && (
+        {user && isPlus && onManageSubscription && (
           <>
             <button className="about-link" onClick={onManageSubscription}>
               Manage Subscription
+            </button>
+            <span className="home-link-dot">·</span>
+          </>
+        )}
+        {user && !isPlus && (
+          <>
+            <button className="about-link" onClick={() => setShowUpgrade(true)}>
+              Upgrade to Koko Plus
             </button>
             <span className="home-link-dot">·</span>
           </>
@@ -103,6 +115,43 @@ export default function HomeScreen({ progress, activeChild, user, isPlus, onSele
       </div>
 
       <SupportLink />
+
+      {showUpgrade && (
+        <div className="reward-overlay" onClick={() => setShowUpgrade(false)}>
+          <div className="reward-modal upgrade-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="reward-emojis">⭐</div>
+            <h2 className="reward-title">Koko Plus</h2>
+            <p className="reward-subtitle">
+              Upgrade to Koko Plus to unlock more features for your family.
+            </p>
+            <ul className="upgrade-features">
+              <li>Unlimited child profiles</li>
+              <li>Detailed progress reports</li>
+              <li>Achievement badges</li>
+              <li>Avatar & theme customisation</li>
+            </ul>
+            <button
+              className="btn-primary reward-dismiss upgrade-btn"
+              disabled={upgradeLoading}
+              onClick={async () => {
+                if (!user) return;
+                setUpgradeLoading(true);
+                const url = await createCheckoutSession(user.id, user.email);
+                if (url) {
+                  window.location.href = url;
+                } else {
+                  setUpgradeLoading(false);
+                }
+              }}
+            >
+              {upgradeLoading ? "Loading..." : "Upgrade — $4.99/month"}
+            </button>
+            <button className="confirm-cancel" onClick={() => setShowUpgrade(false)}>
+              Maybe Later
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
