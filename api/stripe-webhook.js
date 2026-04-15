@@ -3,12 +3,11 @@ import { createClient } from "@supabase/supabase-js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-const supabase = createClient(
-  process.env.VITE_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY
-);
+// Use SUPABASE_URL (non-VITE_ prefix) for server-side, fall back to VITE_ prefix
+const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+const supabase = createClient(supabaseUrl, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
-// Vercel serverless functions need raw body for webhook verification
+// Disable body parsing so we get the raw body for signature verification
 export const config = { api: { bodyParser: false } };
 
 async function buffer(readable) {
