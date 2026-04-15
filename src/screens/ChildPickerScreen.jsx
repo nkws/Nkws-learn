@@ -1,17 +1,19 @@
 import { useState } from "react";
+import { createCheckoutSession } from "../utils/cloudSync";
 
 const AVATARS = ["🦊", "🐼", "🐰", "🦁", "🐸", "🐱", "🐶", "🦄", "🐧", "🐻"];
 const FREE_CHILD_LIMIT = 1;
 
-export default function ChildPickerScreen({ children, onSelectChild, onAddChild, onEditChild, onDeleteChild, onSignOut }) {
+export default function ChildPickerScreen({ children, user, isPlus, onSelectChild, onAddChild, onEditChild, onDeleteChild, onSignOut }) {
   const [adding, setAdding] = useState(false);
   const [editing, setEditing] = useState(null);
   const [nameInput, setNameInput] = useState("");
   const [avatarInput, setAvatarInput] = useState("🦊");
   const [confirmDelete, setConfirmDelete] = useState(null);
   const [showUpgrade, setShowUpgrade] = useState(false);
+  const [upgradeLoading, setUpgradeLoading] = useState(false);
 
-  const atLimit = children.length >= FREE_CHILD_LIMIT;
+  const atLimit = !isPlus && children.length >= FREE_CHILD_LIMIT;
 
   const handleAdd = () => {
     if (!nameInput.trim()) return;
@@ -149,8 +151,21 @@ export default function ChildPickerScreen({ children, onSelectChild, onAddChild,
               <li>Achievement badges</li>
               <li>Avatar & theme customisation</li>
             </ul>
-            <button className="btn-primary reward-dismiss upgrade-btn" disabled>
-              Coming Soon
+            <button
+              className="btn-primary reward-dismiss upgrade-btn"
+              disabled={upgradeLoading}
+              onClick={async () => {
+                if (!user) return;
+                setUpgradeLoading(true);
+                const url = await createCheckoutSession(user.id, user.email);
+                if (url) {
+                  window.location.href = url;
+                } else {
+                  setUpgradeLoading(false);
+                }
+              }}
+            >
+              {upgradeLoading ? "Loading..." : "Upgrade — $4.99/month"}
             </button>
             <button className="confirm-cancel" onClick={() => setShowUpgrade(false)}>
               Maybe Later
