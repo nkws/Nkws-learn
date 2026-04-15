@@ -21,6 +21,7 @@ import {
   fetchProgress, saveCloudProgress,
   cloudProgressToLocal, cloudToModuleVideos, cloudToTopicVideos,
   fetchSubscriptionStatus,
+  createPortalSession,
 } from "./utils/cloudSync";
 
 export default function App() {
@@ -131,6 +132,12 @@ export default function App() {
     setActiveSubject(null);
     setActiveTopic(null);
   }, [signOut]);
+
+  const handleManageSubscription = useCallback(async () => {
+    if (!user) return;
+    const url = await createPortalSession(user.id);
+    if (url) window.location.href = url;
+  }, [user]);
 
   const handleModuleVideosChange = useCallback((v) => {
     setModuleVideos(v);
@@ -315,9 +322,11 @@ export default function App() {
       progress={progress}
       activeChild={activeChild}
       user={user}
+      isPlus={isPlus}
       onSelectLevel={(level) => { setActiveLevel(level); setScreen("subjects"); }}
       onDashboard={() => setScreen("dashboard")}
       onSwitchChild={() => setActiveChild(null)}
+      onManageSubscription={handleManageSubscription}
       onSignOut={handleSignOut}
       onHowTo={() => setScreen("howto")}
       onAbout={() => setScreen("about")}
