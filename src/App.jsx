@@ -333,6 +333,7 @@ export default function App() {
       onSwitchChild={() => setActiveChild(null)}
       onManageSubscription={handleManageSubscription}
       onSignOut={handleSignOut}
+      onSignIn={() => setSkippedLogin(false)}
       onHowTo={() => setScreen("howto")}
       onAbout={() => setScreen("about")}
     />
