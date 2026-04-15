@@ -20,6 +20,7 @@ import {
   fetchChildren, createChild, updateChild, deleteChild,
   fetchProgress, saveCloudProgress,
   cloudProgressToLocal, cloudToModuleVideos, cloudToTopicVideos,
+  fetchSubscriptionStatus,
 } from "./utils/cloudSync";
 
 export default function App() {
@@ -30,6 +31,7 @@ export default function App() {
   const [children, setChildren] = useState([]);
   const [activeChild, setActiveChild] = useState(null);
   const [childrenLoaded, setChildrenLoaded] = useState(false);
+  const [isPlus, setIsPlus] = useState(false);
 
   // Nav state — always start at home
   const [screen, setScreen] = useState("home");
@@ -41,17 +43,21 @@ export default function App() {
   const [moduleVideos, setModuleVideos] = useState(() => loadModuleVideos());
   const [topicVideos, setTopicVideos] = useState(() => loadTopicVideos());
 
-  // Load children when user logs in; reset on user change via cleanup
+  // Load children and subscription status when user logs in
   useEffect(() => {
     if (!user) return;
     let cancelled = false;
-    fetchChildren(user.id).then((kids) => {
+    Promise.all([
+      fetchChildren(user.id),
+      fetchSubscriptionStatus(user.id),
+    ]).then(([kids, subStatus]) => {
       if (!cancelled) {
         setChildren(kids);
         setChildrenLoaded(true);
+        setIsPlus(subStatus === "active");
       }
     });
-    return () => { cancelled = true; setChildrenLoaded(false); };
+    return () => { cancelled = true; setChildrenLoaded(false); setIsPlus(false); };
   }, [user]);
 
   // Cloud sync: save progress when it changes (if child selected)
@@ -218,6 +224,8 @@ export default function App() {
     return (
       <ChildPickerScreen
         children={children}
+        user={user}
+        isPlus={isPlus}
         onSelectChild={handleSelectChild}
         onAddChild={handleAddChild}
         onEditChild={handleEditChild}
@@ -232,7 +240,7 @@ export default function App() {
       <DashboardScreen
         child={activeChild}
         progress={progress}
-        isPlus={false}
+        isPlus={isPlus}
         onBack={() => setScreen("home")}
       />
     );

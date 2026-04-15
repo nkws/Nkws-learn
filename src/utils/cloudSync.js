@@ -154,3 +154,27 @@ export async function fetchWeeklyStats(childId, weeks = 4) {
   if (error) { console.error("fetchWeeklyStats:", error); return []; }
   return data;
 }
+
+// ============ SUBSCRIPTIONS ============
+
+export async function fetchSubscriptionStatus(userId) {
+  if (!isSupabaseConfigured()) return null;
+  const { data, error } = await supabase
+    .from("user_subscriptions")
+    .select("status")
+    .eq("user_id", userId)
+    .single();
+  if (error) return null;
+  return data?.status || null;
+}
+
+export async function createCheckoutSession(userId, email) {
+  const res = await fetch("/api/create-checkout", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userId, email }),
+  });
+  if (!res.ok) return null;
+  const data = await res.json();
+  return data.url;
+}
