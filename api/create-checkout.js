@@ -13,6 +13,8 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Missing userId" });
   }
 
+  const origin = req.headers.origin || `https://${req.headers.host}`;
+
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
@@ -25,8 +27,8 @@ export default async function handler(req, res) {
           quantity: 1,
         },
       ],
-      success_url: `${req.headers.origin}/?checkout=success`,
-      cancel_url: `${req.headers.origin}/?checkout=cancel`,
+      success_url: `${origin}/?checkout=success`,
+      cancel_url: `${origin}/?checkout=cancel`,
     });
 
     return res.status(200).json({ url: session.url });
