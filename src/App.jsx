@@ -232,6 +232,7 @@ export default function App() {
       <DashboardScreen
         child={activeChild}
         progress={progress}
+        isPlus={false}
         onBack={() => setScreen("home")}
       />
     );
