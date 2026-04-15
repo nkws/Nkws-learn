@@ -1,7 +1,5 @@
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
 export default async function handler(req, res) {
   // CORS — allow same-origin requests from the app
   res.setHeader("Access-Control-Allow-Origin", req.headers.origin || "*");
@@ -19,11 +17,20 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Missing userId" });
   }
 
-  if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_PRICE_ID) {
+  const secretKey = process.env.STRIPE_SECRET_KEY;
+  const priceId = process.env.STRIPE_PRICE_ID;
+
+  if (!secretKey || !priceId) {
     console.error("Missing STRIPE_SECRET_KEY or STRIPE_PRICE_ID env vars");
     return res.status(500).json({ error: "Stripe not configured" });
   }
 
+  if (!secretKey.startsWith("sk_")) {
+    console.error("STRIPE_SECRET_KEY does not look like a valid Stripe secret key");
+    return res.status(500).json({ error: "Stripe not configured" });
+  }
+
+  const stripe = new Stripe(secretKey);
   const origin = req.headers.origin || `https://${req.headers.host}`;
 
   try {
@@ -34,7 +41,7 @@ export default async function handler(req, res) {
       metadata: { supabase_user_id: userId },
       line_items: [
         {
-          price: process.env.STRIPE_PRICE_ID,
+          price: priceId,
           quantity: 1,
         },
       ],
