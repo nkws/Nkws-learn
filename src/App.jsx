@@ -135,8 +135,13 @@ export default function App() {
 
   const handleManageSubscription = useCallback(async () => {
     if (!user) return;
-    const url = await createPortalSession(user.id);
-    if (url) window.location.href = url;
+    const result = await createPortalSession(user.id);
+    if (result === "subscription_stale") {
+      // Stale record was cleaned up server-side — refresh UI to show upgrade prompt
+      setIsPlus(false);
+    } else if (result) {
+      window.location.href = result;
+    }
   }, [user]);
 
   const handleModuleVideosChange = useCallback((v) => {
