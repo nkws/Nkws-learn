@@ -8,7 +8,7 @@ import { saveProgress, updateStreak } from "../utils/progress";
 import { buildModuleQuestions, getPraise, getHint, getIntro } from "../utils/kokoEngine";
 import { recordQuizAttempt } from "../utils/cloudSync";
 import IntroScreen from "./IntroScreen";
-import AdSlot from "../components/AdSlot";
+
 
 export default function ChatScreen({
   subjectId,
@@ -243,7 +243,6 @@ export default function ChatScreen({
 
       {moduleComplete ? (
         <div className="module-done-bar">
-          <AdSlot />
           <button className="btn-primary" onClick={onBack}>
             Back to Modules
           </button>

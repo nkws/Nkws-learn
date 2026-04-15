@@ -10,7 +10,7 @@ export default function HowToScreen({ onBack }) {
         <section className="about-section">
           <h2>Getting Started</h2>
           <p>
-            Choose a level (P1, P2, or P3), pick a subject, select a topic,
+            Choose a level (P1–P6), pick a subject, select a topic,
             and tap the ▶ button to begin a module. Complete each module to
             unlock the next one.
           </p>

@@ -1,8 +1,12 @@
-export default function AdSlot() {
-  // Placeholder — replace with AdSense code when approved
+export default function SupportLink() {
   return (
-    <div className="ad-slot">
-      <div className="ad-placeholder" />
-    </div>
+    <a
+      className="support-link"
+      href="https://ko-fi.com/PLACEHOLDER"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      ☕ Support Koko's Classroom
+    </a>
   );
 }
