@@ -56,7 +56,7 @@ export default function AboutScreen({ onBack }) {
         <section className="about-section">
           <h2>What We Cover</h2>
           <p>
-            The full Singapore MOE Primary 1 syllabus across four subjects:
+            The Singapore MOE Primary 1–6 syllabus across four subjects:
           </p>
           <ul className="about-list">
             <li><strong>Mathematics</strong> — Numbers, addition, subtraction, shapes, patterns, time, measurement, and money.</li>
@@ -95,6 +95,13 @@ export default function AboutScreen({ onBack }) {
         <div className="about-footer">
           <span className="about-mascot">🦊</span>
           <p>Made with ❤️ in Singapore</p>
+          <p className="about-support">
+            Koko's Classroom is free and ad-free.{" "}
+            <a href="https://ko-fi.com/PLACEHOLDER" target="_blank" rel="noopener noreferrer">
+              Buy us a coffee
+            </a>{" "}
+            if you'd like to support the project.
+          </p>
         </div>
       </div>
     </div>

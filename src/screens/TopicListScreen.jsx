@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { getSubject, getTopicStars } from "../utils/constants";
 import { extractVideoId } from "../utils/videos";
-import AdSlot from "../components/AdSlot";
+
 
 export default function TopicListScreen({
   subjectId,
@@ -105,7 +105,6 @@ export default function TopicListScreen({
         })}
       </div>
 
-      <AdSlot />
     </div>
   );
 }

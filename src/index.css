@@ -748,20 +748,27 @@ button {
 }
 
 /* ============ AD SLOT ============ */
-.ad-slot {
-  width: 100%;
-  max-width: 420px;
-  display: flex;
-  justify-content: center;
-  padding: 8px 0;
-  flex-shrink: 0;
+.support-link {
+  font-size: 13px;
+  color: #999;
+  text-decoration: none;
+  padding: 4px 0;
 }
 
-.ad-placeholder {
-  width: 320px;
-  height: 50px;
-  border-radius: 8px;
-  background: #f0f0f0;
+.support-link:hover {
+  color: var(--teal);
+}
+
+.about-support {
+  font-size: 13px;
+  color: #999;
+  margin-top: 8px;
+}
+
+.about-support a {
+  color: var(--teal);
+  text-decoration: none;
+  font-weight: 700;
 }
 
 .reset-topic-btn {
@@ -1432,7 +1439,6 @@ button:focus-visible {
   .module-video-edit { flex-direction: column; gap: 8px; }
   .mv-input { width: 100%; min-width: unset; }
   .chat-bubble { max-width: 90%; }
-  .ad-placeholder { width: 280px; height: 40px; }
 }
 
 /* ============ LANDSCAPE MODE ============ */

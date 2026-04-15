@@ -1,6 +1,6 @@
 import { getTotalStars } from "../utils/constants";
 import { loadStreak } from "../utils/progress";
-import AdSlot from "../components/AdSlot";
+import SupportLink from "../components/AdSlot";
 
 const LEVELS = [
   { id: "p1", title: "Primary 1", subtitle: "Age 6-7", icon: "1" },
@@ -64,8 +64,6 @@ export default function HomeScreen({ progress, activeChild, user, onSelectLevel,
         ))}
       </div>
 
-      <AdSlot />
-
       <div className="home-links">
         {activeChild && (
           <>
@@ -95,6 +93,8 @@ export default function HomeScreen({ progress, activeChild, user, onSelectLevel,
           </>
         )}
       </div>
+
+      <SupportLink />
     </div>
   );
 }
