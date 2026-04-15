@@ -1,8 +1,6 @@
 import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
 // Use SUPABASE_URL (non-VITE_ prefix) for server-side, fall back to VITE_ prefix
 const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
 const supabase = createClient(supabaseUrl, process.env.SUPABASE_SERVICE_ROLE_KEY);
@@ -39,6 +37,8 @@ export default async function handler(req, res) {
 
   const buf = await buffer(req);
   const sig = req.headers["stripe-signature"];
+
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
   let event;
   try {
