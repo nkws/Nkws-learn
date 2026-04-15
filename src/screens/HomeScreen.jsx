@@ -15,7 +15,7 @@ const LEVELS = [
 
 const SUBJECTS_PREVIEW = ["Math", "English", "Science", "Chinese"];
 
-export default function HomeScreen({ progress, activeChild, user, isPlus, onSelectLevel, onDashboard, onSwitchChild, onManageSubscription, onSignOut, onAbout, onHowTo }) {
+export default function HomeScreen({ progress, activeChild, user, isPlus, onSelectLevel, onDashboard, onSwitchChild, onManageSubscription, onSignOut, onSignIn, onAbout, onHowTo }) {
   const totalStars = getTotalStars(progress.moduleStars || {});
   const streak = loadStreak();
   const [showUpgrade, setShowUpgrade] = useState(false);
@@ -104,14 +104,21 @@ export default function HomeScreen({ progress, activeChild, user, isPlus, onSele
         <button className="about-link" onClick={onAbout}>
           About
         </button>
-        {user && (
+        {user ? (
           <>
             <span className="home-link-dot">·</span>
             <button className="about-link" onClick={onSignOut}>
               Sign Out
             </button>
           </>
-        )}
+        ) : onSignIn ? (
+          <>
+            <span className="home-link-dot">·</span>
+            <button className="about-link" onClick={onSignIn}>
+              Sign In
+            </button>
+          </>
+        ) : null}
       </div>
 
       <SupportLink />
