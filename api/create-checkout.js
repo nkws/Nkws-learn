@@ -37,6 +37,7 @@ export default async function handler(req, res) {
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       payment_method_types: ["card"],
+      allow_promotion_codes: true,
       customer_email: email || undefined,
       metadata: { supabase_user_id: userId },
       line_items: [
