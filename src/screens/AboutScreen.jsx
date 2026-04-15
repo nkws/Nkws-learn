@@ -97,7 +97,7 @@ export default function AboutScreen({ onBack }) {
           <p>Made with ❤️ in Singapore</p>
           <p className="about-support">
             Koko's Classroom is free and ad-free.{" "}
-            <a href="https://ko-fi.com/PLACEHOLDER" target="_blank" rel="noopener noreferrer">
+            <a href="https://ko-fi.com/kokoclassroom" target="_blank" rel="noopener noreferrer">
               Buy us a coffee
             </a>{" "}
             if you'd like to support the project.
