@@ -167,6 +167,26 @@ export async function fetchSubscriptionStatus(userId) {
   return data?.status || null;
 }
 
+export async function createPortalSession(userId) {
+  try {
+    const res = await fetch("/api/create-portal-session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId }),
+    });
+    if (!res.ok) {
+      const err = await res.text();
+      console.error("createPortalSession failed:", res.status, err);
+      return null;
+    }
+    const data = await res.json();
+    return data.url;
+  } catch (err) {
+    console.error("createPortalSession error:", err);
+    return null;
+  }
+}
+
 export async function createCheckoutSession(userId, email) {
   try {
     const res = await fetch("/api/create-checkout", {
