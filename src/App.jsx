@@ -15,12 +15,11 @@ import {
   loadProgress, saveProgress,
   loadModuleVideos, saveModuleVideos,
   loadTopicVideos, saveTopicVideos,
-  loadNavState, saveNavState,
 } from "./utils/progress";
 import {
   fetchChildren, createChild, updateChild, deleteChild,
   fetchProgress, saveCloudProgress,
-  cloudProgressToLocal, cloudToNavState, cloudToModuleVideos, cloudToTopicVideos,
+  cloudProgressToLocal, cloudToModuleVideos, cloudToTopicVideos,
 } from "./utils/cloudSync";
 
 export default function App() {
@@ -32,25 +31,15 @@ export default function App() {
   const [activeChild, setActiveChild] = useState(null);
   const [childrenLoaded, setChildrenLoaded] = useState(false);
 
-  // Nav state — restored from localStorage or cloud
-  const [nav] = useState(() => {
-    const saved = loadNavState();
-    if (saved && saved.screen === "chat") return { ...saved, screen: "modules" };
-    return saved;
-  });
-  const [screen, setScreen] = useState(nav?.screen || "home");
-  const [activeLevel, setActiveLevel] = useState(nav?.level || null);
-  const [activeSubject, setActiveSubject] = useState(nav?.subject || null);
-  const [activeTopic, setActiveTopic] = useState(nav?.topic || null);
+  // Nav state — always start at home
+  const [screen, setScreen] = useState("home");
+  const [activeLevel, setActiveLevel] = useState(null);
+  const [activeSubject, setActiveSubject] = useState(null);
+  const [activeTopic, setActiveTopic] = useState(null);
   const [activeModule, setActiveModule] = useState(null);
   const [progress, setProgress] = useState(() => loadProgress());
   const [moduleVideos, setModuleVideos] = useState(() => loadModuleVideos());
   const [topicVideos, setTopicVideos] = useState(() => loadTopicVideos());
-
-  // Save navigation state on every screen change
-  useEffect(() => {
-    saveNavState({ screen, level: activeLevel, subject: activeSubject, topic: activeTopic });
-  }, [screen, activeLevel, activeSubject, activeTopic]);
 
   // Load children when user logs in; reset on user change via cleanup
   useEffect(() => {
@@ -72,11 +61,10 @@ export default function App() {
       stars: prog.stars,
       moduleStars: prog.moduleStars,
       completedModules: prog.completedModules,
-      navState: { screen, level: activeLevel, subject: activeSubject, topic: activeTopic },
       moduleVideos: modVids,
       topicVideos: topVids,
     });
-  }, [activeChild, screen, activeLevel, activeSubject, activeTopic]);
+  }, [activeChild]);
 
   // When a child is selected, load their cloud progress
   const handleSelectChild = useCallback(async (child) => {
@@ -84,23 +72,11 @@ export default function App() {
     const cloudData = await fetchProgress(child.id);
     if (cloudData) {
       const localProg = cloudProgressToLocal(cloudData);
-      const navState = cloudToNavState(cloudData);
       const modVids = cloudToModuleVideos(cloudData);
       const topVids = cloudToTopicVideos(cloudData);
       if (localProg) {
         setProgress(localProg);
         saveProgress(localProg);
-      }
-      if (navState) {
-        setScreen(navState.screen === "chat" ? "modules" : (navState.screen || "home"));
-        setActiveLevel(navState.level || null);
-        setActiveSubject(navState.subject || null);
-        setActiveTopic(navState.topic || null);
-      } else {
-        setScreen("home");
-        setActiveLevel(null);
-        setActiveSubject(null);
-        setActiveTopic(null);
       }
       if (modVids) { setModuleVideos(modVids); saveModuleVideos(modVids); }
       if (topVids) { setTopicVideos(topVids); saveTopicVideos(topVids); }
@@ -109,11 +85,11 @@ export default function App() {
       const fresh = { stars: 0, moduleStars: {}, completedModules: [], completedTopics: [], lastSession: null };
       setProgress(fresh);
       saveProgress(fresh);
-      setScreen("home");
-      setActiveLevel(null);
-      setActiveSubject(null);
-      setActiveTopic(null);
     }
+    setScreen("home");
+    setActiveLevel(null);
+    setActiveSubject(null);
+    setActiveTopic(null);
   }, []);
 
   const handleAddChild = useCallback(async (name, avatar) => {
