@@ -174,12 +174,11 @@ export async function createPortalSession(userId) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId }),
     });
-    if (!res.ok) {
-      const err = await res.text();
-      console.error("createPortalSession failed:", res.status, err);
-      return null;
-    }
     const data = await res.json();
+    if (!res.ok) {
+      console.error("createPortalSession failed:", res.status, data);
+      return data.error === "subscription_stale" ? "subscription_stale" : null;
+    }
     return data.url;
   } catch (err) {
     console.error("createPortalSession error:", err);
