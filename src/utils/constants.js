@@ -555,6 +555,18 @@ const P5_ENGLISH_TOPICS = [
     modules: [
       { id: "p5e-vc1", title: "Vocabulary and Phrasal Verbs", description: "Reluctant, plummeted, give in, look into." },
     ] },
+  { id: "p5-cloze", title: "Cloze Practice", icon: "📖", description: "Fill-in-the-blank in context.",
+    modules: [
+      { id: "p5e-cl1", title: "Cloze Practice", description: "Tense, prepositions, conjunctions in context.", hasIntro: true },
+    ] },
+  { id: "p5-comprehension", title: "Comprehension", icon: "📰", description: "Read passages and answer questions.",
+    modules: [
+      { id: "p5e-cp1", title: "Comprehension MCQ", description: "Two passages with inference and theme questions.", hasIntro: true },
+    ] },
+  { id: "p5-editing", title: "Editing", icon: "🔍", description: "Spot grammar and spelling errors.",
+    modules: [
+      { id: "p5e-ed1", title: "Editing", description: "Agreement, tense, double negatives, uncountable nouns.", hasIntro: true },
+    ] },
 ];
 const P5_MATH_TOPICS = [
   { id: "p5-percentage", title: "Percentage", icon: "💯", description: "Converting, finding percentage, discounts!",
@@ -565,6 +577,31 @@ const P5_MATH_TOPICS = [
     modules: [
       { id: "p5m-rt1", title: "Rate", description: "Speed, cost per item, quantity per time." },
     ] },
+  { id: "p5-fractions", title: "Fractions", icon: "🍕", description: "Unlike fractions, multiplication, and division!",
+    modules: [
+      { id: "p5m-fr1", title: "Unlike Fractions (+/−)", description: "1/2 + 1/3. Find common denominators.", hasIntro: true },
+      { id: "p5m-fr2", title: "Fractions (×/÷)", description: "2/3 × 4/5. Flip and multiply for division.", hasIntro: true },
+    ] },
+  { id: "p5-angles", title: "Angles", icon: "📐", description: "Acute, obtuse, right angles and unknown angles.",
+    modules: [
+      { id: "p5m-an1", title: "Angles", description: "Straight line = 180°. At a point = 360°.", hasIntro: true },
+    ] },
+  { id: "p5-triangles", title: "Triangles", icon: "🔺", description: "Types, properties, and area of triangles.",
+    modules: [
+      { id: "p5m-tr1", title: "Triangles", description: "Equilateral, isosceles, scalene. Area = ½ × b × h.", hasIntro: true },
+    ] },
+  { id: "p5-decimals", title: "Decimals", icon: "🔢", description: "Four operations with decimals.",
+    modules: [
+      { id: "p5m-de1", title: "Decimals", description: "Add, subtract, multiply and divide decimals.", hasIntro: true },
+    ] },
+  { id: "p5-average", title: "Average", icon: "📊", description: "Mean, total, and finding missing values.",
+    modules: [
+      { id: "p5m-av1", title: "Average", description: "Total ÷ Count = Average.", hasIntro: true },
+    ] },
+  { id: "p5-volume", title: "Volume", icon: "📦", description: "Volume of cubes and cuboids.",
+    modules: [
+      { id: "p5m-vo1", title: "Volume", description: "L × W × H, litres, missing dimensions.", hasIntro: true },
+    ] },
 ];
 const P5_CHINESE_TOPICS = [
   { id: "p5-cn-vocab", title: "词语", icon: "📖", description: "词语意思、近义词、反义词！",
@@ -574,6 +611,18 @@ const P5_CHINESE_TOPICS = [
   { id: "p5-cn-grammar", title: "语法", icon: "✏️", description: "把被句、关联词！",
     modules: [
       { id: "p5c-gr1", title: "把被句和关联词", description: "他把书放好了。书被弄坏了。" },
+    ] },
+  { id: "p5-cn-reading", title: "阅读理解", icon: "📰", description: "短文阅读，回答问题。",
+    modules: [
+      { id: "p5c-rd1", title: "阅读理解", description: "阅读短文，回答问题。", hasIntro: true },
+    ] },
+  { id: "p5-cn-idioms", title: "成语", icon: "📖", description: "常用成语的意思。",
+    modules: [
+      { id: "p5c-id1", title: "成语", description: "一心一意、手忙脚乱、目不转睛。" },
+    ] },
+  { id: "p5-cn-bingju", title: "病句", icon: "🔧", description: "找出错误，选出正确的句子。",
+    modules: [
+      { id: "p5c-bj1", title: "病句改正", description: "的地得、量词、关联词搭配。" },
     ] },
 ];
 
