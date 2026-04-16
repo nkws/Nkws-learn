@@ -42,7 +42,7 @@ function buildP5mDe1() {
 function buildP5mAv1() {
   return shuffle([
     { q: "The average of 10, 20 and 30 is?", a: "20", choices: ["20", "30", "60"] },
-    { q: "Tom scored 75, 85 and 90 on three tests. What is his average?", a: "83⅓", choices: ["83⅓", "85", "75"] },
+    { q: "Tom scored 70, 80 and 90 on three tests. What is his average?", a: "80", choices: ["80", "90", "70"] },
     { q: "The average of 4 numbers is 15. What is the total?", a: "60", choices: ["60", "15", "19"] },
     { q: "5 students weigh 40, 42, 38, 45 and 35 kg. What is their average?", a: "40 kg", choices: ["40 kg", "42 kg", "38 kg"] },
     { q: "The average of 3 numbers is 12. Two numbers are 10 and 8. What is the third?", a: "18", choices: ["18", "12", "14"] },

@@ -44,7 +44,7 @@ function buildP5mTr1() {
     { q: "A right-angled triangle has the right angle and another angle of 35°. What is the third angle?", a: "55°", choices: ["55°", "145°", "35°"] },
     { q: "A triangle has base 12 cm and height 7 cm. What is its area?", a: "42 cm²", choices: ["42 cm²", "84 cm²", "19 cm²"] },
     { q: "An isosceles triangle has a top angle of 40°. What is each base angle?", a: "70°", choices: ["70°", "40°", "140°"] },
-    { q: "Can a triangle have two right angles?", a: "No — they would add up to 180° with no room for a third angle", choices: ["No — they would add up to 180° with no room for a third angle", "Yes, always", "Only if it is equilateral"] },
+    { q: "Can a triangle have two right angles?", a: "No, because 90° + 90° = 180° already", choices: ["No, because 90° + 90° = 180° already", "Yes, if it is very large", "Yes, if the third angle is 0°"] },
   ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]) }));
 }
 
