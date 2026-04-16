@@ -279,6 +279,18 @@ const P2_MATH_TOPICS = [
       { id: "p2m-gr2", title: "Bar Graphs", description: "Reading bars and values." },
       { id: "p2m-gr3", title: "Comparing Data", description: "Which is the most popular?" },
     ] },
+  { id: "p2-addsub1000", title: "Add & Subtract to 1000", icon: "🧮", description: "Bigger numbers — hundreds, tens, ones!",
+    modules: [
+      { id: "p2m-as1", title: "Addition & Subtraction to 1000", description: "345 + 123 = ? 500 − 238 = ?", hasIntro: true },
+    ] },
+  { id: "p2-time", title: "Telling Time", icon: "🕐", description: "O'clock, half past, quarter past and to.",
+    modules: [
+      { id: "p2m-tm1", title: "Telling Time", description: "Read clocks: half past, quarter to.", hasIntro: true },
+    ] },
+  { id: "p2-shapes", title: "Shapes", icon: "🔺", description: "2D and 3D shapes — pentagons, hexagons, pyramids!",
+    modules: [
+      { id: "p2m-sh1", title: "2D & 3D Shapes", description: "Pentagon, hexagon, cube, sphere, pyramid.", hasIntro: true },
+    ] },
 ];
 
 const P2_ENGLISH_TOPICS = [
@@ -300,6 +312,14 @@ const P2_ENGLISH_TOPICS = [
       { id: "p2e-cp2", title: "A Rainy Day", description: "Read and answer!" },
       { id: "p2e-cp3", title: "The Lost Puppy", description: "Read and answer!" },
     ] },
+  { id: "p2-cloze", title: "Cloze Practice", icon: "📖", description: "Fill-in-the-blank.",
+    modules: [
+      { id: "p2e-cl1", title: "Cloze Practice", description: "Choose the right word for each blank.", hasIntro: true },
+    ] },
+  { id: "p2-editing", title: "Editing", icon: "🔍", description: "Spot grammar errors.",
+    modules: [
+      { id: "p2e-ed1", title: "Editing", description: "Wrong tense, wrong plural, wrong article.", hasIntro: true },
+    ] },
 ];
 
 const P2_SCIENCE_TOPICS = [
@@ -315,6 +335,10 @@ const P2_SCIENCE_TOPICS = [
       { id: "p2s-lc2", title: "Butterfly Life Cycle", description: "Egg → caterpillar → chrysalis → butterfly." },
       { id: "p2s-lc3", title: "Frog Life Cycle", description: "Egg → tadpole → froglet → frog." },
     ] },
+  { id: "p2-magnets", title: "Magnets", icon: "🧲", description: "What sticks? Poles, attract, repel!",
+    modules: [
+      { id: "p2s-mg1", title: "Magnets", description: "Iron, steel, poles, attract and repel.", hasIntro: true },
+    ] },
 ];
 
 const P2_CHINESE_TOPICS = [
@@ -329,6 +353,14 @@ const P2_CHINESE_TOPICS = [
       { id: "p2c-rd1", title: "短文一", description: "关于上学的故事。" },
       { id: "p2c-rd2", title: "短文二", description: "关于家庭出游的故事。" },
       { id: "p2c-rd3", title: "短文三", description: "关于宠物的故事。" },
+    ] },
+  { id: "p2-cn-expressions", title: "常用词语", icon: "📖", description: "AABB词语和简单表达。",
+    modules: [
+      { id: "p2c-id1", title: "AABB词语", description: "开开心心、高高兴兴。" },
+    ] },
+  { id: "p2-cn-bingju", title: "病句", icon: "🔧", description: "找出错误的句子。",
+    modules: [
+      { id: "p2c-bj1", title: "病句改正", description: "量词、的地得。" },
     ] },
 ];
 
@@ -366,6 +398,18 @@ const P3_MATH_TOPICS = [
       { id: "p3m-mn2", title: "Making Change", description: "Pay $10, item is $6.80." },
       { id: "p3m-mn3", title: "Comparing Prices", description: "Which is the better deal?" },
     ] },
+  { id: "p3-barmodels", title: "Bar Models", icon: "📊", description: "The Singapore Math way to solve word problems!",
+    modules: [
+      { id: "p3m-bm1", title: "Bar Models", description: "Part-whole and comparison models.", hasIntro: true },
+    ] },
+  { id: "p3-time", title: "Time (24-hour)", icon: "🕐", description: "24-hour clock, duration, and conversions.",
+    modules: [
+      { id: "p3m-tm1", title: "24-Hour Clock & Duration", description: "3 p.m. = 15:00. Find duration.", hasIntro: true },
+    ] },
+  { id: "p3-capacity", title: "Capacity", icon: "🥛", description: "Litres and millilitres.",
+    modules: [
+      { id: "p3m-ca1", title: "Litres & Millilitres", description: "1 L = 1000 mL.", hasIntro: true },
+    ] },
 ];
 
 const P3_ENGLISH_TOPICS = [
@@ -389,6 +433,14 @@ const P3_ENGLISH_TOPICS = [
       { id: "p3e-cp3", title: "The New Student", description: "Read and answer!" },
       { id: "p3e-cp4", title: "The Missing Lunchbox", description: "Read and answer!" },
     ] },
+  { id: "p3-cloze", title: "Cloze Practice", icon: "📖", description: "Fill-in-the-blank in context.",
+    modules: [
+      { id: "p3e-cl1", title: "Cloze Practice", description: "Tense, articles, prepositions.", hasIntro: true },
+    ] },
+  { id: "p3-editing", title: "Editing", icon: "🔍", description: "Spot grammar errors.",
+    modules: [
+      { id: "p3e-ed1", title: "Editing", description: "Wrong tense, wrong plural, irregular verbs.", hasIntro: true },
+    ] },
 ];
 
 const P3_SCIENCE_TOPICS = [
@@ -404,6 +456,14 @@ const P3_SCIENCE_TOPICS = [
       { id: "p3s-sy2", title: "Human Body Systems", description: "Heart, lungs, stomach." },
       { id: "p3s-sy3", title: "Systems Working Together", description: "Breathing gives us oxygen." },
     ] },
+  { id: "p3-magnets", title: "Magnets", icon: "🧲", description: "Magnetic materials, poles, attraction and repulsion.",
+    modules: [
+      { id: "p3s-mg1", title: "Magnets", description: "Iron, steel, poles, attract and repel.", hasIntro: true },
+    ] },
+  { id: "p3-light", title: "Light", icon: "💡", description: "Light sources, shadows, and transparent materials.",
+    modules: [
+      { id: "p3s-lg1", title: "Light & Shadows", description: "Sources of light, opaque, transparent.", hasIntro: true },
+    ] },
 ];
 
 const P3_CHINESE_TOPICS = [
@@ -418,6 +478,14 @@ const P3_CHINESE_TOPICS = [
       { id: "p3c-rd1", title: "阅读理解一", description: "关于学校活动的故事。" },
       { id: "p3c-rd2", title: "阅读理解二", description: "关于大自然的故事。" },
       { id: "p3c-rd3", title: "阅读理解三", description: "关于助人的故事。" },
+    ] },
+  { id: "p3-cn-idioms", title: "成语", icon: "📖", description: "常用成语的意思。",
+    modules: [
+      { id: "p3c-id1", title: "成语", description: "一心一意、五颜六色、七上八下。" },
+    ] },
+  { id: "p3-cn-bingju", title: "病句", icon: "🔧", description: "找出错误的句子。",
+    modules: [
+      { id: "p3c-bj1", title: "病句改正", description: "量词、的地得、关联词。" },
     ] },
 ];
 
