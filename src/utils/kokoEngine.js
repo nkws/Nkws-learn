@@ -87,7 +87,18 @@ import { buildMath5Questions, P5_MATH5_QUESTION_COUNTS } from "../topics/p5/math
 import { buildCnVocab5Questions, P5_CN_VOCAB5_QUESTION_COUNTS } from "../topics/p5/cn-vocab5";
 // P6 English, Math, Chinese
 import { buildGrammar6Questions, P6_GRAMMAR6_QUESTION_COUNTS, P6_GRAMMAR6_INTRO } from "../topics/p6/eng-grammar6";
+import { buildClozeQuestions, P6_CLOZE_QUESTION_COUNTS, P6_CLOZE_INTRO } from "../topics/p6/eng-cloze";
 import { buildMath6Questions, P6_MATH6_QUESTION_COUNTS, P6_MATH6_INTRO } from "../topics/p6/math6";
+import { buildMathFractionsQuestions, P6_MATH_FRACTIONS_QUESTION_COUNTS, P6_MATH_FRACTIONS_INTRO } from "../topics/p6/math-fractions";
+import { buildMathPercentageQuestions, P6_MATH_PERCENTAGE_QUESTION_COUNTS, P6_MATH_PERCENTAGE_INTRO } from "../topics/p6/math-percentage";
+import { buildMathVolumeQuestions, P6_MATH_VOLUME_QUESTION_COUNTS, P6_MATH_VOLUME_INTRO } from "../topics/p6/math-volume";
+import { buildMathGeometryQuestions, P6_MATH_GEOMETRY_QUESTION_COUNTS, P6_MATH_GEOMETRY_INTRO } from "../topics/p6/math-geometry";
+import { buildMathDataQuestions, P6_MATH_DATA_QUESTION_COUNTS, P6_MATH_DATA_INTRO } from "../topics/p6/math-data";
+import { buildEditingQuestions, P6_EDITING_QUESTION_COUNTS, P6_EDITING_INTRO } from "../topics/p6/eng-editing";
+import { buildComprehension6Questions, P6_COMPREHENSION_QUESTION_COUNTS, P6_COMPREHENSION_INTRO } from "../topics/p6/eng-comprehension6";
+import { buildRevisionQuestions, P6_REVISION_QUESTION_COUNTS, P6_REVISION_INTRO } from "../topics/p6/sci-revision";
+import { buildCnReading6Questions, P6_CN_READING_QUESTION_COUNTS, P6_CN_READING_INTRO } from "../topics/p6/cn-reading6";
+import { buildCnAdvanced6Questions, P6_CN_ADVANCED_QUESTION_COUNTS } from "../topics/p6/cn-advanced6";
 import { buildCnVocab6Questions, P6_CN_VOCAB6_QUESTION_COUNTS } from "../topics/p6/cn-vocab6";
 
 const BUILDERS = {
@@ -131,7 +142,18 @@ const BUILDERS = {
   "p5c-vc": buildCnVocab5Questions, "p5c-gr": buildCnVocab5Questions,
   // P6 English, Math, Chinese
   "p6e-gr": buildGrammar6Questions, "p6e-vc": buildGrammar6Questions,
+  "p6e-cl": buildClozeQuestions,
+  "p6e-ed": buildEditingQuestions,
+  "p6e-cp": buildComprehension6Questions,
   "p6m-ra": buildMath6Questions, "p6m-al": buildMath6Questions, "p6m-st": buildMath6Questions,
+  "p6m-fw": buildMathFractionsQuestions,
+  "p6m-pe": buildMathPercentageQuestions,
+  "p6m-vo": buildMathVolumeQuestions,
+  "p6m-ge": buildMathGeometryQuestions, "p6m-ar": buildMathGeometryQuestions, "p6m-ne": buildMathGeometryQuestions,
+  "p6m-av": buildMathDataQuestions, "p6m-pc": buildMathDataQuestions,
+  "p6s-re": buildRevisionQuestions,
+  "p6c-rd": buildCnReading6Questions,
+  "p6c-bj": buildCnAdvanced6Questions, "p6c-sy": buildCnAdvanced6Questions,
   "p6c-vc": buildCnVocab6Questions, "p6c-gr": buildCnVocab6Questions,
 };
 
@@ -174,6 +196,13 @@ export const MODULE_QUESTION_COUNTS = {
   ...P4_GRAMMAR4_QUESTION_COUNTS, ...P4_MATH4_QUESTION_COUNTS, ...P4_CN_VOCAB4_QUESTION_COUNTS,
   ...P5_GRAMMAR5_QUESTION_COUNTS, ...P5_MATH5_QUESTION_COUNTS, ...P5_CN_VOCAB5_QUESTION_COUNTS,
   ...P6_GRAMMAR6_QUESTION_COUNTS, ...P6_MATH6_QUESTION_COUNTS, ...P6_CN_VOCAB6_QUESTION_COUNTS,
+  // P6 new modules
+  ...P6_CLOZE_QUESTION_COUNTS, ...P6_MATH_FRACTIONS_QUESTION_COUNTS,
+  ...P6_MATH_PERCENTAGE_QUESTION_COUNTS, ...P6_MATH_VOLUME_QUESTION_COUNTS,
+  ...P6_MATH_GEOMETRY_QUESTION_COUNTS, ...P6_MATH_DATA_QUESTION_COUNTS,
+  ...P6_EDITING_QUESTION_COUNTS, ...P6_COMPREHENSION_QUESTION_COUNTS,
+  ...P6_REVISION_QUESTION_COUNTS, ...P6_CN_READING_QUESTION_COUNTS,
+  ...P6_CN_ADVANCED_QUESTION_COUNTS,
 };
 
 const ALL_INTROS = {
@@ -199,6 +228,13 @@ const ALL_INTROS = {
   ...P4_GRAMMAR4_INTRO, ...P5_GRAMMAR5_INTRO, ...P6_GRAMMAR6_INTRO,
   // P6 Math
   ...P6_MATH6_INTRO,
+  ...P6_MATH_FRACTIONS_INTRO, ...P6_MATH_PERCENTAGE_INTRO, ...P6_MATH_VOLUME_INTRO,
+  // P6 English
+  ...P6_CLOZE_INTRO, ...P6_EDITING_INTRO, ...P6_COMPREHENSION_INTRO,
+  // P6 Science
+  ...P6_REVISION_INTRO,
+  // P6 Chinese
+  ...P6_CN_READING_INTRO,
 };
 
 export function getIntro(moduleId) {
