@@ -505,6 +505,10 @@ const P6_SCIENCE_TOPICS = [
       { id: "p6s-ev1", title: "Adaptations", description: "Structural and behavioural adaptations.", hasIntro: true },
       { id: "p6s-ev2", title: "Man's Impact", description: "Pollution, deforestation, conservation." },
     ] },
+  { id: "p6-revision", title: "PSLE Revision", icon: "📚", description: "Cross-topic revision mixing P3–P6 Science themes.",
+    modules: [
+      { id: "p6s-re1", title: "PSLE Science Revision", description: "Mixed questions across all themes — perfect for exam prep.", hasIntro: true },
+    ] },
 ];
 
 // P4 English, Math, Chinese
@@ -588,6 +592,14 @@ const P6_ENGLISH_TOPICS = [
     modules: [
       { id: "p6e-cl1", title: "Cloze Practice", description: "Tense, prepositions, agreement and word choice in context.", hasIntro: true },
     ] },
+  { id: "p6-editing", title: "Editing", icon: "🔍", description: "Spot grammar and spelling errors — PSLE Booklet B.",
+    modules: [
+      { id: "p6e-ed1", title: "Editing", description: "Spot the error: tense, agreement, preposition, spelling.", hasIntro: true },
+    ] },
+  { id: "p6-comprehension", title: "Comprehension", icon: "📰", description: "Read passages and answer literal + inferential questions.",
+    modules: [
+      { id: "p6e-cp1", title: "Comprehension MCQ", description: "Two passages with inference, vocabulary-in-context, and theme questions.", hasIntro: true },
+    ] },
 ];
 const P6_MATH_TOPICS = [
   { id: "p6-ratio", title: "Ratio", icon: "⚖️", description: "Equivalent ratios, simplifying, and sharing!",
@@ -614,15 +626,48 @@ const P6_MATH_TOPICS = [
     modules: [
       { id: "p6m-vo1", title: "Volume of Cubes & Cuboids", description: "Calculate volume, find missing dimensions, work with litres.", hasIntro: true },
     ] },
+  { id: "p6-geometry", title: "Angles", icon: "📐", description: "Angle properties of triangles, quadrilaterals, and straight lines.",
+    modules: [
+      { id: "p6m-ge1", title: "Angles", description: "Sum of angles in triangles (180°), quadrilaterals (360°), straight lines.", hasIntro: true },
+    ] },
+  { id: "p6-area", title: "Area & Perimeter", icon: "📏", description: "Rectangles, triangles, and composite shapes.",
+    modules: [
+      { id: "p6m-ar1", title: "Area & Perimeter", description: "L × W, ½ × b × h, composite shapes.", hasIntro: true },
+    ] },
+  { id: "p6-nets", title: "Nets of Solids", icon: "🎲", description: "Cube and cuboid nets, surface area.",
+    modules: [
+      { id: "p6m-ne1", title: "Nets of Solids", description: "Faces, nets, and surface area of cubes and cuboids." },
+    ] },
+  { id: "p6-average", title: "Average", icon: "📊", description: "Mean, total, and finding missing values.",
+    modules: [
+      { id: "p6m-av1", title: "Average", description: "Total ÷ Count = Average. Find missing values.", hasIntro: true },
+    ] },
+  { id: "p6-piecharts", title: "Pie Charts", icon: "🥧", description: "Reading and interpreting pie charts — angles, fractions, percentages.",
+    modules: [
+      { id: "p6m-pc1", title: "Pie Charts", description: "Convert between angles, fractions, and percentages.", hasIntro: true },
+    ] },
 ];
 const P6_CHINESE_TOPICS = [
   { id: "p6-cn-vocab", title: "成语", icon: "📖", description: "成语意思和用法！",
     modules: [
-      { id: "p6c-vc1", title: "成语", description: "锲而不舍、一举两得、半途而废。" },
+      { id: "p6c-vc1", title: "成语 (一)", description: "锲而不舍、一举两得、半途而废。" },
+      { id: "p6c-vc2", title: "成语 (二)", description: "自相矛盾、画蛇添足、亡羊补牢。" },
     ] },
   { id: "p6-cn-grammar", title: "语法", icon: "✏️", description: "关联词、把被句、的地得！",
     modules: [
       { id: "p6c-gr1", title: "关联词和的地得", description: "既...又、无论...还是。" },
+    ] },
+  { id: "p6-cn-bingju", title: "病句", icon: "🔧", description: "找出句子中的错误，选出正确的句子。",
+    modules: [
+      { id: "p6c-bj1", title: "病句改正", description: "的地得、量词、关联词搭配。" },
+    ] },
+  { id: "p6-cn-reading", title: "阅读理解", icon: "📰", description: "短文阅读，回答问题。",
+    modules: [
+      { id: "p6c-rd1", title: "阅读理解", description: "阅读短文，回答问题。", hasIntro: true },
+    ] },
+  { id: "p6-cn-synonyms", title: "近义词和反义词", icon: "🔄", description: "高兴↔快乐，美丽↔丑陋。",
+    modules: [
+      { id: "p6c-sy1", title: "近义词和反义词", description: "高兴的近义词？勇敢的反义词？" },
     ] },
 ];
 
