@@ -34,12 +34,12 @@ function buildShp2() {
     { q: "⬜ What shape is this?", a: "Square", choices: ["Rectangle", "Square", "Diamond"] },
     { q: "A clock face is what shape?", a: "Circle", choices: ["Circle", "Square", "Triangle"] },
     { q: "A window pane is usually what shape?", a: "Square", choices: ["Circle", "Square", "Triangle"] },
-    { q: "Is a square also a rectangle?", a: "Yes", choices: ["Yes", "No", "Sometimes"] },
+    { q: "Which shape has 4 sides that are all the same length?", a: "Square", choices: ["Square", "Rectangle", "Triangle"] },
     { q: "A circle has how many sides?", a: "0", choices: ["0", "1", "2"] },
     { q: "A dice face is what shape?", a: "Square", choices: ["Circle", "Square", "Triangle"] },
     { q: "A plate is what shape?", a: "Circle", choices: ["Circle", "Square", "Rectangle"] },
     { q: "A book cover is what shape?", a: "Rectangle", choices: ["Circle", "Square", "Rectangle"] },
-    { q: "A yield sign is what shape?", a: "Triangle", choices: ["Circle", "Square", "Triangle"] },
+    { q: "A slice of watermelon is what shape?", a: "Triangle", choices: ["Circle", "Square", "Triangle"] },
   ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]) }));
 }
 

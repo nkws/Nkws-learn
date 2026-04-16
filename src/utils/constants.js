@@ -379,7 +379,8 @@ const P3_ENGLISH_TOPICS = [
     modules: [
       { id: "p3e-vc1", title: "Synonyms", description: "Happy = glad. Big = large." },
       { id: "p3e-vc2", title: "Antonyms", description: "Hot ↔ cold. Big ↔ small." },
-      { id: "p3e-vc3", title: "Prepositions", description: "Under, on, in, behind." },
+      { id: "p3e-vc3", title: "Prepositions of Time & Phrases", description: "Good at, listen to, on Monday." },
+      { id: "p3e-vc4", title: "Prepositions of Place", description: "On, under, in, behind — with pictures!" },
     ] },
   { id: "p3-comprehension", title: "Comprehension", icon: "📖", description: "Longer passages with deeper questions!",
     modules: [
@@ -592,6 +593,10 @@ const P6_MATH_TOPICS = [
   { id: "p6-algebra", title: "Algebra", icon: "🔤", description: "Expressions, substitution, and solving equations!",
     modules: [
       { id: "p6m-al1", title: "Algebra", description: "Simplify 3x + 2x. Solve x + 5 = 12." },
+    ] },
+  { id: "p6-speed", title: "Speed, Distance & Time", icon: "🚗", description: "Calculate speed, distance, and time — a key PSLE topic.",
+    modules: [
+      { id: "p6m-st1", title: "Speed, Distance & Time", description: "D = S × T. Find any of the three when you know the other two.", hasIntro: true },
     ] },
 ];
 const P6_CHINESE_TOPICS = [

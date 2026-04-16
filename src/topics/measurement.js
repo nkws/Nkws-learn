@@ -28,7 +28,7 @@ function buildMsr1() {
 function buildMsr2() {
   return shuffle([
     { q: "Which is longer: a bus or a bicycle?", a: "Bus", choices: ["Bus", "Bicycle", "Same"] },
-    { q: "Which is shorter: a pencil or a straw?", a: "Pencil", choices: ["Pencil", "Straw", "Same"] },
+    { q: "Which is shorter: a pencil or a paperclip?", a: "Paperclip", choices: ["Pencil", "Paperclip", "Same"] },
     { q: "Which is taller: a tree or a flower?", a: "Tree", choices: ["Tree", "Flower", "Same"] },
     { q: "Which is longer: a worm or a snake?", a: "Snake", choices: ["Worm", "Snake", "Same"] },
     { q: "Which is shorter: your finger or your arm?", a: "Finger", choices: ["Finger", "Arm", "Same"] },

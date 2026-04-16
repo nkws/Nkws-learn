@@ -112,11 +112,13 @@ function PlusSection({ title, children }) {
     <div className="dash-section dash-plus-section">
       <div className="dash-plus-badge">Plus</div>
       <h2 className="dash-section-title">{title}</h2>
-      <div className="dash-plus-blur">
-        {children}
-      </div>
-      <div className="dash-plus-overlay">
-        <p className="dash-plus-cta">Upgrade to Koko Plus to unlock detailed insights</p>
+      <div className="dash-plus-content-wrap">
+        <div className="dash-plus-blur">
+          {children}
+        </div>
+        <div className="dash-plus-overlay">
+          <p className="dash-plus-cta">Upgrade to Koko Plus to unlock detailed insights</p>
+        </div>
       </div>
     </div>
   );

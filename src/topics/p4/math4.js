@@ -5,7 +5,7 @@ function buildP4mFm1() {
     { q: "What are the factors of 12?", a: "1, 2, 3, 4, 6, 12", choices: ["1, 2, 3, 4, 6, 12", "1, 2, 3, 12", "2, 4, 6, 12"] },
     { q: "What is the largest factor of 18 (other than 18)?", a: "9", choices: ["9", "6", "3"] },
     { q: "Which is a common factor of 8 and 12?", a: "4", choices: ["4", "3", "5"] },
-    { q: "What is the first three multiples of 7?", a: "7, 14, 21", choices: ["7, 14, 21", "1, 7, 14", "7, 12, 21"] },
+    { q: "What are the first three multiples of 7?", a: "7, 14, 21", choices: ["7, 14, 21", "1, 7, 14", "7, 12, 21"] },
     { q: "Which is a common multiple of 3 and 4?", a: "12", choices: ["12", "8", "9"] },
     { q: "Is 15 a multiple of 4?", a: "No", choices: ["No", "Yes", "Sometimes"] },
     { q: "Is 1 a factor of every number?", a: "Yes", choices: ["Yes", "No", "Only odd numbers"] },
@@ -17,7 +17,7 @@ function buildP4mFm1() {
 
 function buildP4mDc1() {
   return shuffle([
-    { q: "What is 0.5 as a fraction?", a: "1/2", choices: ["1/2", "1/5", "5/10"] },
+    { q: "What is 0.5 as a fraction?", a: "1/2", choices: ["1/2", "1/5", "2/5"] },
     { q: "What is 3/4 as a decimal?", a: "0.75", choices: ["0.75", "0.34", "0.50"] },
     { q: "Which is bigger: 0.6 or 0.58?", a: "0.6", choices: ["0.6", "0.58", "They are equal"] },
     { q: "Round 3.47 to 1 decimal place.", a: "3.5", choices: ["3.5", "3.4", "4.0"] },

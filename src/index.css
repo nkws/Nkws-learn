@@ -690,6 +690,18 @@ button {
   margin: 8px 0;
 }
 
+.bubble-scene {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0;
+}
+
+.bubble-journey {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0;
+}
+
 .speak-btn {
   display: inline;
   background: none;
@@ -1495,8 +1507,12 @@ button {
 
 /* ============ PLUS: BLURRED PREVIEW ============ */
 .dash-plus-section {
-  position: relative;
   overflow: hidden;
+}
+
+.dash-plus-content-wrap {
+  position: relative;
+  min-height: 120px;
 }
 
 .dash-plus-blur {
@@ -1504,6 +1520,7 @@ button {
   opacity: 0.5;
   pointer-events: none;
   user-select: none;
+  padding-bottom: 12px;
 }
 
 .dash-plus-overlay {

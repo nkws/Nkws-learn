@@ -49,7 +49,7 @@ function buildBd2() {
 function buildBd3() {
   return shuffle([
     { q: "What should you do every day to stay healthy?", a: "Exercise", choices: ["Exercise", "Watch TV", "Eat candy"] },
-    { q: "How many hours of sleep do kids need?", a: "A lot", choices: ["A lot", "None", "One hour"] },
+    { q: "How many hours of sleep do kids need?", a: "About 10 hours", choices: ["About 10 hours", "About 2 hours", "About 20 hours"] },
     { q: "What kind of food keeps you healthy?", a: "Vegetables", choices: ["Candy", "Vegetables", "Chips"] },
     { q: "When should you brush your teeth?", a: "Morning and night", choices: ["Morning and night", "Never", "Once a year"] },
     { q: "When should you wash your hands?", a: "Before eating", choices: ["Before eating", "Never", "Once a week"] },
