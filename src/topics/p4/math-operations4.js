@@ -1,20 +1,5 @@
 import { shuffle } from "../../utils/helpers";
 
-function nearbyWrongs(correct, count = 2) {
-  const wrongs = new Set();
-  const offsets = shuffle([-1, 1, -2, 2, -10, 10, -100, 100]);
-  for (const off of offsets) {
-    if (wrongs.size >= count) break;
-    const fake = correct + off;
-    if (fake > 0 && fake !== correct) wrongs.add(fake);
-  }
-  while (wrongs.size < count) {
-    const fake = correct + Math.floor(Math.random() * 20) - 10;
-    if (fake > 0 && fake !== correct) wrongs.add(fake);
-  }
-  return [...wrongs];
-}
-
 export const P4_MATH_OPERATIONS_INTRO = {
   "p4m-mu1": {
     title: "Multiplication",
