@@ -60,7 +60,7 @@ function buildVc4() {
     { q: "Where do you go when you are sick?", a: "Hospital", choices: ["Hospital", "Library", "Park"] },
     { q: "Where do you borrow books?", a: "Library", choices: ["Library", "Shop", "Church"] },
     { q: "Where do you sleep at night?", a: "Home", choices: ["Home", "School", "Park"] },
-    { q: "Where do you go to worship?", a: "Church", choices: ["Church", "Shop", "Hospital"] },
+    { q: "Where do you go to swim?", a: "Pool", choices: ["Pool", "Shop", "Hospital"] },
     { q: "Where do you catch a bus or train?", a: "Station", choices: ["Station", "Library", "Home"] },
   ]).map((item) => ({
     question: item.q,
