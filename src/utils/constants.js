@@ -522,6 +522,18 @@ const P4_ENGLISH_TOPICS = [
     modules: [
       { id: "p4e-vc1", title: "Synonyms and Antonyms", description: "Happy/glad, brave/cowardly." },
     ] },
+  { id: "p4-cloze", title: "Cloze Practice", icon: "📖", description: "Fill-in-the-blank in context.",
+    modules: [
+      { id: "p4e-cl1", title: "Cloze Practice", description: "Tense, articles, prepositions, relative pronouns.", hasIntro: true },
+    ] },
+  { id: "p4-comprehension", title: "Comprehension", icon: "📰", description: "Read passages and answer questions.",
+    modules: [
+      { id: "p4e-cp1", title: "Comprehension MCQ", description: "Two Singapore-themed passages with questions.", hasIntro: true },
+    ] },
+  { id: "p4-editing", title: "Editing", icon: "🔍", description: "Spot grammar and spelling errors.",
+    modules: [
+      { id: "p4e-ed1", title: "Editing", description: "Wrong tense, wrong plural, wrong article.", hasIntro: true },
+    ] },
 ];
 const P4_MATH_TOPICS = [
   { id: "p4-factors", title: "Factors and Multiples", icon: "🔢", description: "Finding factors, multiples, and common factors!",
@@ -532,6 +544,31 @@ const P4_MATH_TOPICS = [
     modules: [
       { id: "p4m-dc1", title: "Decimals", description: "0.5 = 1/2, rounding, adding, multiplying." },
     ] },
+  { id: "p4-fractions", title: "Fractions", icon: "🍕", description: "Equivalent fractions, like fractions, and mixed numbers.",
+    modules: [
+      { id: "p4m-fr1", title: "Fractions", description: "Equivalent fractions, +/- like fractions, fraction of a set.", hasIntro: true },
+      { id: "p4m-fr2", title: "Mixed Numbers", description: "Convert between improper fractions and mixed numbers.", hasIntro: true },
+    ] },
+  { id: "p4-multiplication", title: "Multiplication", icon: "✕", description: "Up to 4-digit by 1-digit and 2-digit by 2-digit.",
+    modules: [
+      { id: "p4m-mu1", title: "Multiplication", description: "234 × 3, 23 × 12, word problems.", hasIntro: true },
+    ] },
+  { id: "p4-division", title: "Division", icon: "➗", description: "Up to 4-digit by 1-digit with remainders.",
+    modules: [
+      { id: "p4m-di1", title: "Division", description: "84 ÷ 4, remainders, word problems.", hasIntro: true },
+    ] },
+  { id: "p4-geometry", title: "Angles & Symmetry", icon: "📐", description: "Acute, obtuse, right angles and lines of symmetry.",
+    modules: [
+      { id: "p4m-ge1", title: "Angles & Symmetry", description: "Types of angles, lines of symmetry.", hasIntro: true },
+    ] },
+  { id: "p4-area", title: "Area & Perimeter", icon: "📏", description: "Rectangles, squares, and composite shapes.",
+    modules: [
+      { id: "p4m-ar1", title: "Area & Perimeter", description: "L × W, 2(L+W), finding missing sides.", hasIntro: true },
+    ] },
+  { id: "p4-tables", title: "Tables & Graphs", icon: "📊", description: "Reading tables, bar graphs, and line graphs.",
+    modules: [
+      { id: "p4m-tg1", title: "Tables & Graphs", description: "Read data, compare values, find totals." },
+    ] },
 ];
 const P4_CHINESE_TOPICS = [
   { id: "p4-cn-vocab", title: "词语", icon: "📖", description: "词语意思、量词、反义词！",
@@ -541,6 +578,18 @@ const P4_CHINESE_TOPICS = [
   { id: "p4-cn-grammar", title: "语法", icon: "✏️", description: "关联词：因为所以、虽然但是！",
     modules: [
       { id: "p4c-gr1", title: "关联词和的地得", description: "因为...所以、虽然...但是。" },
+    ] },
+  { id: "p4-cn-reading", title: "阅读理解", icon: "📰", description: "短文阅读，回答问题。",
+    modules: [
+      { id: "p4c-rd1", title: "阅读理解", description: "阅读短文，回答问题。", hasIntro: true },
+    ] },
+  { id: "p4-cn-idioms", title: "成语", icon: "📖", description: "常用成语的意思。",
+    modules: [
+      { id: "p4c-id1", title: "成语", description: "三心二意、七上八下、五颜六色。" },
+    ] },
+  { id: "p4-cn-bingju", title: "病句", icon: "🔧", description: "找出错误，选出正确的句子。",
+    modules: [
+      { id: "p4c-bj1", title: "病句改正", description: "量词、的地得、关联词搭配。" },
     ] },
 ];
 

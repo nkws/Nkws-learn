@@ -81,6 +81,13 @@ import { buildEnvironmentQuestions, P6_ENVIRONMENT_QUESTION_COUNTS, P6_ENVIRONME
 import { buildGrammar4Questions, P4_GRAMMAR4_QUESTION_COUNTS, P4_GRAMMAR4_INTRO } from "../topics/p4/eng-grammar4";
 import { buildMath4Questions, P4_MATH4_QUESTION_COUNTS } from "../topics/p4/math4";
 import { buildCnVocab4Questions, P4_CN_VOCAB4_QUESTION_COUNTS } from "../topics/p4/cn-vocab4";
+import { buildMathFractions4Questions, P4_MATH_FRACTIONS_QUESTION_COUNTS, P4_MATH_FRACTIONS_INTRO } from "../topics/p4/math-fractions4";
+import { buildMathOperations4Questions, P4_MATH_OPERATIONS_QUESTION_COUNTS, P4_MATH_OPERATIONS_INTRO } from "../topics/p4/math-operations4";
+import { buildMathGeometry4Questions, P4_MATH_GEOMETRY4_QUESTION_COUNTS, P4_MATH_GEOMETRY4_INTRO } from "../topics/p4/math-geometry4";
+import { buildCloze4Questions, P4_CLOZE4_QUESTION_COUNTS, P4_CLOZE_INTRO } from "../topics/p4/eng-cloze4";
+import { buildComprehension4Questions, P4_COMPREHENSION4_QUESTION_COUNTS, P4_COMPREHENSION_INTRO } from "../topics/p4/eng-comprehension4";
+import { buildEditing4Questions, P4_EDITING4_QUESTION_COUNTS, P4_EDITING_INTRO } from "../topics/p4/eng-editing4";
+import { buildCnExtended4Questions, P4_CN_EXTENDED_QUESTION_COUNTS, P4_CN_EXTENDED_INTRO } from "../topics/p4/cn-extended4";
 // P5 English, Math, Chinese
 import { buildGrammar5Questions, P5_GRAMMAR5_QUESTION_COUNTS, P5_GRAMMAR5_INTRO } from "../topics/p5/eng-grammar5";
 import { buildMath5Questions, P5_MATH5_QUESTION_COUNTS } from "../topics/p5/math5";
@@ -141,8 +148,15 @@ const BUILDERS = {
   "p6s-fd": buildFoodChainsQuestions, "p6s-ev": buildEnvironmentQuestions,
   // P4 English, Math, Chinese
   "p4e-gr": buildGrammar4Questions, "p4e-vc": buildGrammar4Questions,
+  "p4e-cl": buildCloze4Questions,
+  "p4e-cp": buildComprehension4Questions,
+  "p4e-ed": buildEditing4Questions,
   "p4m-fm": buildMath4Questions, "p4m-dc": buildMath4Questions,
+  "p4m-fr": buildMathFractions4Questions,
+  "p4m-mu": buildMathOperations4Questions, "p4m-di": buildMathOperations4Questions,
+  "p4m-ge": buildMathGeometry4Questions, "p4m-ar": buildMathGeometry4Questions, "p4m-tg": buildMathGeometry4Questions,
   "p4c-vc": buildCnVocab4Questions, "p4c-gr": buildCnVocab4Questions,
+  "p4c-rd": buildCnExtended4Questions, "p4c-id": buildCnExtended4Questions, "p4c-bj": buildCnExtended4Questions,
   // P5 English, Math, Chinese
   "p5e-gr": buildGrammar5Questions, "p5e-vc": buildGrammar5Questions,
   "p5e-cl": buildCloze5Questions,
@@ -208,6 +222,9 @@ export const MODULE_QUESTION_COUNTS = {
   ...P6_FOODCHAINS_QUESTION_COUNTS, ...P6_ENVIRONMENT_QUESTION_COUNTS,
   // P4-P6 English, Math, Chinese
   ...P4_GRAMMAR4_QUESTION_COUNTS, ...P4_MATH4_QUESTION_COUNTS, ...P4_CN_VOCAB4_QUESTION_COUNTS,
+  ...P4_MATH_FRACTIONS_QUESTION_COUNTS, ...P4_MATH_OPERATIONS_QUESTION_COUNTS, ...P4_MATH_GEOMETRY4_QUESTION_COUNTS,
+  ...P4_CLOZE4_QUESTION_COUNTS, ...P4_COMPREHENSION4_QUESTION_COUNTS, ...P4_EDITING4_QUESTION_COUNTS,
+  ...P4_CN_EXTENDED_QUESTION_COUNTS,
   ...P5_GRAMMAR5_QUESTION_COUNTS, ...P5_MATH5_QUESTION_COUNTS, ...P5_CN_VOCAB5_QUESTION_COUNTS,
   ...P5_MATH_FRACTIONS_QUESTION_COUNTS, ...P5_MATH_GEOMETRY5_QUESTION_COUNTS, ...P5_MATH_EXTENDED_QUESTION_COUNTS,
   ...P5_CLOZE5_QUESTION_COUNTS, ...P5_COMPREHENSION5_QUESTION_COUNTS, ...P5_EDITING5_QUESTION_COUNTS,
@@ -242,7 +259,12 @@ const ALL_INTROS = {
   // P6
   ...P6_PHOTOSYNTHESIS_INTRO, ...P6_FORCES_INTRO, ...P6_FOODCHAINS_INTRO, ...P6_ENVIRONMENT_INTRO,
   // P4-P6 English
-  ...P4_GRAMMAR4_INTRO, ...P5_GRAMMAR5_INTRO, ...P6_GRAMMAR6_INTRO,
+  ...P4_GRAMMAR4_INTRO,
+  // P4 new modules
+  ...P4_MATH_FRACTIONS_INTRO, ...P4_MATH_OPERATIONS_INTRO, ...P4_MATH_GEOMETRY4_INTRO,
+  ...P4_CLOZE_INTRO, ...P4_COMPREHENSION_INTRO, ...P4_EDITING_INTRO,
+  ...P4_CN_EXTENDED_INTRO,
+  ...P5_GRAMMAR5_INTRO, ...P6_GRAMMAR6_INTRO,
   // P5 new modules
   ...P5_MATH_FRACTIONS_INTRO, ...P5_MATH_GEOMETRY_INTRO, ...P5_MATH_EXTENDED_INTRO,
   ...P5_CLOZE_INTRO, ...P5_COMPREHENSION_INTRO, ...P5_EDITING_INTRO,
