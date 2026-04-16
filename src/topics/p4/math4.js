@@ -17,7 +17,7 @@ function buildP4mFm1() {
 
 function buildP4mDc1() {
   return shuffle([
-    { q: "What is 0.5 as a fraction?", a: "1/2", choices: ["1/2", "1/5", "5/10"] },
+    { q: "What is 0.5 as a fraction?", a: "1/2", choices: ["1/2", "1/5", "2/5"] },
     { q: "What is 3/4 as a decimal?", a: "0.75", choices: ["0.75", "0.34", "0.50"] },
     { q: "Which is bigger: 0.6 or 0.58?", a: "0.6", choices: ["0.6", "0.58", "They are equal"] },
     { q: "Round 3.47 to 1 decimal place.", a: "3.5", choices: ["3.5", "3.4", "4.0"] },
