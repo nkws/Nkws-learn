@@ -25,7 +25,7 @@ function buildP6mGe1() {
     { q: "The sum of angles in a triangle is?", a: "180°", choices: ["180°", "360°", "90°"] },
     { q: "The sum of angles in a quadrilateral is?", a: "360°", choices: ["360°", "180°", "270°"] },
     { q: "Two angles of a triangle are 60° and 80°. What is the third angle?", a: "40°", choices: ["40°", "60°", "20°"] },
-    { q: "Three angles of a quadrilateral are 90°, 85° and 100°. What is the fourth angle?", a: "85°", choices: ["85°", "95°", "105°"] },
+    { q: "Three angles of a quadrilateral are 100°, 85° and 95°. What is the fourth angle?", a: "80°", choices: ["80°", "90°", "70°"] },
     { q: "Each angle of an equilateral triangle is?", a: "60°", choices: ["60°", "90°", "45°"] },
     { q: "In an isosceles triangle, the two base angles are each 70°. What is the angle at the top?", a: "40°", choices: ["40°", "70°", "110°"] },
     { q: "Angles on a straight line add up to?", a: "180°", choices: ["180°", "360°", "90°"] },
@@ -57,7 +57,7 @@ function buildP6mNe1() {
     { q: "When a cube net is folded, opposite faces are?", a: "Parallel and never touching", choices: ["Parallel and never touching", "Always next to each other", "The same size only"] },
     { q: "A cuboid has 3 pairs of identical faces. How many different rectangles are in its net?", a: "3 pairs (6 faces)", choices: ["3 pairs (6 faces)", "3 faces total", "6 different shapes"] },
     { q: "If each face of a cube has area 9 cm², the total surface area is?", a: "54 cm²", choices: ["54 cm²", "36 cm²", "81 cm²"] },
-    { q: "A cuboid is 5 cm × 3 cm × 2 cm. What is its total surface area?", a: "62 cm²", choices: ["62 cm²", "30 cm²", "52 cm²"] },
+    { q: "A cuboid is 5 cm × 3 cm × 2 cm. What is its total surface area?", a: "62 cm²", choices: ["62 cm²", "30 cm²", "31 cm²"] },
     { q: "A cube has a total surface area of 96 cm². What is the area of one face?", a: "16 cm²", choices: ["16 cm²", "96 cm²", "48 cm²"] },
     { q: "A cube has a surface area of 150 cm². What is the length of one side?", a: "5 cm", choices: ["5 cm", "25 cm", "15 cm"] },
   ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]) }));
