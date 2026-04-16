@@ -7,7 +7,7 @@ function buildP5mPc1() {
     { q: "What is 10% of 250?", a: "25", choices: ["25", "10", "50"] },
     { q: "Convert 0.4 to a percentage.", a: "40%", choices: ["40%", "4%", "0.4%"] },
     { q: "A shirt costs $50. It is 20% off. What is the discount?", a: "$10", choices: ["$10", "$20", "$40"] },
-    { q: "What is 50% as a fraction?", a: "1/2", choices: ["1/2", "1/5", "5/10"] },
+    { q: "What is 50% as a fraction?", a: "1/2", choices: ["1/2", "1/5", "1/50"] },
     { q: "75% is the same as?", a: "3/4", choices: ["3/4", "7/5", "3/5"] },
     { q: "If 30% of students are boys and there are 40 students, how many are boys?", a: "12", choices: ["12", "30", "10"] },
     { q: "Convert 1/4 to a percentage.", a: "25%", choices: ["25%", "14%", "50%"] },
