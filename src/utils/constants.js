@@ -584,6 +584,10 @@ const P6_ENGLISH_TOPICS = [
     modules: [
       { id: "p6e-vc1", title: "Advanced Vocabulary", description: "Apprehensive, meticulous, persevere." },
     ] },
+  { id: "p6-cloze", title: "Cloze Practice", icon: "📖", description: "Fill-in-the-blank in context — a major PSLE component.",
+    modules: [
+      { id: "p6e-cl1", title: "Cloze Practice", description: "Tense, prepositions, agreement and word choice in context.", hasIntro: true },
+    ] },
 ];
 const P6_MATH_TOPICS = [
   { id: "p6-ratio", title: "Ratio", icon: "⚖️", description: "Equivalent ratios, simplifying, and sharing!",
@@ -597,6 +601,18 @@ const P6_MATH_TOPICS = [
   { id: "p6-speed", title: "Speed, Distance & Time", icon: "🚗", description: "Calculate speed, distance, and time — a key PSLE topic.",
     modules: [
       { id: "p6m-st1", title: "Speed, Distance & Time", description: "D = S × T. Find any of the three when you know the other two.", hasIntro: true },
+    ] },
+  { id: "p6-fractions", title: "Fraction Word Problems", icon: "🍕", description: "Apply fractions to real-world problems — a PSLE staple.",
+    modules: [
+      { id: "p6m-fw1", title: "Fraction Word Problems", description: "Fraction of a quantity, remainders, and 'left over' problems.", hasIntro: true },
+    ] },
+  { id: "p6-percentage", title: "Percentage", icon: "💯", description: "Discount, GST, percentage change — heavily tested at PSLE.",
+    modules: [
+      { id: "p6m-pe1", title: "Percentage", description: "Find percentage of a number, discount, GST, percentage change.", hasIntro: true },
+    ] },
+  { id: "p6-volume", title: "Volume", icon: "📦", description: "Volume of cubes, cuboids, and liquid in containers.",
+    modules: [
+      { id: "p6m-vo1", title: "Volume of Cubes & Cuboids", description: "Calculate volume, find missing dimensions, work with litres.", hasIntro: true },
     ] },
 ];
 const P6_CHINESE_TOPICS = [
