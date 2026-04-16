@@ -57,7 +57,7 @@ function buildP6mNe1() {
     { q: "When a cube net is folded, opposite faces are?", a: "Parallel and never touching", choices: ["Parallel and never touching", "Always next to each other", "The same size only"] },
     { q: "A cuboid has 3 pairs of identical faces. How many different rectangles are in its net?", a: "3 pairs (6 faces)", choices: ["3 pairs (6 faces)", "3 faces total", "6 different shapes"] },
     { q: "If each face of a cube has area 9 cm², the total surface area is?", a: "54 cm²", choices: ["54 cm²", "36 cm²", "81 cm²"] },
-    { q: "A cuboid is 5 cm × 3 cm × 2 cm. What is its total surface area?", a: "62 cm²", choices: ["62 cm²", "30 cm²", "52 cm²"] },
+    { q: "A cuboid is 5 cm × 3 cm × 2 cm. What is its total surface area?", a: "62 cm²", choices: ["62 cm²", "30 cm²", "31 cm²"] },
     { q: "A cube has a total surface area of 96 cm². What is the area of one face?", a: "16 cm²", choices: ["16 cm²", "96 cm²", "48 cm²"] },
     { q: "A cube has a surface area of 150 cm². What is the length of one side?", a: "5 cm", choices: ["5 cm", "25 cm", "15 cm"] },
   ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]) }));
