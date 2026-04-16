@@ -56,7 +56,7 @@ function buildP2mTm1() {
     { q: "What time does [CLOCK:3:00] show?", a: "3 o'clock", choices: ["3 o'clock", "12:15", "6 o'clock"] },
     { q: "What time does [CLOCK:6:30] show?", a: "Half past 6", choices: ["Half past 6", "6 o'clock", "Half past 12"] },
     { q: "What time does [CLOCK:9:15] show?", a: "Quarter past 9", choices: ["Quarter past 9", "Quarter to 9", "9 o'clock"] },
-    { q: "What time does [CLOCK:4:45] show?", a: "Quarter to 5", choices: ["Quarter to 5", "Quarter past 4", "4:45 p.m."] },
+    { q: "What time does [CLOCK:4:45] show?", a: "Quarter to 5", choices: ["Quarter to 5", "Quarter past 4", "Half past 4"] },
     { q: "30 minutes after 2 o'clock is?", a: "Half past 2", choices: ["Half past 2", "3 o'clock", "2:03"] },
     { q: "1 hour before 10 o'clock is?", a: "9 o'clock", choices: ["9 o'clock", "11 o'clock", "10:01"] },
     { q: "How many minutes in 1 hour?", a: "60", choices: ["60", "30", "100"] },
