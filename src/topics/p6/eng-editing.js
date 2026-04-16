@@ -17,7 +17,7 @@ function buildP6eEd1() {
     { q: "Spot the error: 'The childrens are playing outside.'", a: "childrens → children", choices: ["childrens → children", "are → is", "No error"] },
     { q: "Spot the error: 'He has went to the shop.'", a: "went → gone", choices: ["went → gone", "has → had", "No error"] },
     { q: "Spot the error: 'I am more taller than my brother.'", a: "more taller → taller", choices: ["more taller → taller", "am → is", "No error"] },
-    { q: "Spot the error: 'She was laying on the bed.'", a: "laying → lying", choices: ["laying → lying", "was → is", "No error"] },
+    { q: "Spot the error: 'She have been waiting for an hour.'", a: "have → has", choices: ["have → has", "waiting → waited", "No error"] },
     { q: "Spot the error: 'Each of the boys have a book.'", a: "have → has", choices: ["have → has", "boys → boy", "No error"] },
     { q: "Spot the error: 'Neither Tom or Jerry was there.'", a: "or → nor", choices: ["or → nor", "was → were", "No error"] },
     { q: "Spot the error: 'The news are shocking.'", a: "are → is", choices: ["are → is", "shocking → shocked", "No error"] },
