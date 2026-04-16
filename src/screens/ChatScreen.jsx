@@ -48,6 +48,7 @@ export default function ChatScreen({
   const wrongThisRoundRef = useRef([]);
   const allWrongRef = useRef([]);
   const chatEndRef = useRef(null);
+  const lastPassageRef = useRef(null);
 
   const startQuiz = useCallback(() => {
     const qs = buildModuleQuestions(moduleId);
@@ -60,7 +61,15 @@ export default function ChatScreen({
       const greeting = isZh
         ? `这是你的第一道题。${qs[0].question}`
         : `Here's your first question. ${qs[0].question}`;
-      setMessages([{ role: "assistant", content: greeting }]);
+      if (qs[0].passage) {
+        lastPassageRef.current = qs[0].passage;
+        setMessages([
+          { role: "assistant", content: qs[0].passage },
+          { role: "assistant", content: greeting },
+        ]);
+      } else {
+        setMessages([{ role: "assistant", content: greeting }]);
+      }
     }
     setShowIntro(false);
   }, [moduleId, subjectId]);
@@ -170,9 +179,15 @@ export default function ChatScreen({
           const retryIntro = ttsLang === "zh"
             ? `我们来复习答错的题目吧！还有 ${wrongs.length} 道题要再试一次。`
             : `Let's go over the ones you missed! You have ${wrongs.length} question${wrongs.length > 1 ? "s" : ""} to try again.`;
+          const retryPassageMsgs = [];
+          if (wrongs[0].passage && wrongs[0].passage !== lastPassageRef.current) {
+            retryPassageMsgs.push({ role: "assistant", content: wrongs[0].passage });
+            lastPassageRef.current = wrongs[0].passage;
+          }
           setMessages((prev) => [
             ...prev, userMsg,
             { role: "assistant", content: replyText },
+            ...retryPassageMsgs,
             { role: "assistant", content: `${retryIntro} ${wrongs[0].question}` },
           ]);
           speak(replyText);
@@ -188,10 +203,17 @@ export default function ChatScreen({
       }
 
       // Normal flow: separate reply bubble and question bubble
+      const nextQ = questions[nextIdx];
+      const passageMsgs = [];
+      if (nextQ.passage && nextQ.passage !== lastPassageRef.current) {
+        passageMsgs.push({ role: "assistant", content: nextQ.passage });
+        lastPassageRef.current = nextQ.passage;
+      }
       setQuestionIndex(nextIdx);
       setMessages((prev) => [
         ...prev, userMsg,
         { role: "assistant", content: replyText },
+        ...passageMsgs,
         { role: "assistant", content: questionText },
       ]);
       speak(replyText);
