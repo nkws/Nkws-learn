@@ -25,7 +25,7 @@ function buildP6mGe1() {
     { q: "The sum of angles in a triangle is?", a: "180°", choices: ["180°", "360°", "90°"] },
     { q: "The sum of angles in a quadrilateral is?", a: "360°", choices: ["360°", "180°", "270°"] },
     { q: "Two angles of a triangle are 60° and 80°. What is the third angle?", a: "40°", choices: ["40°", "60°", "20°"] },
-    { q: "Three angles of a quadrilateral are 90°, 85° and 100°. What is the fourth angle?", a: "85°", choices: ["85°", "95°", "105°"] },
+    { q: "Three angles of a quadrilateral are 100°, 85° and 95°. What is the fourth angle?", a: "80°", choices: ["80°", "90°", "70°"] },
     { q: "Each angle of an equilateral triangle is?", a: "60°", choices: ["60°", "90°", "45°"] },
     { q: "In an isosceles triangle, the two base angles are each 70°. What is the angle at the top?", a: "40°", choices: ["40°", "70°", "110°"] },
     { q: "Angles on a straight line add up to?", a: "180°", choices: ["180°", "360°", "90°"] },
