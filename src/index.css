@@ -690,6 +690,12 @@ button {
   margin: 8px 0;
 }
 
+.bubble-scene {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0;
+}
+
 .speak-btn {
   display: inline;
   background: none;

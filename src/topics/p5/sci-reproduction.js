@@ -36,7 +36,7 @@ function buildP5sRp1() {
 function buildP5sRp2() {
   return shuffle([
     { q: "A butterfly goes through complete metamorphosis. The correct order is?", a: "Egg → Larva → Pupa → Adult", choices: ["Egg → Larva → Pupa → Adult", "Egg → Pupa → Larva → Adult", "Egg → Adult → Larva → Pupa"] },
-    { q: "A frog goes through incomplete metamorphosis. A tadpole is the?", a: "Young stage that lives in water", choices: ["Young stage that lives in water", "Adult stage", "Egg stage"] },
+    { q: "A frog goes through a 3-stage life cycle. A tadpole is the?", a: "Young stage that lives in water", choices: ["Young stage that lives in water", "Adult stage", "Egg stage"] },
     { q: "Which animal lays eggs?", a: "A chicken", choices: ["A chicken", "A dog", "A whale"] },
     { q: "Which animal gives birth to live young?", a: "A cat", choices: ["A cat", "A robin", "A turtle"] },
     { q: "The larva of a butterfly is called a?", a: "Caterpillar", choices: ["Caterpillar", "Tadpole", "Chick"] },

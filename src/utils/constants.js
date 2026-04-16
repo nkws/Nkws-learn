@@ -379,7 +379,8 @@ const P3_ENGLISH_TOPICS = [
     modules: [
       { id: "p3e-vc1", title: "Synonyms", description: "Happy = glad. Big = large." },
       { id: "p3e-vc2", title: "Antonyms", description: "Hot ↔ cold. Big ↔ small." },
-      { id: "p3e-vc3", title: "Prepositions", description: "Under, on, in, behind." },
+      { id: "p3e-vc3", title: "Prepositions of Time & Phrases", description: "Good at, listen to, on Monday." },
+      { id: "p3e-vc4", title: "Prepositions of Place", description: "On, under, in, behind — with pictures!" },
     ] },
   { id: "p3-comprehension", title: "Comprehension", icon: "📖", description: "Longer passages with deeper questions!",
     modules: [
