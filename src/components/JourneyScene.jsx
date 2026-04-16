@@ -68,7 +68,7 @@ const SCENES = {
       >
         Car A 70 km/h
       </div>
-      <div style={{ position: "absolute", left: 215, top: 30, fontSize: 30 }}>🚗</div>
+      <div style={{ position: "absolute", left: 215, top: 30, fontSize: 30, transform: "scaleX(-1)" }}>🚗</div>
       <div style={{ position: "absolute", left: 252, top: 38, fontSize: 22, color: "#F57C00", fontWeight: 700 }}>→</div>
       <div
         style={{
@@ -82,7 +82,7 @@ const SCENES = {
   ),
   "cyclists-same-direction": () => (
     <>
-      <div style={{ position: "absolute", left: 40, top: 30, fontSize: 28 }}>🚴</div>
+      <div style={{ position: "absolute", left: 40, top: 30, fontSize: 28, transform: "scaleX(-1)" }}>🚴</div>
       <div style={{ position: "absolute", left: 78, top: 38, fontSize: 18, color: "#F57C00", fontWeight: 700 }}>→</div>
       <div
         style={{
@@ -100,7 +100,7 @@ const SCENES = {
       >
         (slower, behind)
       </div>
-      <div style={{ position: "absolute", left: 175, top: 30, fontSize: 28 }}>🚴</div>
+      <div style={{ position: "absolute", left: 175, top: 30, fontSize: 28, transform: "scaleX(-1)" }}>🚴</div>
       <div style={{ position: "absolute", left: 215, top: 38, fontSize: 18, color: "#1976D2", fontWeight: 700 }}>→</div>
       <div
         style={{

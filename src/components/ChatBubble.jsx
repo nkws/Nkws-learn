@@ -1,6 +1,7 @@
 import Clock from "./Clock";
 import PrepositionScene from "./PrepositionScene";
 import JourneyScene from "./JourneyScene";
+import CuboidScene from "./CuboidScene";
 import { parseClockTags } from "../utils/parseClock";
 
 export default function ChatBubble({ message, speakChoices, onSpeak }) {
@@ -30,6 +31,13 @@ export default function ChatBubble({ message, speakChoices, onSpeak }) {
             return (
               <div key={i} className="bubble-journey">
                 <JourneyScene type={part.scene} />
+              </div>
+            );
+          }
+          if (part.type === "cuboid") {
+            return (
+              <div key={i} className="bubble-cuboid">
+                <CuboidScene type={part.scene} />
               </div>
             );
           }
