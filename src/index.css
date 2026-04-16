@@ -696,6 +696,12 @@ button {
   margin: 8px 0;
 }
 
+.bubble-journey {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0;
+}
+
 .speak-btn {
   display: inline;
   background: none;

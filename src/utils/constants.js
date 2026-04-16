@@ -594,6 +594,10 @@ const P6_MATH_TOPICS = [
     modules: [
       { id: "p6m-al1", title: "Algebra", description: "Simplify 3x + 2x. Solve x + 5 = 12." },
     ] },
+  { id: "p6-speed", title: "Speed, Distance & Time", icon: "🚗", description: "Calculate speed, distance, and time — a key PSLE topic.",
+    modules: [
+      { id: "p6m-st1", title: "Speed, Distance & Time", description: "D = S × T. Find any of the three when you know the other two.", hasIntro: true },
+    ] },
 ];
 const P6_CHINESE_TOPICS = [
   { id: "p6-cn-vocab", title: "成语", icon: "📖", description: "成语意思和用法！",

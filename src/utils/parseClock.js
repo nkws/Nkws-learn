@@ -1,6 +1,7 @@
 const CLOCK_REGEX = /\[CLOCK:(\d{1,2}):(\d{2})\]/g;
 const SCENE_REGEX = /\[SCENE:([a-z0-9-]+)\]/g;
-const TAG_REGEX = /\[(CLOCK:\d{1,2}:\d{2}|SCENE:[a-z0-9-]+)\]/g;
+const JOURNEY_REGEX = /\[JOURNEY:([a-z0-9-]+)\]/g;
+const TAG_REGEX = /\[(CLOCK:\d{1,2}:\d{2}|SCENE:[a-z0-9-]+|JOURNEY:[a-z0-9-]+)\]/g;
 
 export function parseClockTags(text) {
   const parts = [];
@@ -18,6 +19,8 @@ export function parseClockTags(text) {
       parts.push({ type: "clock", hours: parseInt(h, 10), minutes: parseInt(m, 10) });
     } else if (token.startsWith("SCENE:")) {
       parts.push({ type: "scene", scene: token.slice(6) });
+    } else if (token.startsWith("JOURNEY:")) {
+      parts.push({ type: "journey", scene: token.slice(8) });
     }
     lastIndex = TAG_REGEX.lastIndex;
   }
@@ -36,6 +39,7 @@ export function cleanForSpeech(text) {
   return text
     .replace(CLOCK_REGEX, "")
     .replace(SCENE_REGEX, "")
+    .replace(JOURNEY_REGEX, "")
     .replace(EMOJI_REGEX, "")
     .replace(/\s{2,}/g, " ")
     .trim();

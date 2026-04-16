@@ -87,7 +87,7 @@ import { buildMath5Questions, P5_MATH5_QUESTION_COUNTS } from "../topics/p5/math
 import { buildCnVocab5Questions, P5_CN_VOCAB5_QUESTION_COUNTS } from "../topics/p5/cn-vocab5";
 // P6 English, Math, Chinese
 import { buildGrammar6Questions, P6_GRAMMAR6_QUESTION_COUNTS, P6_GRAMMAR6_INTRO } from "../topics/p6/eng-grammar6";
-import { buildMath6Questions, P6_MATH6_QUESTION_COUNTS } from "../topics/p6/math6";
+import { buildMath6Questions, P6_MATH6_QUESTION_COUNTS, P6_MATH6_INTRO } from "../topics/p6/math6";
 import { buildCnVocab6Questions, P6_CN_VOCAB6_QUESTION_COUNTS } from "../topics/p6/cn-vocab6";
 
 const BUILDERS = {
@@ -131,7 +131,7 @@ const BUILDERS = {
   "p5c-vc": buildCnVocab5Questions, "p5c-gr": buildCnVocab5Questions,
   // P6 English, Math, Chinese
   "p6e-gr": buildGrammar6Questions, "p6e-vc": buildGrammar6Questions,
-  "p6m-ra": buildMath6Questions, "p6m-al": buildMath6Questions,
+  "p6m-ra": buildMath6Questions, "p6m-al": buildMath6Questions, "p6m-st": buildMath6Questions,
   "p6c-vc": buildCnVocab6Questions, "p6c-gr": buildCnVocab6Questions,
 };
 
@@ -197,6 +197,8 @@ const ALL_INTROS = {
   ...P6_PHOTOSYNTHESIS_INTRO, ...P6_FORCES_INTRO, ...P6_FOODCHAINS_INTRO, ...P6_ENVIRONMENT_INTRO,
   // P4-P6 English
   ...P4_GRAMMAR4_INTRO, ...P5_GRAMMAR5_INTRO, ...P6_GRAMMAR6_INTRO,
+  // P6 Math
+  ...P6_MATH6_INTRO,
 };
 
 export function getIntro(moduleId) {

@@ -1,5 +1,18 @@
 import { shuffle } from "../../utils/helpers";
 
+export const P6_MATH6_INTRO = {
+  "p6m-st1": {
+    title: "Speed, Distance & Time",
+    pages: [
+      { text: "Speed, Distance and Time are connected! Knowing any two lets you find the third.", emoji: "🚗 ⏱️ 📏" },
+      { text: "Distance = Speed × Time. A car at 60 km/h for 2 hours travels 60 × 2 = 120 km!", emoji: "60 × 2 = 120 km" },
+      { text: "Speed = Distance ÷ Time. Cover 240 km in 3 hours? Speed = 240 ÷ 3 = 80 km/h.", emoji: "240 ÷ 3 = 80" },
+      { text: "Time = Distance ÷ Speed. To cover 45 km at 15 km/h, you need 45 ÷ 15 = 3 hours.", emoji: "45 ÷ 15 = 3" },
+      { text: "Watch out! Always match your units (km↔km/h, m↔m/s). And 'average speed' = total distance ÷ total time, NOT the average of two speeds!", emoji: "⚠️ 📐" },
+    ],
+  },
+};
+
 function buildP6mRa1() {
   return shuffle([
     { q: "Simplify the ratio 12:8.", a: "3:2", choices: ["3:2", "6:4", "4:3"] },
@@ -30,6 +43,23 @@ function buildP6mAl1() {
   ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]) }));
 }
 
-const BUILDERS = { "p6m-ra1": buildP6mRa1, "p6m-al1": buildP6mAl1 };
-export const P6_MATH6_QUESTION_COUNTS = { "p6m-ra1": 10, "p6m-al1": 10 };
+function buildP6mSt1() {
+  return shuffle([
+    { q: "Speed × Time = ?", a: "Distance", choices: ["Distance", "Time", "Speed"] },
+    { q: "Distance ÷ Time = ?", a: "Speed", choices: ["Speed", "Distance", "Time"] },
+    { q: "A car travels at 60 km/h for 2 hours. How far does it travel?", a: "120 km", choices: ["120 km", "30 km", "62 km"] },
+    { q: "A train travels 240 km in 3 hours. What is its average speed?", a: "80 km/h", choices: ["80 km/h", "720 km/h", "243 km/h"] },
+    { q: "A cyclist rides at 15 km/h. How long to cover 45 km?", a: "3 hours", choices: ["3 hours", "9 hours", "30 hours"] },
+    { q: "A bus travels 60 km in 1 h 30 min. What is its average speed?", a: "40 km/h", choices: ["40 km/h", "46 km/h", "30 km/h"] },
+    { q: "A car travels at 80 km/h. How far does it travel in 45 minutes?", a: "60 km", choices: ["60 km", "3600 km", "35 km"] },
+    { q: "Convert 72 km/h to m/s.", a: "20 m/s", choices: ["20 m/s", "72 m/s", "200 m/s"] },
+    { q: "[JOURNEY:journey-two-segments] Mary drives 3 hours at 60 km/h, then 2 hours at 80 km/h. What is her average speed for the whole journey?", a: "68 km/h", choices: ["68 km/h", "70 km/h", "140 km/h"] },
+    { q: "[JOURNEY:cars-opposite-directions] Two cars leave the same point in opposite directions. Car A travels at 70 km/h and Car B at 50 km/h. How far apart are they after 3 hours?", a: "360 km", choices: ["360 km", "60 km", "210 km"] },
+    { q: "A car leaves home at [CLOCK:9:30] and arrives at [CLOCK:12:00]. The distance is 200 km. What is the average speed?", a: "80 km/h", choices: ["80 km/h", "100 km/h", "67 km/h"] },
+    { q: "[JOURNEY:cyclists-same-direction] Ali and Ben start cycling from the same place in the same direction. Ali cycles at 12 km/h and Ben at 8 km/h. After 2 hours, how far apart are they?", a: "8 km", choices: ["8 km", "40 km", "24 km"] },
+  ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]) }));
+}
+
+const BUILDERS = { "p6m-ra1": buildP6mRa1, "p6m-al1": buildP6mAl1, "p6m-st1": buildP6mSt1 };
+export const P6_MATH6_QUESTION_COUNTS = { "p6m-ra1": 10, "p6m-al1": 10, "p6m-st1": 12 };
 export function buildMath6Questions(moduleId) { return (BUILDERS[moduleId] || (() => []))(); }
