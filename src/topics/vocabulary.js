@@ -44,7 +44,7 @@ function buildVc3() {
     { q: "Which fruit is yellow and curved?", a: "Banana", choices: ["Banana", "Apple", "Grape"] },
     { q: "Which is made from flour and baked?", a: "Bread", choices: ["Bread", "Milk", "Mango"] },
     { q: "Which drink is made from oranges?", a: "Orange juice", choices: ["Orange juice", "Tea", "Soup"] },
-    { q: "Which is a round red fruit?", a: "Tomato", choices: ["Tomato", "Potato", "Onion"] },
+    { q: "Which grows on a vine and is red when ripe?", a: "Tomato", choices: ["Tomato", "Potato", "Onion"] },
   ]).map((item) => ({
     question: item.q,
     answer: item.a,
