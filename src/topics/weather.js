@@ -39,7 +39,7 @@ function buildWt2() {
     { q: "What should you wear on a hot day?", a: "Shorts", choices: ["Jacket", "Scarf", "Shorts"] },
     { q: "On a rainy day, you should wear ___.", a: "Rain boots", choices: ["Rain boots", "Sandals", "Flip flops"] },
     { q: "On a cold day, what keeps your hands warm?", a: "Gloves", choices: ["Gloves", "Sunglasses", "Shorts"] },
-    { q: "What protects you from the sun?", a: "A hat", choices: ["A hat", "An umbrella", "Gloves"] },
+    { q: "What do you wear on your head to block the sun?", a: "A hat", choices: ["A hat", "Gloves", "Rain boots"] },
     { q: "On a windy day, what might blow away?", a: "A hat", choices: ["A hat", "Your shoes", "Your bag"] },
   ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]) }));
 }
