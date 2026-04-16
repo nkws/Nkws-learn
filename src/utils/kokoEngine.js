@@ -43,6 +43,10 @@ import { buildLifecyclesQuestions, P2_LIFECYCLES_QUESTION_COUNTS, P2_LIFECYCLES_
 // P2 Chinese
 import { buildCharacters2Questions, P2_CHARACTERS2_QUESTION_COUNTS } from "../topics/p2/cn-characters2";
 import { buildCnReadingQuestions, P2_CN_READING_QUESTION_COUNTS } from "../topics/p2/cn-reading";
+import { buildMathExtended2Questions, P2_MATH_EXTENDED_QUESTION_COUNTS, P2_MATH_EXTENDED_INTRO } from "../topics/p2/math-extended2";
+import { buildEngExtended2Questions, P2_ENG_EXTENDED_QUESTION_COUNTS, P2_ENG_EXTENDED_INTRO } from "../topics/p2/eng-extended2";
+import { buildSciExtended2Questions, P2_SCI_EXTENDED_QUESTION_COUNTS, P2_SCI_EXTENDED_INTRO } from "../topics/p2/sci-extended2";
+import { buildCnExtended2Questions, P2_CN_EXTENDED_QUESTION_COUNTS } from "../topics/p2/cn-extended2";
 // P3 Math
 import { buildTimesTablesQuestions, P3_TIMESTABLES_QUESTION_COUNTS } from "../topics/p3/timestables";
 import { buildFractions2Questions, P3_FRACTIONS2_QUESTION_COUNTS, P3_FRACTIONS2_INTRO } from "../topics/p3/fractions2";
@@ -59,6 +63,12 @@ import { buildSystemsQuestions, P3_SYSTEMS_QUESTION_COUNTS, P3_SYSTEMS_INTRO } f
 // P3 Chinese
 import { buildCnGrammarQuestions, P3_CN_GRAMMAR_QUESTION_COUNTS } from "../topics/p3/cn-grammar";
 import { buildCnReading2Questions, P3_CN_READING2_QUESTION_COUNTS } from "../topics/p3/cn-reading2";
+import { buildBarModelsQuestions, P3_MATH_BARMODELS_QUESTION_COUNTS, P3_MATH_BARMODELS_INTRO } from "../topics/p3/math-barmodels";
+import { buildTime3Questions, P3_MATH_TIME_QUESTION_COUNTS, P3_MATH_TIME_INTRO } from "../topics/p3/math-time3";
+import { buildCapacityQuestions, P3_MATH_CAPACITY_QUESTION_COUNTS, P3_MATH_CAPACITY_INTRO } from "../topics/p3/math-capacity";
+import { buildEngExtended3Questions, P3_ENG_EXTENDED_QUESTION_COUNTS, P3_ENG_EXTENDED_INTRO } from "../topics/p3/eng-extended3";
+import { buildSciExtended3Questions, P3_SCI_EXTENDED_QUESTION_COUNTS, P3_SCI_EXTENDED_INTRO } from "../topics/p3/sci-extended3";
+import { buildCnExtended3Questions, P3_CN_EXTENDED_QUESTION_COUNTS } from "../topics/p3/cn-extended3";
 // P4 Science
 import { buildMatterQuestions, P4_MATTER_QUESTION_COUNTS, P4_MATTER_INTRO } from "../topics/p4/sci-matter";
 import { buildHeatQuestions, P4_HEAT_QUESTION_COUNTS, P4_HEAT_INTRO } from "../topics/p4/sci-heat";
@@ -131,12 +141,20 @@ const BUILDERS = {
   "p2e-tn": buildTensesQuestions, "p2e-gr": buildGrammar2Questions, "p2e-cp": buildComprehension2Questions,
   "p2s-mt": buildMaterialsQuestions, "p2s-lc": buildLifecyclesQuestions,
   "p2c-ch": buildCharacters2Questions, "p2c-rd": buildCnReadingQuestions,
+  "p2m-as": buildMathExtended2Questions, "p2m-tm": buildMathExtended2Questions, "p2m-sh": buildMathExtended2Questions,
+  "p2e-cl": buildEngExtended2Questions, "p2e-ed": buildEngExtended2Questions,
+  "p2s-mg": buildSciExtended2Questions,
+  "p2c-id": buildCnExtended2Questions, "p2c-bj": buildCnExtended2Questions,
   // P3
   "p3m-tt": buildTimesTablesQuestions, "p3m-fr": buildFractions2Questions, "p3m-ms": buildMeasurement3Questions,
   "p3m-an": buildAnglesQuestions, "p3m-mn": buildMoney3Questions,
   "p3e-tn": buildTenses2Questions, "p3e-vc": buildVocabulary2Questions, "p3e-cp": buildComprehension3Questions,
   "p3s-dv": buildDiversityQuestions, "p3s-sy": buildSystemsQuestions,
   "p3c-gr": buildCnGrammarQuestions, "p3c-rd": buildCnReading2Questions,
+  "p3m-bm": buildBarModelsQuestions, "p3m-tm": buildTime3Questions, "p3m-ca": buildCapacityQuestions,
+  "p3e-cl": buildEngExtended3Questions, "p3e-ed": buildEngExtended3Questions,
+  "p3s-mg": buildSciExtended3Questions, "p3s-lg": buildSciExtended3Questions,
+  "p3c-id": buildCnExtended3Questions, "p3c-bj": buildCnExtended3Questions,
   // P4
   "p4s-mt": buildMatterQuestions, "p4s-ht": buildHeatQuestions, "p4s-lg": buildLightQuestions,
   "p4s-pl": buildP4PlantsQuestions, "p4s-dg": buildDigestionQuestions, "p4s-mg": buildMagnetsQuestions,
@@ -206,11 +224,15 @@ export const MODULE_QUESTION_COUNTS = {
   ...P2_TENSES_QUESTION_COUNTS, ...P2_GRAMMAR2_QUESTION_COUNTS, ...P2_COMPREHENSION2_QUESTION_COUNTS,
   ...P2_MATERIALS_QUESTION_COUNTS, ...P2_LIFECYCLES_QUESTION_COUNTS,
   ...P2_CHARACTERS2_QUESTION_COUNTS, ...P2_CN_READING_QUESTION_COUNTS,
+  ...P2_MATH_EXTENDED_QUESTION_COUNTS, ...P2_ENG_EXTENDED_QUESTION_COUNTS,
+  ...P2_SCI_EXTENDED_QUESTION_COUNTS, ...P2_CN_EXTENDED_QUESTION_COUNTS,
   ...P3_TIMESTABLES_QUESTION_COUNTS, ...P3_FRACTIONS2_QUESTION_COUNTS, ...P3_MEASUREMENT3_QUESTION_COUNTS,
   ...P3_ANGLES_QUESTION_COUNTS, ...P3_MONEY3_QUESTION_COUNTS,
   ...P3_TENSES2_QUESTION_COUNTS, ...P3_VOCABULARY2_QUESTION_COUNTS, ...P3_COMPREHENSION3_QUESTION_COUNTS,
   ...P3_DIVERSITY_QUESTION_COUNTS, ...P3_SYSTEMS_QUESTION_COUNTS,
   ...P3_CN_GRAMMAR_QUESTION_COUNTS, ...P3_CN_READING2_QUESTION_COUNTS,
+  ...P3_MATH_BARMODELS_QUESTION_COUNTS, ...P3_MATH_TIME_QUESTION_COUNTS, ...P3_MATH_CAPACITY_QUESTION_COUNTS,
+  ...P3_ENG_EXTENDED_QUESTION_COUNTS, ...P3_SCI_EXTENDED_QUESTION_COUNTS, ...P3_CN_EXTENDED_QUESTION_COUNTS,
   // P4
   ...P4_MATTER_QUESTION_COUNTS, ...P4_HEAT_QUESTION_COUNTS, ...P4_LIGHT_QUESTION_COUNTS,
   ...P4_PLANTS_QUESTION_COUNTS, ...P4_DIGESTION_QUESTION_COUNTS, ...P4_MAGNETS_QUESTION_COUNTS,
@@ -248,8 +270,11 @@ const ALL_INTROS = {
   ...P2_MULTIPLICATION_INTRO, ...P2_DIVISION_INTRO, ...P2_FRACTIONS_INTRO,
   ...P2_MEASUREMENT2_INTRO, ...P2_GRAPHS_INTRO, ...P2_TENSES_INTRO,
   ...P2_MATERIALS_INTRO, ...P2_LIFECYCLES_INTRO,
+  ...P2_MATH_EXTENDED_INTRO, ...P2_ENG_EXTENDED_INTRO, ...P2_SCI_EXTENDED_INTRO,
   ...P3_FRACTIONS2_INTRO, ...P3_ANGLES_INTRO,
   ...P3_DIVERSITY_INTRO, ...P3_SYSTEMS_INTRO,
+  ...P3_MATH_BARMODELS_INTRO, ...P3_MATH_TIME_INTRO, ...P3_MATH_CAPACITY_INTRO,
+  ...P3_ENG_EXTENDED_INTRO, ...P3_SCI_EXTENDED_INTRO,
   // P4
   ...P4_MATTER_INTRO, ...P4_HEAT_INTRO, ...P4_LIGHT_INTRO,
   ...P4_PLANTS_INTRO, ...P4_DIGESTION_INTRO, ...P4_MAGNETS_INTRO,
