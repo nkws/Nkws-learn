@@ -26,7 +26,7 @@ function buildP6mAv1() {
     { q: "The average of 4 numbers is 20. What is the total?", a: "80", choices: ["80", "20", "5"] },
     { q: "3 children weigh 30 kg, 35 kg and 40 kg. What is their average weight?", a: "35 kg", choices: ["35 kg", "30 kg", "40 kg"] },
     { q: "The average height of 5 students is 140 cm. What is their total height?", a: "700 cm", choices: ["700 cm", "28 cm", "140 cm"] },
-    { q: "Ali scored 85 on 3 tests and 70 on 1 test. What is his average?", a: "81.25", choices: ["81.25", "77.5", "85"] },
+    { q: "Ali scored 85 on 3 tests and 65 on 1 test. What is his average?", a: "80", choices: ["80", "75", "85"] },
     { q: "The average of 6, 8, 10 and x is 9. What is x?", a: "12", choices: ["12", "9", "6"] },
     { q: "5 books cost an average of $12 each. What is the total cost?", a: "$60", choices: ["$60", "$12", "$17"] },
     { q: "The average temperature over 7 days was 30°C. If 6 days averaged 29°C, what was the 7th day?", a: "36°C", choices: ["36°C", "31°C", "30°C"] },
