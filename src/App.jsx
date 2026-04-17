@@ -275,6 +275,7 @@ export default function App() {
         level={activeLevel}
         setProgress={handleSetProgress}
         moduleVideos={moduleVideos}
+        topicVideos={topicVideos}
         activeChild={activeChild}
         onBack={() => setScreen("modules")}
       />

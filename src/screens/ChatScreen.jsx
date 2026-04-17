@@ -3,7 +3,7 @@ import ChatBubble from "../components/ChatBubble";
 import ChoiceButtons from "../components/ChoiceButtons";
 import RewardModal from "../components/RewardModal";
 import { useTTS } from "../hooks/useSpeech";
-import { getModule, getTotalStars } from "../utils/constants";
+import { getModule, getTopic, getTotalStars } from "../utils/constants";
 import { saveProgress, updateStreak } from "../utils/progress";
 import { buildModuleQuestions, getPraise, getHint, getIntro } from "../utils/kokoEngine";
 import { recordQuizAttempt } from "../utils/cloudSync";
@@ -17,11 +17,13 @@ export default function ChatScreen({
   level,
   setProgress,
   moduleVideos,
+  topicVideos = {},
   activeChild,
   onBack,
 }) {
   const mod = getModule(subjectId, topicId, moduleId, level);
   const videoId = moduleVideos[moduleId] || null;
+  const topicVideoId = topicVideos[topicId] || null;
   const intro = getIntro(moduleId);
   const ttsLang = subjectId === "chinese" ? "zh" : "en";
   const { speak } = useTTS(ttsLang);
@@ -39,7 +41,7 @@ export default function ChatScreen({
   });
   const [questionIndex, setQuestionIndex] = useState(0);
   const [questions, setQuestions] = useState(initialQuiz || []);
-  const [showReward, setShowReward] = useState(false);
+  const [rewardVideoId, setRewardVideoId] = useState(null);
   const [moduleComplete, setModuleComplete] = useState(false);
   const [answering, setAnswering] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
@@ -173,7 +175,17 @@ export default function ChatScreen({
             recordQuizAttempt(activeChild.id, moduleId, newCorrectCount, totalQ, allWrongRef.current);
           }
           if (isPerfect && videoId) {
-            setTimeout(() => setShowReward(true), 3000);
+            setTimeout(() => setRewardVideoId(videoId), 3000);
+          } else if (!videoId && topicVideoId) {
+            const topic = getTopic(subjectId, topicId, level);
+            if (topic) {
+              const allModuleIds = topic.modules.map((m) => m.id);
+              const completed = [...(progress?.completedModules || []), moduleId];
+              const topicDone = allModuleIds.every((id) => completed.includes(id));
+              if (topicDone) {
+                setTimeout(() => setRewardVideoId(topicVideoId), 3000);
+              }
+            }
           }
         } else {
           const retryIntro = ttsLang === "zh"
@@ -279,10 +291,10 @@ export default function ChatScreen({
         />
       ) : null}
 
-      {showReward && (
+      {rewardVideoId && (
         <RewardModal
-          videoId={videoId}
-          onDismiss={() => setShowReward(false)}
+          videoId={rewardVideoId}
+          onDismiss={() => setRewardVideoId(null)}
         />
       )}
     </div>
