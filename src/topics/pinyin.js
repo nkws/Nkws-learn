@@ -1,5 +1,40 @@
 import { shuffle } from "../utils/helpers";
 export const PINYIN_INTRO = {
+  "py-6": {
+    title: "声母 (j, q, x)",
+    pages: [
+      { text: "j, q, x 只和 i, ü 做朋友！比如 ji（鸡）, qi（七）, xi（西）。", emoji: "j q x + i ü" },
+      { text: `j 像"鸡蛋"的"鸡"。q 像"七"。x 像"西瓜"的"西"。`, emoji: "j→鸡 q→七 x→西" },
+    ],
+  },
+  "py-7": {
+    title: "声母 (zh, ch, sh, r)",
+    pages: [
+      { text: "zh, ch, sh, r 是翘舌音——舌头要卷起来！", emoji: "👅 翘舌音" },
+      { text: `zh 像"中国"的"中"。ch 像"吃"。sh 像"书"。r 像"热"。`, emoji: "zh→中 ch→吃 sh→书 r→热" },
+    ],
+  },
+  "py-8": {
+    title: "声母 (z, c, s)",
+    pages: [
+      { text: "z, c, s 是平舌音——舌头放平！", emoji: "👅 平舌音" },
+      { text: `z 像"早"。c 像"草"。s 像"三"。注意不要和翘舌音 zh, ch, sh 搞混！`, emoji: "z→早 c→草 s→三" },
+    ],
+  },
+  "py-9": {
+    title: "复韵母 (ai, ei, ao, ou)",
+    pages: [
+      { text: "复韵母是两个韵母合在一起的音：ai, ei, ao, ou。", emoji: "a+i=ai" },
+      { text: `ai 像"爱"。ei 像"北"。ao 像"好"。ou 像"口"。`, emoji: "ai→爱 ei→北 ao→好 ou→口" },
+    ],
+  },
+  "py-10": {
+    title: "鼻韵母 (an, en, ang, eng, ong)",
+    pages: [
+      { text: "鼻韵母的尾巴是 n 或 ng。an 和 ang 听起来不一样哦！", emoji: "n vs ng" },
+      { text: `an 像"安"。en 像"人"。ang 像"方"。eng 像"灯"。ong 像"东"。`, emoji: "an→安 eng→灯 ong→东" },
+    ],
+  },
   "py-1": {
     title: "声母 (b, p, m, f)",
     pages: [
@@ -77,6 +112,73 @@ function buildPy5() {
   ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]) }));
 }
 
-const BUILDERS = { "py-1": buildPy1, "py-2": buildPy2, "py-3": buildPy3, "py-4": buildPy4, "py-5": buildPy5 };
-export const PINYIN_QUESTION_COUNTS = { "py-1": 8, "py-2": 8, "py-3": 8, "py-4": 8, "py-5": 8 };
+// ⚠️ CHINESE CONTENT — flagged for manual validation of pinyin associations
+
+function buildPy6() {
+  return shuffle([
+    { q: '"家"的"家"是哪个声母？', a: "j", choices: ["j", "g", "z"] },
+    { q: '"七"的"七"是哪个声母？', a: "q", choices: ["q", "k", "c"] },
+    { q: '"学校"的"学"是哪个声母？', a: "x", choices: ["x", "s", "sh"] },
+    { q: '"鸡蛋"的"鸡"是哪个声母？', a: "j", choices: ["j", "q", "z"] },
+    { q: '"去"是哪个声母？', a: "q", choices: ["q", "k", "g"] },
+    { q: '"小"是哪个声母？', a: "x", choices: ["x", "s", "sh"] },
+    { q: '"姐姐"的"姐"是哪个声母？', a: "j", choices: ["j", "z", "q"] },
+    { q: '"铅笔"的"铅"是哪个声母？', a: "q", choices: ["q", "j", "k"] },
+  ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]) }));
+}
+
+function buildPy7() {
+  return shuffle([
+    { q: '"中国"的"中"是哪个声母？', a: "zh", choices: ["zh", "z", "ch"] },
+    { q: '"吃饭"的"吃"是哪个声母？', a: "ch", choices: ["ch", "c", "sh"] },
+    { q: '"是"的"是"是哪个声母？', a: "sh", choices: ["sh", "s", "zh"] },
+    { q: '"人"是哪个声母？', a: "r", choices: ["r", "l", "n"] },
+    { q: '"知道"的"知"是哪个声母？', a: "zh", choices: ["zh", "z", "sh"] },
+    { q: '"车"是哪个声母？', a: "ch", choices: ["ch", "c", "zh"] },
+    { q: '"书"是哪个声母？', a: "sh", choices: ["sh", "s", "ch"] },
+    { q: '"热"是哪个声母？', a: "r", choices: ["r", "l", "sh"] },
+  ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]) }));
+}
+
+function buildPy8() {
+  return shuffle([
+    { q: '"早上"的"早"是哪个声母？', a: "z", choices: ["z", "zh", "c"] },
+    { q: '"草地"的"草"是哪个声母？', a: "c", choices: ["c", "ch", "s"] },
+    { q: '"四"的"四"是哪个声母？', a: "s", choices: ["s", "sh", "z"] },
+    { q: '"做"是哪个声母？', a: "z", choices: ["z", "zh", "s"] },
+    { q: '"从"是哪个声母？', a: "c", choices: ["c", "ch", "z"] },
+    { q: '"三"是哪个声母？', a: "s", choices: ["s", "sh", "c"] },
+    { q: '"字"是哪个声母？', a: "z", choices: ["z", "c", "zh"] },
+    { q: '"色"是哪个声母？', a: "s", choices: ["s", "c", "sh"] },
+  ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]) }));
+}
+
+function buildPy9() {
+  return shuffle([
+    { q: '"爱"的韵母是什么？', a: "ai", choices: ["ai", "ei", "ao"] },
+    { q: '"北"的韵母是什么？', a: "ei", choices: ["ei", "ai", "ou"] },
+    { q: '"好"的韵母是什么？', a: "ao", choices: ["ao", "ou", "ai"] },
+    { q: '"口"的韵母是什么？', a: "ou", choices: ["ou", "ao", "ei"] },
+    { q: "bai 里面的韵母是什么？", a: "ai", choices: ["ai", "a", "ei"] },
+    { q: "mei 里面的韵母是什么？", a: "ei", choices: ["ei", "ai", "e"] },
+    { q: "hao 里面的韵母是什么？", a: "ao", choices: ["ao", "a", "ou"] },
+    { q: "dou 里面的韵母是什么？", a: "ou", choices: ["ou", "o", "ao"] },
+  ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]) }));
+}
+
+function buildPy10() {
+  return shuffle([
+    { q: '"安"的韵母是什么？', a: "an", choices: ["an", "ang", "en"] },
+    { q: '"灯"的韵母是什么？', a: "eng", choices: ["eng", "en", "ang"] },
+    { q: '"人"的韵母是什么？', a: "en", choices: ["en", "an", "eng"] },
+    { q: '"东"的韵母是什么？', a: "ong", choices: ["ong", "eng", "ang"] },
+    { q: '"方"的韵母是什么？', a: "ang", choices: ["ang", "an", "eng"] },
+    { q: "ban 里面的韵母是什么？", a: "an", choices: ["an", "a", "ang"] },
+    { q: "feng 里面的韵母是什么？", a: "eng", choices: ["eng", "en", "ong"] },
+    { q: "dong 里面的韵母是什么？", a: "ong", choices: ["ong", "ou", "eng"] },
+  ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]) }));
+}
+
+const BUILDERS = { "py-1": buildPy1, "py-2": buildPy2, "py-3": buildPy3, "py-4": buildPy4, "py-5": buildPy5, "py-6": buildPy6, "py-7": buildPy7, "py-8": buildPy8, "py-9": buildPy9, "py-10": buildPy10 };
+export const PINYIN_QUESTION_COUNTS = { "py-1": 8, "py-2": 8, "py-3": 8, "py-4": 8, "py-5": 8, "py-6": 8, "py-7": 8, "py-8": 8, "py-9": 8, "py-10": 8 };
 export function buildPinyinQuestions(moduleId) { return BUILDERS[moduleId]?.() || []; }

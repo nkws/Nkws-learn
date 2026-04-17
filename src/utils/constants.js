@@ -208,6 +208,11 @@ const CHINESE_TOPICS = [
       { id: "py-3", title: "声母 (g, k, h)", description: "喉咙发出的音！" },
       { id: "py-4", title: "韵母 (a, o, e, i, u, ü)", description: "元音的发音！" },
       { id: "py-5", title: "四声", description: "一声、二声、三声、四声！" },
+      { id: "py-6", title: "声母 j, q, x", description: "鸡、七、西——和 i, ü 做朋友。", hasIntro: true },
+      { id: "py-7", title: "声母 zh, ch, sh, r (翘舌音)", description: "中、吃、书、热——舌头卷起来！", hasIntro: true },
+      { id: "py-8", title: "声母 z, c, s (平舌音)", description: "早、草、三——舌头放平！", hasIntro: true },
+      { id: "py-9", title: "复韵母 ai, ei, ao, ou", description: "爱、北、好、口。", hasIntro: true },
+      { id: "py-10", title: "鼻韵母 an, en, ang, eng, ong", description: "安、人、方、灯、东。", hasIntro: true },
     ],
   },
   {
