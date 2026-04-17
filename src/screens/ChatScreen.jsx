@@ -3,8 +3,8 @@ import ChatBubble from "../components/ChatBubble";
 import ChoiceButtons from "../components/ChoiceButtons";
 import RewardModal from "../components/RewardModal";
 import { useTTS } from "../hooks/useSpeech";
-import { getModule, getTotalStars } from "../utils/constants";
-import { saveProgress, updateStreak } from "../utils/progress";
+import { getModule, getTopic, getTotalStars } from "../utils/constants";
+import { loadProgress, saveProgress, updateStreak } from "../utils/progress";
 import { buildModuleQuestions, getPraise, getHint, getIntro } from "../utils/kokoEngine";
 import { recordQuizAttempt } from "../utils/cloudSync";
 import IntroScreen from "./IntroScreen";
@@ -17,11 +17,13 @@ export default function ChatScreen({
   level,
   setProgress,
   moduleVideos,
+  topicVideos = {},
   activeChild,
   onBack,
 }) {
   const mod = getModule(subjectId, topicId, moduleId, level);
   const videoId = moduleVideos[moduleId] || null;
+  const topicVideoId = topicVideos[topicId] || null;
   const intro = getIntro(moduleId);
   const ttsLang = subjectId === "chinese" ? "zh" : "en";
   const { speak } = useTTS(ttsLang);
@@ -39,7 +41,8 @@ export default function ChatScreen({
   });
   const [questionIndex, setQuestionIndex] = useState(0);
   const [questions, setQuestions] = useState(initialQuiz || []);
-  const [showReward, setShowReward] = useState(false);
+  const [rewardVideoId, setRewardVideoId] = useState(null);
+  const pendingTopicVideoRef = useRef(null);
   const [moduleComplete, setModuleComplete] = useState(false);
   const [answering, setAnswering] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
@@ -172,8 +175,21 @@ export default function ChatScreen({
           if (activeChild) {
             recordQuizAttempt(activeChild.id, moduleId, newCorrectCount, totalQ, allWrongRef.current);
           }
-          if (isPerfect && videoId) {
-            setTimeout(() => setShowReward(true), 3000);
+          let topicDone = false;
+          if (topicVideoId) {
+            const topic = getTopic(subjectId, topicId, level);
+            if (topic) {
+              const latest = loadProgress();
+              topicDone = topic.modules.every((m) => latest.completedModules?.includes(m.id));
+            }
+          }
+          if (isPerfect && videoId && topicDone && topicVideoId) {
+            pendingTopicVideoRef.current = topicVideoId;
+            setTimeout(() => setRewardVideoId(videoId), 3000);
+          } else if (isPerfect && videoId) {
+            setTimeout(() => setRewardVideoId(videoId), 3000);
+          } else if (topicDone && topicVideoId) {
+            setTimeout(() => setRewardVideoId(topicVideoId), 3000);
           }
         } else {
           const retryIntro = ttsLang === "zh"
@@ -220,7 +236,7 @@ export default function ChatScreen({
       speak(questionText, nextChoices, { cancel: false });
       setAnswering(false);
     },
-    [questions, questionIndex, correctCount, totalQ, moduleId, mod?.title, videoId, speak, saveModuleScore, answering, activeChild, isRetryRound, ttsLang]
+    [questions, questionIndex, correctCount, totalQ, moduleId, mod?.title, videoId, topicVideoId, subjectId, topicId, level, speak, saveModuleScore, answering, activeChild, isRetryRound, ttsLang]
   );
 
   const currentQ = questions[questionIndex] || null;
@@ -279,10 +295,18 @@ export default function ChatScreen({
         />
       ) : null}
 
-      {showReward && (
+      {rewardVideoId && (
         <RewardModal
-          videoId={videoId}
-          onDismiss={() => setShowReward(false)}
+          videoId={rewardVideoId}
+          onDismiss={() => {
+            const pending = pendingTopicVideoRef.current;
+            if (pending) {
+              pendingTopicVideoRef.current = null;
+              setRewardVideoId(pending);
+            } else {
+              setRewardVideoId(null);
+            }
+          }}
         />
       )}
     </div>
