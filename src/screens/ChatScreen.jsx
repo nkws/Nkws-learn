@@ -4,7 +4,7 @@ import ChoiceButtons from "../components/ChoiceButtons";
 import RewardModal from "../components/RewardModal";
 import { useTTS } from "../hooks/useSpeech";
 import { getModule, getTopic, getTotalStars } from "../utils/constants";
-import { saveProgress, updateStreak } from "../utils/progress";
+import { loadProgress, saveProgress, updateStreak } from "../utils/progress";
 import { buildModuleQuestions, getPraise, getHint, getIntro } from "../utils/kokoEngine";
 import { recordQuizAttempt } from "../utils/cloudSync";
 import IntroScreen from "./IntroScreen";
@@ -42,6 +42,7 @@ export default function ChatScreen({
   const [questionIndex, setQuestionIndex] = useState(0);
   const [questions, setQuestions] = useState(initialQuiz || []);
   const [rewardVideoId, setRewardVideoId] = useState(null);
+  const pendingTopicVideoRef = useRef(null);
   const [moduleComplete, setModuleComplete] = useState(false);
   const [answering, setAnswering] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
@@ -174,18 +175,21 @@ export default function ChatScreen({
           if (activeChild) {
             recordQuizAttempt(activeChild.id, moduleId, newCorrectCount, totalQ, allWrongRef.current);
           }
-          if (isPerfect && videoId) {
-            setTimeout(() => setRewardVideoId(videoId), 3000);
-          } else if (!videoId && topicVideoId) {
+          let topicDone = false;
+          if (topicVideoId) {
             const topic = getTopic(subjectId, topicId, level);
             if (topic) {
-              const allModuleIds = topic.modules.map((m) => m.id);
-              const completed = [...(progress?.completedModules || []), moduleId];
-              const topicDone = allModuleIds.every((id) => completed.includes(id));
-              if (topicDone) {
-                setTimeout(() => setRewardVideoId(topicVideoId), 3000);
-              }
+              const latest = loadProgress();
+              topicDone = topic.modules.every((m) => latest.completedModules?.includes(m.id));
             }
+          }
+          if (isPerfect && videoId && topicDone && topicVideoId) {
+            pendingTopicVideoRef.current = topicVideoId;
+            setTimeout(() => setRewardVideoId(videoId), 3000);
+          } else if (isPerfect && videoId) {
+            setTimeout(() => setRewardVideoId(videoId), 3000);
+          } else if (topicDone && topicVideoId) {
+            setTimeout(() => setRewardVideoId(topicVideoId), 3000);
           }
         } else {
           const retryIntro = ttsLang === "zh"
@@ -232,7 +236,7 @@ export default function ChatScreen({
       speak(questionText, nextChoices, { cancel: false });
       setAnswering(false);
     },
-    [questions, questionIndex, correctCount, totalQ, moduleId, mod?.title, videoId, speak, saveModuleScore, answering, activeChild, isRetryRound, ttsLang]
+    [questions, questionIndex, correctCount, totalQ, moduleId, mod?.title, videoId, topicVideoId, subjectId, topicId, level, speak, saveModuleScore, answering, activeChild, isRetryRound, ttsLang]
   );
 
   const currentQ = questions[questionIndex] || null;
@@ -294,7 +298,15 @@ export default function ChatScreen({
       {rewardVideoId && (
         <RewardModal
           videoId={rewardVideoId}
-          onDismiss={() => setRewardVideoId(null)}
+          onDismiss={() => {
+            const pending = pendingTopicVideoRef.current;
+            if (pending) {
+              pendingTopicVideoRef.current = null;
+              setRewardVideoId(pending);
+            } else {
+              setRewardVideoId(null);
+            }
+          }}
         />
       )}
     </div>
