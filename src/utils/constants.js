@@ -849,42 +849,188 @@ const P6_CHINESE_TOPICS = [
     ] },
 ];
 
+// ============ WELLBEING (P1–P3) ============
+const P1_WELLBEING_TOPICS = [
+  { id: "p1-wb-bullying", title: "Kindness & Bullying", icon: "💛", description: "Kind hands, kind words. What to do if someone is unkind.",
+    modules: [
+      { id: "p1wb-bul1", title: "Kind Hands, Kind Words", description: "Walk away, tell a grown-up, be a kind helper.", hasIntro: true },
+    ] },
+  { id: "p1-wb-feelings", title: "Big Feelings", icon: "🌈", description: "Happy, sad, angry, scared — all feelings are okay.",
+    modules: [
+      { id: "p1wb-feel1", title: "Big Feelings", description: "Naming feelings and calming-down tricks.", hasIntro: true },
+    ] },
+  { id: "p1-wb-money", title: "Pocket Money", icon: "🪙", description: "What is money? Needs, wants, and saving.",
+    modules: [
+      { id: "p1wb-money1", title: "What is Money?", description: "Dollars, cents, needs, wants, and the piggy bank.", hasIntro: true },
+    ] },
+  { id: "p1-wb-eco", title: "Looking After Earth", icon: "🌍", description: "Save water, save electricity, throw rubbish in the bin.",
+    modules: [
+      { id: "p1wb-eco1", title: "Looking After Earth", description: "Small kind actions for a big planet.", hasIntro: true },
+    ] },
+  { id: "p1-wb-thinking", title: "Asking Questions", icon: "🤔", description: "Is it true? How do you know?",
+    modules: [
+      { id: "p1wb-think1", title: "Asking 'Is It True?'", description: "Smart kids ask questions when something seems strange.", hasIntro: true },
+    ] },
+];
+
+const P2_WELLBEING_TOPICS = [
+  { id: "p2-wb-bullying", title: "Stop, Walk, Talk", icon: "🛑", description: "What bullying is and how to handle it.",
+    modules: [
+      { id: "p2wb-bul1", title: "Stop, Walk, Talk", description: "Bullies, bystanders, and helpers.", hasIntro: true },
+    ] },
+  { id: "p2-wb-feelings", title: "Naming My Feelings", icon: "🏷️", description: "Feelings are signals — name them, calm them.",
+    modules: [
+      { id: "p2wb-feel1", title: "Naming My Feelings", description: "Calm-down tools and empathy basics.", hasIntro: true },
+    ] },
+  { id: "p2-wb-money", title: "Spend, Save, Share", icon: "💰", description: "Three smart ways to use money.",
+    modules: [
+      { id: "p2wb-money1", title: "Spend, Save, Share", description: "Plans, goals, and helping others.", hasIntro: true },
+    ] },
+  { id: "p2-wb-eco", title: "Where Does Rubbish Go?", icon: "♻️", description: "Pulau Semakau, food waste, and the 3 Rs.",
+    modules: [
+      { id: "p2wb-eco1", title: "Where Does Rubbish Go?", description: "Singapore's waste journey.", hasIntro: true },
+    ] },
+  { id: "p2-wb-thinking", title: "Believing What You See", icon: "🔍", description: "Adverts, screens, and asking smart questions.",
+    modules: [
+      { id: "p2wb-think1", title: "Believing What You See", description: "Not everything on a screen is real.", hasIntro: true },
+    ] },
+];
+
+const P3_WELLBEING_TOPICS = [
+  { id: "p3-wb-bullying", title: "Bystanders & Upstanders", icon: "🦸", description: "Recognise bullying and choose to help.",
+    modules: [
+      { id: "p3wb-bul1", title: "Bullying, Bystanders, and Upstanders", description: "Power imbalance, forms of bullying, and small acts of courage.", hasIntro: true },
+    ] },
+  { id: "p3-wb-feelings", title: "Mind-Body Connection", icon: "🧠", description: "Sleep, breathing, and movement for a calm mind.",
+    modules: [
+      { id: "p3wb-feel1", title: "Mind-Body Connection", description: "Box breathing, sleep, and asking for help.", hasIntro: true },
+    ] },
+  { id: "p3-wb-money", title: "Smart Money Moves", icon: "🎯", description: "Saving goals, impulse spending, and online tricks.",
+    modules: [
+      { id: "p3wb-money1", title: "Smart Saving and Smart Spending", description: "The 24-hour rule, comparing prices, scam awareness.", hasIntro: true },
+    ] },
+  { id: "p3-wb-eco", title: "Caring for Singapore's Earth", icon: "🇸🇬", description: "NEWater, climate change, and personal action.",
+    modules: [
+      { id: "p3wb-eco1", title: "Caring for Singapore's Earth", description: "Local context and global responsibility.", hasIntro: true },
+    ] },
+  { id: "p3-wb-thinking", title: "Thinking Like a Detective", icon: "🕵️", description: "Fact vs opinion, evaluating sources online.",
+    modules: [
+      { id: "p3wb-think1", title: "Thinking Like a Detective", description: "WHO, WHY, and EVIDENCE.", hasIntro: true },
+    ] },
+];
+
+// ============ EXPLORE (P4–P6) ============
+const P4_EXPLORE_TOPICS = [
+  { id: "p4-ex-ai", title: "What is AI?", icon: "🤖", description: "How AI learns and where it can go wrong.",
+    modules: [
+      { id: "p4ex-ai1", title: "What is AI?", description: "AI basics, examples, and the rule to always check.", hasIntro: true },
+    ] },
+  { id: "p4-ex-fin", title: "Needs vs Wants", icon: "🪙", description: "Needs first, save next, wants last.",
+    modules: [
+      { id: "p4ex-fin1", title: "Needs vs Wants", description: "Smart choices with limited money.", hasIntro: true },
+    ] },
+  { id: "p4-ex-think", title: "Fact vs Opinion", icon: "🧠", description: "Telling them apart in real life.",
+    modules: [
+      { id: "p4ex-think1", title: "Fact vs Opinion", description: "Clue words and questions to ask.", hasIntro: true },
+    ] },
+  { id: "p4-ex-eco", title: "Reduce, Reuse, Recycle", icon: "♻️", description: "The 3 Rs and why REDUCE is best.",
+    modules: [
+      { id: "p4ex-eco1", title: "Reduce, Reuse, Recycle", description: "Concrete kid-sized actions.", hasIntro: true },
+    ] },
+  { id: "p4-ex-bul", title: "Spotting Bullying", icon: "🛡️", description: "Recognise bullying and respond well.",
+    modules: [
+      { id: "p4ex-bul1", title: "Spotting and Stopping Bullying", description: "Tell, don't tattle. Be an upstander.", hasIntro: true },
+    ] },
+];
+
+const P5_EXPLORE_TOPICS = [
+  { id: "p5-ex-ai", title: "How AI Really Works", icon: "🤖", description: "Prediction, hallucinations, and cross-checking.",
+    modules: [
+      { id: "p5ex-ai1", title: "How AI Really Works", description: "Why AI sounds confident even when wrong.", hasIntro: true },
+    ] },
+  { id: "p5-ex-fin", title: "Saving, Budgeting & Scams", icon: "💰", description: "Budget plans and spotting online scams.",
+    modules: [
+      { id: "p5ex-fin1", title: "Saving, Budgeting, and Scams", description: "Set a goal. Spot a scam.", hasIntro: true },
+    ] },
+  { id: "p5-ex-think", title: "Spotting Fake News", icon: "📰", description: "Source, photo, date, and motive checks.",
+    modules: [
+      { id: "p5ex-think1", title: "Spotting Fake News", description: "Stop, check, and ask 'who benefits?'", hasIntro: true },
+    ] },
+  { id: "p5-ex-eco", title: "Your Carbon Footprint", icon: "👣", description: "What CO₂ is and how daily choices add up.",
+    modules: [
+      { id: "p5ex-eco1", title: "Your Carbon Footprint", description: "Travel, food, and energy choices.", hasIntro: true },
+    ] },
+  { id: "p5-ex-bul", title: "Cyberbullying", icon: "📱", description: "Online bullying, screenshot evidence, helplines.",
+    modules: [
+      { id: "p5ex-bul1", title: "Cyberbullying and Being an Upstander", description: "Don't reply. Save evidence. Tell an adult.", hasIntro: true },
+    ] },
+];
+
+const P6_EXPLORE_TOPICS = [
+  { id: "p6-ex-ai", title: "Deepfakes & Safe AI", icon: "🤖", description: "Deepfakes, bias, privacy, and using AI as a thinking partner.",
+    modules: [
+      { id: "p6ex-ai1", title: "Deepfakes, Bias, and Safe AI Use", description: "Spot fakes. Don't paste private info. Cross-check.", hasIntro: true },
+    ] },
+  { id: "p6-ex-fin", title: "Interest, GST & Value", icon: "💵", description: "Simple interest, GST math, and value-for-money.",
+    modules: [
+      { id: "p6ex-fin1", title: "Simple Interest, GST, and Value-for-Money", description: "Cost per use, BNPL traps, and savings habits.", hasIntro: true },
+    ] },
+  { id: "p6-ex-think", title: "Logical Fallacies", icon: "🧠", description: "Straw man, ad hominem, bandwagon, and confirmation bias.",
+    modules: [
+      { id: "p6ex-think1", title: "Logical Fallacies and Cognitive Bias", description: "Tools to think more clearly — about others and yourself.", hasIntro: true },
+    ] },
+  { id: "p6-ex-eco", title: "Biodiversity & Climate", icon: "🌍", description: "Why species matter. Singapore's climate response.",
+    modules: [
+      { id: "p6ex-eco1", title: "Biodiversity and Climate Action", description: "Personal action AND collective action — both real.", hasIntro: true },
+    ] },
+  { id: "p6-ex-bul", title: "Friendships & Help", icon: "🤝", description: "Healthy friendships, peer pressure, and helplines.",
+    modules: [
+      { id: "p6ex-bul1", title: "Friendships, Peer Pressure, and Knowing When to Get Help", description: "Healthy vs unhealthy. Peer pressure tools. Where to get help.", hasIntro: true },
+    ] },
+];
+
 export const LEVELS = {
   p1: [
     { id: "math", title: "Mathematics", icon: "🔢", description: "Numbers, shapes, time, and more!", topics: MATH_TOPICS },
     { id: "english", title: "English", icon: "📖", description: "Words, grammar, reading, and phonics!", topics: ENGLISH_TOPICS },
     { id: "science", title: "Science", icon: "🔬", description: "Living things, plants, animals, and weather!", topics: SCIENCE_TOPICS },
     { id: "chinese", title: "华文", icon: "字", description: "拼音、汉字、词语、句子！", topics: CHINESE_TOPICS },
+    { id: "wellbeing", title: "Wellbeing", icon: "💛", description: "Kindness, feelings, money, earth, and asking questions!", topics: P1_WELLBEING_TOPICS },
   ],
   p2: [
     { id: "math", title: "Mathematics", icon: "🔢", description: "Multiplication, division, fractions, and more!", topics: P2_MATH_TOPICS },
     { id: "english", title: "English", icon: "📖", description: "Past tense, adjectives, conjunctions, and comprehension!", topics: P2_ENGLISH_TOPICS },
     { id: "science", title: "Science", icon: "🔬", description: "Materials, magnets, and life cycles!", topics: P2_SCIENCE_TOPICS },
     { id: "chinese", title: "华文", icon: "字", description: "更多汉字、阅读理解！", topics: P2_CHINESE_TOPICS },
+    { id: "wellbeing", title: "Wellbeing", icon: "💛", description: "Bullies & helpers, big feelings, money, rubbish, and screens!", topics: P2_WELLBEING_TOPICS },
   ],
   p3: [
     { id: "math", title: "Mathematics", icon: "🔢", description: "Times tables, fractions, area, perimeter, and angles!", topics: P3_MATH_TOPICS },
     { id: "english", title: "English", icon: "📖", description: "Continuous tense, synonyms, antonyms, and comprehension!", topics: P3_ENGLISH_TOPICS },
     { id: "science", title: "Science", icon: "🔬", description: "Diversity, adaptations, and body systems!", topics: P3_SCIENCE_TOPICS },
     { id: "chinese", title: "华文", icon: "字", description: "量词、造句、阅读理解！", topics: P3_CHINESE_TOPICS },
+    { id: "wellbeing", title: "Wellbeing", icon: "💛", description: "Upstanders, mind-body, money, climate, and detective thinking!", topics: P3_WELLBEING_TOPICS },
   ],
   p4: [
     { id: "math", title: "Mathematics", icon: "🔢", description: "Factors, multiples, decimals, and fractions!", topics: P4_MATH_TOPICS },
     { id: "english", title: "English", icon: "📖", description: "Tenses, prepositions, conjunctions, and vocabulary!", topics: P4_ENGLISH_TOPICS },
     { id: "science", title: "Science", icon: "🔬", description: "Matter, heat, light, plants, and digestion!", topics: P4_SCIENCE_TOPICS },
     { id: "chinese", title: "华文", icon: "字", description: "词语、量词、关联词！", topics: P4_CHINESE_TOPICS },
+    { id: "explore", title: "Explore", icon: "🚀", description: "AI, money, fact vs opinion, the 3 Rs, and bullying.", topics: P4_EXPLORE_TOPICS },
   ],
   p5: [
     { id: "math", title: "Mathematics", icon: "🔢", description: "Percentage, rate, and fractions!", topics: P5_MATH_TOPICS },
     { id: "english", title: "English", icon: "📖", description: "Active/passive voice, speech, conjunctions, and vocabulary!", topics: P5_ENGLISH_TOPICS },
     { id: "science", title: "Science", icon: "🔬", description: "Water cycle, reproduction, body systems, circuits, and energy!", topics: P5_SCIENCE_TOPICS },
     { id: "chinese", title: "华文", icon: "字", description: "词语、把被句、关联词！", topics: P5_CHINESE_TOPICS },
+    { id: "explore", title: "Explore", icon: "🚀", description: "How AI works, budgeting, fake news, carbon footprint, and cyberbullying.", topics: P5_EXPLORE_TOPICS },
   ],
   p6: [
     { id: "math", title: "Mathematics", icon: "🔢", description: "Ratio, algebra, and percentage!", topics: P6_MATH_TOPICS },
     { id: "english", title: "English", icon: "📖", description: "PSLE grammar revision, modals, and vocabulary!", topics: P6_ENGLISH_TOPICS },
     { id: "science", title: "Science", icon: "🔬", description: "Photosynthesis, forces, food chains, adaptations, and environment!", topics: P6_SCIENCE_TOPICS },
     { id: "chinese", title: "华文", icon: "字", description: "成语、关联词、的地得！", topics: P6_CHINESE_TOPICS },
+    { id: "explore", title: "Explore", icon: "🚀", description: "Deepfakes, GST math, logical fallacies, biodiversity, and healthy friendships.", topics: P6_EXPLORE_TOPICS },
   ],
 };
 

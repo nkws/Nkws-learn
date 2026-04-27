@@ -125,6 +125,13 @@ import { buildRevisionQuestions, P6_REVISION_QUESTION_COUNTS, P6_REVISION_INTRO 
 import { buildCnReading6Questions, P6_CN_READING_QUESTION_COUNTS, P6_CN_READING_INTRO } from "../topics/p6/cn-reading6";
 import { buildCnAdvanced6Questions, P6_CN_ADVANCED_QUESTION_COUNTS } from "../topics/p6/cn-advanced6";
 import { buildCnVocab6Questions, P6_CN_VOCAB6_QUESTION_COUNTS } from "../topics/p6/cn-vocab6";
+// Wellbeing (P1–P3) and Explore (P4–P6)
+import { buildP1WellbeingQuestions, P1_WELLBEING_QUESTION_COUNTS, P1_WELLBEING_INTRO } from "../topics/p1/wellbeing";
+import { buildP2WellbeingQuestions, P2_WELLBEING_QUESTION_COUNTS, P2_WELLBEING_INTRO } from "../topics/p2/wellbeing";
+import { buildP3WellbeingQuestions, P3_WELLBEING_QUESTION_COUNTS, P3_WELLBEING_INTRO } from "../topics/p3/wellbeing";
+import { buildP4ExploreQuestions, P4_EXPLORE_QUESTION_COUNTS, P4_EXPLORE_INTRO } from "../topics/p4/explore";
+import { buildP5ExploreQuestions, P5_EXPLORE_QUESTION_COUNTS, P5_EXPLORE_INTRO } from "../topics/p5/explore";
+import { buildP6ExploreQuestions, P6_EXPLORE_QUESTION_COUNTS, P6_EXPLORE_INTRO } from "../topics/p6/explore";
 
 const BUILDERS = {
   // P1
@@ -203,6 +210,14 @@ const BUILDERS = {
   "p6c-rd": buildCnReading6Questions,
   "p6c-bj": buildCnAdvanced6Questions, "p6c-sy": buildCnAdvanced6Questions,
   "p6c-vc": buildCnVocab6Questions, "p6c-gr": buildCnVocab6Questions,
+  // Wellbeing (P1–P3)
+  "p1wb-": buildP1WellbeingQuestions,
+  "p2wb-": buildP2WellbeingQuestions,
+  "p3wb-": buildP3WellbeingQuestions,
+  // Explore (P4–P6) — note "p4ex-" does NOT start with "p4e-" so no collision
+  "p4ex-": buildP4ExploreQuestions,
+  "p5ex-": buildP5ExploreQuestions,
+  "p6ex-": buildP6ExploreQuestions,
 };
 
 export function buildModuleQuestions(moduleId) {
@@ -262,6 +277,9 @@ export const MODULE_QUESTION_COUNTS = {
   ...P6_EDITING_QUESTION_COUNTS, ...P6_COMPREHENSION_QUESTION_COUNTS,
   ...P6_REVISION_QUESTION_COUNTS, ...P6_CN_READING_QUESTION_COUNTS,
   ...P6_CN_ADVANCED_QUESTION_COUNTS,
+  // Wellbeing & Explore
+  ...P1_WELLBEING_QUESTION_COUNTS, ...P2_WELLBEING_QUESTION_COUNTS, ...P3_WELLBEING_QUESTION_COUNTS,
+  ...P4_EXPLORE_QUESTION_COUNTS, ...P5_EXPLORE_QUESTION_COUNTS, ...P6_EXPLORE_QUESTION_COUNTS,
 };
 
 const ALL_INTROS = {
@@ -307,6 +325,9 @@ const ALL_INTROS = {
   ...P6_REVISION_INTRO,
   // P6 Chinese
   ...P6_CN_READING_INTRO,
+  // Wellbeing & Explore
+  ...P1_WELLBEING_INTRO, ...P2_WELLBEING_INTRO, ...P3_WELLBEING_INTRO,
+  ...P4_EXPLORE_INTRO, ...P5_EXPLORE_INTRO, ...P6_EXPLORE_INTRO,
 };
 
 export function getIntro(moduleId) {
