@@ -9,6 +9,9 @@ import HowToScreen from "./screens/HowToScreen";
 import LoginScreen from "./screens/LoginScreen";
 import ChildPickerScreen from "./screens/ChildPickerScreen";
 import DashboardScreen from "./screens/DashboardScreen";
+import MockPaperListScreen from "./screens/MockPaperListScreen";
+import MockPaperScreen from "./screens/MockPaperScreen";
+import { getPaper } from "./topics/mockpapers";
 import { useAuth } from "./contexts/AuthContext";
 import { getSubjectsForLevel, getTotalStars } from "./utils/constants";
 import {
@@ -40,6 +43,7 @@ export default function App() {
   const [activeSubject, setActiveSubject] = useState(null);
   const [activeTopic, setActiveTopic] = useState(null);
   const [activeModule, setActiveModule] = useState(null);
+  const [activePaperId, setActivePaperId] = useState(null);
   const [progress, setProgress] = useState(() => loadProgress());
   const [moduleVideos, setModuleVideos] = useState(() => loadModuleVideos());
   const [topicVideos, setTopicVideos] = useState(() => loadTopicVideos());
@@ -318,7 +322,37 @@ export default function App() {
       <SubjectScreen
         level={activeLevel}
         onSelectSubject={(subjectId) => { setActiveSubject(subjectId); setScreen("topics"); }}
+        onPSLEPrep={() => setScreen("papers")}
         onBack={() => setScreen("home")}
+      />
+    );
+  }
+
+  if (screen === "papers" && activeLevel) {
+    return (
+      <MockPaperListScreen
+        level={activeLevel}
+        isPlus={isPlus}
+        user={user}
+        onStartPaper={(paperId) => { setActivePaperId(paperId); setScreen("paper"); }}
+        onBack={() => setScreen("subjects")}
+      />
+    );
+  }
+
+  if (screen === "paper" && activePaperId && getPaper(activePaperId)) {
+    return (
+      <MockPaperScreen
+        paper={getPaper(activePaperId)}
+        onExit={() => { setActivePaperId(null); setScreen("papers"); }}
+        onPracticeTopic={(level, subjectId, topicId, moduleId) => {
+          setActiveLevel(level);
+          setActiveSubject(subjectId);
+          setActiveTopic(topicId);
+          setActiveModule(moduleId);
+          setActivePaperId(null);
+          setScreen("chat");
+        }}
       />
     );
   }
