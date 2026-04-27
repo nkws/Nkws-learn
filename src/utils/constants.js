@@ -773,13 +773,19 @@ const P6_ENGLISH_TOPICS = [
     ] },
 ];
 const P6_MATH_TOPICS = [
-  { id: "p6-ratio", title: "Ratio", icon: "⚖️", description: "Equivalent ratios, simplifying, and sharing!",
+  { id: "p6-ratio", title: "Ratio", icon: "⚖️", description: "Equivalent ratios, simplifying, sharing, and word problems!",
     modules: [
-      { id: "p6m-ra1", title: "Ratio", description: "Simplify 12:8. Share $60 in ratio 1:2." },
+      { id: "p6m-ra1", title: "Ratio Basics", description: "Simplify 12:8. Share $60 in ratio 1:2.", hasIntro: true },
+      { id: "p6m-ra2", title: "Ratio Word Problems", description: "Three-part ratios, before-and-after, and recipe scaling — PSLE depth." },
     ] },
-  { id: "p6-algebra", title: "Algebra", icon: "🔤", description: "Expressions, substitution, and solving equations!",
+  { id: "p6-algebra", title: "Algebra", icon: "🔤", description: "Expressions, substitution, equations, and word problems!",
     modules: [
-      { id: "p6m-al1", title: "Algebra", description: "Simplify 3x + 2x. Solve x + 5 = 12." },
+      { id: "p6m-al1", title: "Algebra Basics", description: "Simplify 3x + 2x. Solve x + 5 = 12.", hasIntro: true },
+      { id: "p6m-al2", title: "Algebra Word Problems", description: "Form expressions and equations from word problems — PSLE depth." },
+    ] },
+  { id: "p6-barmodels", title: "Bar Model Heuristics", icon: "📊", description: "PSLE-style bar models — equal parts, remainders, and before/after problems.",
+    modules: [
+      { id: "p6m-bm1", title: "Bar Model Heuristics", description: "Equal-parts, remainder/fraction, and before-and-after problems.", hasIntro: true },
     ] },
   { id: "p6-speed", title: "Speed, Distance & Time", icon: "🚗", description: "Calculate speed, distance, and time — a key PSLE topic.",
     modules: [
@@ -792,6 +798,7 @@ const P6_MATH_TOPICS = [
   { id: "p6-percentage", title: "Percentage", icon: "💯", description: "Discount, GST, percentage change — heavily tested at PSLE.",
     modules: [
       { id: "p6m-pe1", title: "Percentage", description: "Find percentage of a number, discount, GST, percentage change.", hasIntro: true },
+      { id: "p6m-pe2", title: "Percentage Word Problems", description: "Reverse percentages, profit/loss, multi-step discount + GST — PSLE depth." },
     ] },
   { id: "p6-volume", title: "Volume", icon: "📦", description: "Volume of cubes, cuboids, and liquid in containers.",
     modules: [

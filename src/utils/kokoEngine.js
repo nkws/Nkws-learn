@@ -113,6 +113,7 @@ import { buildCnExtended5Questions, P5_CN_EXTENDED_QUESTION_COUNTS, P5_CN_EXTEND
 import { buildGrammar6Questions, P6_GRAMMAR6_QUESTION_COUNTS, P6_GRAMMAR6_INTRO } from "../topics/p6/eng-grammar6";
 import { buildClozeQuestions, P6_CLOZE_QUESTION_COUNTS, P6_CLOZE_INTRO } from "../topics/p6/eng-cloze";
 import { buildMath6Questions, P6_MATH6_QUESTION_COUNTS, P6_MATH6_INTRO } from "../topics/p6/math6";
+import { buildBarModels6Questions, P6_MATH_BARMODELS6_QUESTION_COUNTS, P6_MATH_BARMODELS6_INTRO } from "../topics/p6/math-barmodels6";
 import { buildMathFractionsQuestions, P6_MATH_FRACTIONS_QUESTION_COUNTS, P6_MATH_FRACTIONS_INTRO } from "../topics/p6/math-fractions";
 import { buildMathPercentageQuestions, P6_MATH_PERCENTAGE_QUESTION_COUNTS, P6_MATH_PERCENTAGE_INTRO } from "../topics/p6/math-percentage";
 import { buildMathVolumeQuestions, P6_MATH_VOLUME_QUESTION_COUNTS, P6_MATH_VOLUME_INTRO } from "../topics/p6/math-volume";
@@ -192,6 +193,7 @@ const BUILDERS = {
   "p6e-ed": buildEditingQuestions,
   "p6e-cp": buildComprehension6Questions,
   "p6m-ra": buildMath6Questions, "p6m-al": buildMath6Questions, "p6m-st": buildMath6Questions,
+  "p6m-bm": buildBarModels6Questions,
   "p6m-fw": buildMathFractionsQuestions,
   "p6m-pe": buildMathPercentageQuestions,
   "p6m-vo": buildMathVolumeQuestions,
@@ -256,6 +258,7 @@ export const MODULE_QUESTION_COUNTS = {
   ...P6_CLOZE_QUESTION_COUNTS, ...P6_MATH_FRACTIONS_QUESTION_COUNTS,
   ...P6_MATH_PERCENTAGE_QUESTION_COUNTS, ...P6_MATH_VOLUME_QUESTION_COUNTS,
   ...P6_MATH_GEOMETRY_QUESTION_COUNTS, ...P6_MATH_DATA_QUESTION_COUNTS,
+  ...P6_MATH_BARMODELS6_QUESTION_COUNTS,
   ...P6_EDITING_QUESTION_COUNTS, ...P6_COMPREHENSION_QUESTION_COUNTS,
   ...P6_REVISION_QUESTION_COUNTS, ...P6_CN_READING_QUESTION_COUNTS,
   ...P6_CN_ADVANCED_QUESTION_COUNTS,
@@ -297,6 +300,7 @@ const ALL_INTROS = {
   // P6 Math
   ...P6_MATH6_INTRO,
   ...P6_MATH_FRACTIONS_INTRO, ...P6_MATH_PERCENTAGE_INTRO, ...P6_MATH_VOLUME_INTRO,
+  ...P6_MATH_BARMODELS6_INTRO,
   // P6 English
   ...P6_CLOZE_INTRO, ...P6_EDITING_INTRO, ...P6_COMPREHENSION_INTRO,
   // P6 Science
