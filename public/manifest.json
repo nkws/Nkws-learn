@@ -1,12 +1,14 @@
 {
-  "name": "Koko Tutor",
-  "short_name": "Koko Tutor",
-  "description": "Learn with Koko the fox!",
+  "name": "Koko's Classroom",
+  "short_name": "Koko",
+  "description": "Free interactive Singapore MOE-aligned practice for Primary 1–6: Maths, English, Science and Chinese.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#FFF8E1",
   "theme_color": "#FFB347",
   "orientation": "portrait",
+  "categories": ["education", "kids"],
+  "lang": "en-SG",
   "icons": [
     {
       "src": "/favicon.svg",
