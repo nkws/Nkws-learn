@@ -62,6 +62,26 @@ export function saveNavState(state) {
   try { localStorage.setItem(NAV_STATE_KEY, JSON.stringify(state)); } catch { /* ignore */ }
 }
 
+const MOCK_PAPER_HISTORY_KEY = "koko-mock-paper-history";
+
+export function loadMockPaperHistory() {
+  try {
+    const saved = localStorage.getItem(MOCK_PAPER_HISTORY_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch { /* ignore */ }
+  return [];
+}
+
+export function saveMockPaperAttempt(attempt) {
+  try {
+    const history = loadMockPaperHistory();
+    history.unshift({ ...attempt, completedAt: Date.now() });
+    // Cap to 50 most recent so localStorage doesn't grow without bound.
+    const trimmed = history.slice(0, 50);
+    localStorage.setItem(MOCK_PAPER_HISTORY_KEY, JSON.stringify(trimmed));
+  } catch { /* ignore */ }
+}
+
 const STREAK_KEY = "koko-streak";
 
 function todayStr() {

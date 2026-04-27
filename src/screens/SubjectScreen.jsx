@@ -1,9 +1,11 @@
 import { getSubjectsForLevel } from "../utils/constants";
+import { levelHasPapers } from "../topics/mockpapers";
 
 
-export default function SubjectScreen({ level, onSelectSubject, onBack }) {
+export default function SubjectScreen({ level, onSelectSubject, onPSLEPrep, onBack }) {
   const subjects = getSubjectsForLevel(level);
   const levelLabel = level.toUpperCase();
+  const showPSLEPrep = levelHasPapers(level);
 
   return (
     <div className="screen home-screen">
@@ -31,6 +33,22 @@ export default function SubjectScreen({ level, onSelectSubject, onBack }) {
             <span className="topic-arrow">›</span>
           </button>
         ))}
+
+        {showPSLEPrep && (
+          <button
+            className="topic-card"
+            onClick={() => onPSLEPrep(level)}
+            style={{ borderColor: "#3b82f6" }}
+          >
+            <span className="topic-icon">📝</span>
+            <div className="topic-info">
+              <h2 className="topic-title">PSLE Prep</h2>
+              <p className="topic-desc">Timed mock papers, mixed-topic, exam-style.</p>
+              <span className="topic-stars">First paper free · more with Plus</span>
+            </div>
+            <span className="topic-arrow">›</span>
+          </button>
+        )}
       </div>
 
     </div>

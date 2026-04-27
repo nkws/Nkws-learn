@@ -1,16 +1,5 @@
 import { shuffle } from "../../utils/helpers";
 
-function nearbyWrongs3(correct) {
-  const offsets = shuffle([-10, 10, -1, 1, -100, 100, -5, 5]);
-  const wrongs = [];
-  for (const off of offsets) {
-    if (wrongs.length >= 2) break;
-    const fake = correct + off;
-    if (fake > 0 && fake !== correct && !wrongs.includes(fake)) wrongs.push(fake);
-  }
-  return wrongs;
-}
-
 export const P2_MATH_EXTENDED_INTRO = {
   "p2m-as1": {
     title: "Addition & Subtraction to 1000",
