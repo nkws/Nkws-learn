@@ -4,7 +4,7 @@ import ChoiceButtons from "../components/ChoiceButtons";
 import RewardModal from "../components/RewardModal";
 import { useTTS } from "../hooks/useSpeech";
 import { getModule, getTopic, getTotalStars } from "../utils/constants";
-import { loadProgress, saveProgress, updateStreak } from "../utils/progress";
+import { loadProgress, saveProgress, updateStreak, loadAutoRead, saveAutoRead } from "../utils/progress";
 import { buildModuleQuestions, getPraise, getHint, getIntro } from "../utils/kokoEngine";
 import { recordQuizAttempt } from "../utils/cloudSync";
 import IntroScreen from "./IntroScreen";
@@ -27,6 +27,19 @@ export default function ChatScreen({
   const intro = getIntro(moduleId);
   const ttsLang = subjectId === "chinese" ? "zh" : "en";
   const { speak } = useTTS(ttsLang);
+  const [autoRead, setAutoRead] = useState(() => loadAutoRead());
+  const autoSpeak = useCallback((text, choices, opts) => {
+    if (!autoRead) return;
+    speak(text, choices, opts);
+  }, [autoRead, speak]);
+  const toggleAutoRead = useCallback(() => {
+    setAutoRead((prev) => {
+      const next = !prev;
+      saveAutoRead(next);
+      if (!next) window.speechSynthesis?.cancel();
+      return next;
+    });
+  }, []);
 
   // If no intro, initialise quiz state eagerly to avoid an effect
   const initialQuiz = !intro ? buildModuleQuestions(moduleId) : null;
@@ -167,8 +180,8 @@ export default function ChatScreen({
             { role: "assistant", content: replyText },
             { role: "assistant", content: completeText + videoPrompt },
           ]);
-          speak(replyText);
-          speak(completeText + videoPrompt, null, { cancel: false });
+          autoSpeak(replyText);
+          autoSpeak(completeText + videoPrompt, null, { cancel: false });
           setModuleComplete(true);
           saveModuleScore(newCorrectCount);
           updateStreak();
@@ -206,8 +219,8 @@ export default function ChatScreen({
             ...retryPassageMsgs,
             { role: "assistant", content: `${retryIntro} ${wrongs[0].question}` },
           ]);
-          speak(replyText);
-          speak(`${retryIntro} ${wrongs[0].question}`, wrongs[0].choices, { cancel: false });
+          autoSpeak(replyText);
+          autoSpeak(`${retryIntro} ${wrongs[0].question}`, wrongs[0].choices, { cancel: false });
           setQuestions([...wrongs]);
           setQuestionIndex(0);
           setIsRetryRound(true);
@@ -232,11 +245,11 @@ export default function ChatScreen({
         ...passageMsgs,
         { role: "assistant", content: questionText },
       ]);
-      speak(replyText);
-      speak(questionText, nextChoices, { cancel: false });
+      autoSpeak(replyText);
+      autoSpeak(questionText, nextChoices, { cancel: false });
       setAnswering(false);
     },
-    [questions, questionIndex, correctCount, totalQ, moduleId, mod?.title, videoId, topicVideoId, subjectId, topicId, level, speak, saveModuleScore, answering, activeChild, isRetryRound, ttsLang]
+    [questions, questionIndex, correctCount, totalQ, moduleId, mod?.title, videoId, topicVideoId, subjectId, topicId, level, autoSpeak, saveModuleScore, answering, activeChild, isRetryRound, ttsLang]
   );
 
   const currentQ = questions[questionIndex] || null;
@@ -253,6 +266,14 @@ export default function ChatScreen({
           ←
         </button>
         <span className="topbar-mascot">🦊 Koko</span>
+        <button
+          className="topbar-auto-read"
+          onClick={toggleAutoRead}
+          aria-label={autoRead ? "Turn auto read-aloud off" : "Turn auto read-aloud on"}
+          title={autoRead ? "Auto read-aloud is on" : "Auto read-aloud is off"}
+        >
+          {autoRead ? "🔊" : "🔇"}
+        </button>
         <span className="topbar-topic">{mod?.title}</span>
       </div>
 

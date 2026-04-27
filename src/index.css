@@ -594,6 +594,24 @@ button {
   font-weight: 700;
 }
 
+.topbar-auto-read {
+  font-size: 18px;
+  background: #FFF3E0;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.topbar-auto-read:active {
+  transform: scale(0.95);
+}
+
 .topbar-topic {
   margin-left: auto;
   font-size: 13px;

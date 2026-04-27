@@ -82,6 +82,20 @@ export function saveMockPaperAttempt(attempt) {
   } catch { /* ignore */ }
 }
 
+const AUTO_READ_KEY = "koko-auto-read";
+
+export function loadAutoRead() {
+  try {
+    const saved = localStorage.getItem(AUTO_READ_KEY);
+    if (saved !== null) return saved === "1";
+  } catch { /* ignore */ }
+  return true;
+}
+
+export function saveAutoRead(enabled) {
+  try { localStorage.setItem(AUTO_READ_KEY, enabled ? "1" : "0"); } catch { /* ignore */ }
+}
+
 const STREAK_KEY = "koko-streak";
 
 function todayStr() {
