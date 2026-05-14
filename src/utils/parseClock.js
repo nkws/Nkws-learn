@@ -45,6 +45,13 @@ export function cleanForSpeech(text) {
     .replace(JOURNEY_REGEX, "")
     .replace(CUBOID_REGEX, "")
     .replace(EMOJI_REGEX, "")
+    .replace(/−/g, " minus ")
+    .replace(/×/g, " times ")
+    .replace(/÷/g, " divided by ")
+    .replace(/ - /g, " minus ")
+    .replace(/ \+ /g, " plus ")
+    .replace(/ = /g, " equals ")
+    .replace(/(\d)\s*\/\s*(\d)/g, "$1 over $2")
     .replace(/\s{2,}/g, " ")
     .trim();
 }
