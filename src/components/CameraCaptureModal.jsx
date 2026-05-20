@@ -1,71 +1,23 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { parseOcrText } from "../utils/spellingStorage";
 
 const STATE = {
-  PREVIEW: "preview",
+  PROMPT: "prompt",
   PROCESSING: "processing",
   REVIEW: "review",
   ERROR: "error",
 };
 
 export default function CameraCaptureModal({ onClose, onAddWords }) {
-  const videoRef = useRef(null);
-  const canvasRef = useRef(null);
   const fileInputRef = useRef(null);
-  const streamRef = useRef(null);
-  const [phase, setPhase] = useState(STATE.PREVIEW);
+  const [phase, setPhase] = useState(STATE.PROMPT);
   const [errorMsg, setErrorMsg] = useState("");
   const [progress, setProgress] = useState(0);
   const [candidates, setCandidates] = useState([]);
   const [selected, setSelected] = useState(() => new Set());
   const [previewSrc, setPreviewSrc] = useState(null);
-  const [cameraReady, setCameraReady] = useState(false);
 
-  // Start the live camera preview on mount; fall back to file picker on error.
-  useEffect(() => {
-    let cancelled = false;
-    async function start() {
-      if (!navigator.mediaDevices?.getUserMedia) {
-        setCameraReady(false);
-        return;
-      }
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: { ideal: "environment" } },
-          audio: false,
-        });
-        if (cancelled) {
-          stream.getTracks().forEach((t) => t.stop());
-          return;
-        }
-        streamRef.current = stream;
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-          await videoRef.current.play().catch(() => {});
-        }
-        setCameraReady(true);
-      } catch {
-        setCameraReady(false);
-      }
-    }
-    start();
-    return () => {
-      cancelled = true;
-      const s = streamRef.current;
-      if (s) s.getTracks().forEach((t) => t.stop());
-      streamRef.current = null;
-    };
-  }, []);
-
-  const stopCamera = useCallback(() => {
-    const s = streamRef.current;
-    if (s) {
-      s.getTracks().forEach((t) => t.stop());
-      streamRef.current = null;
-    }
-  }, []);
-
-  const runOcr = useCallback(async (imageSource) => {
+  const runOcr = useCallback(async (canvas) => {
     setPhase(STATE.PROCESSING);
     setProgress(0);
     try {
@@ -75,7 +27,7 @@ export default function CameraCaptureModal({ onClose, onAddWords }) {
           if (m.status === "recognizing text") setProgress(Math.round(m.progress * 100));
         },
       });
-      const { data } = await worker.recognize(imageSource);
+      const { data } = await worker.recognize(canvas);
       await worker.terminate();
       const words = parseOcrText(data?.text || "");
       if (words.length === 0) {
@@ -88,26 +40,10 @@ export default function CameraCaptureModal({ onClose, onAddWords }) {
       setPhase(STATE.REVIEW);
     } catch (err) {
       console.error("OCR failed", err);
-      setErrorMsg("Couldn't scan the image. Please try again.");
+      setErrorMsg("Couldn't read the image. Please try again.");
       setPhase(STATE.ERROR);
     }
   }, []);
-
-  const handleCapture = useCallback(() => {
-    const video = videoRef.current;
-    const canvas = canvasRef.current;
-    if (!video || !canvas) return;
-    const w = video.videoWidth;
-    const h = video.videoHeight;
-    if (!w || !h) return;
-    canvas.width = w;
-    canvas.height = h;
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(video, 0, 0, w, h);
-    setPreviewSrc(canvas.toDataURL("image/jpeg", 0.92));
-    stopCamera();
-    runOcr(canvas);
-  }, [runOcr, stopCamera]);
 
   const handleFile = useCallback(
     (e) => {
@@ -115,21 +51,28 @@ export default function CameraCaptureModal({ onClose, onAddWords }) {
       if (!file) return;
       const url = URL.createObjectURL(file);
       setPreviewSrc(url);
-      stopCamera();
       const img = new Image();
       img.onload = () => {
-        const canvas = canvasRef.current || document.createElement("canvas");
+        const canvas = document.createElement("canvas");
         canvas.width = img.naturalWidth;
         canvas.height = img.naturalHeight;
         const ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0);
         runOcr(canvas);
+      };
+      img.onerror = () => {
+        setErrorMsg("Couldn't open the photo. Please try a different one.");
+        setPhase(STATE.ERROR);
         URL.revokeObjectURL(url);
       };
       img.src = url;
     },
-    [runOcr, stopCamera]
+    [runOcr]
   );
+
+  const openPicker = useCallback(() => {
+    fileInputRef.current?.click();
+  }, []);
 
   const toggleWord = useCallback((word) => {
     setSelected((prev) => {
@@ -161,46 +104,39 @@ export default function CameraCaptureModal({ onClose, onAddWords }) {
     onClose();
   }, [candidates, selected, onAddWords, onClose]);
 
+  const resetToPrompt = useCallback(() => {
+    setErrorMsg("");
+    setCandidates([]);
+    setSelected(new Set());
+    setPreviewSrc(null);
+    setPhase(STATE.PROMPT);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  }, []);
+
   return (
     <div className="reward-overlay" onClick={onClose}>
       <div className="reward-modal spelling-camera-modal" onClick={(e) => e.stopPropagation()}>
         <h2 className="reward-title">Scan word list</h2>
 
-        {phase === STATE.PREVIEW && (
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          capture="environment"
+          style={{ display: "none" }}
+          onChange={handleFile}
+        />
+
+        {phase === STATE.PROMPT && (
           <>
             <p className="reward-subtitle">
-              Point at a printed spelling list and tap Capture. Lighting matters!
+              Take a photo of the spelling list, or pick one from your photos.
+              Clear, well-lit shots work best.
             </p>
-            <div className="spelling-camera-stage">
-              {cameraReady ? (
-                <video ref={videoRef} playsInline muted className="spelling-camera-video" />
-              ) : (
-                <div className="spelling-camera-fallback">
-                  Camera not available. Use the photo picker below.
-                </div>
-              )}
-              <canvas ref={canvasRef} style={{ display: "none" }} />
-            </div>
             <div className="spelling-camera-actions">
-              {cameraReady && (
-                <button className="btn-primary" onClick={handleCapture}>
-                  📸 Capture
-                </button>
-              )}
-              <button
-                className="btn-secondary"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                Choose photo
+              <button className="btn-primary" onClick={openPicker}>
+                📷 Take or upload photo
               </button>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                capture="environment"
-                style={{ display: "none" }}
-                onChange={handleFile}
-              />
             </div>
             <button className="confirm-cancel" onClick={onClose}>
               Cancel
@@ -251,7 +187,7 @@ export default function CameraCaptureModal({ onClose, onAddWords }) {
               <button className="btn-primary" onClick={handleAdd}>
                 Add {selected.size} word{selected.size === 1 ? "" : "s"}
               </button>
-              <button className="btn-secondary" onClick={() => { setPhase(STATE.PREVIEW); setCameraReady(false); setCandidates([]); setSelected(new Set()); }}>
+              <button className="btn-secondary" onClick={resetToPrompt}>
                 Try again
               </button>
             </div>
@@ -265,10 +201,7 @@ export default function CameraCaptureModal({ onClose, onAddWords }) {
           <>
             <p className="reward-subtitle">{errorMsg}</p>
             <div className="spelling-camera-actions">
-              <button
-                className="btn-primary"
-                onClick={() => { setErrorMsg(""); setPhase(STATE.PREVIEW); }}
-              >
+              <button className="btn-primary" onClick={resetToPrompt}>
                 Try again
               </button>
               <button className="btn-secondary" onClick={onClose}>
