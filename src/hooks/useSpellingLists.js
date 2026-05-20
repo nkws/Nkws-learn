@@ -1,12 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { loadSpellingLists, saveSpellingLists, newListId } from "../utils/spellingStorage";
 
 export function useSpellingLists() {
   const [state, setState] = useState(() => loadSpellingLists());
-
-  useEffect(() => {
-    saveSpellingLists(state);
-  }, [state]);
 
   const createList = useCallback((title, lang = "en") => {
     const now = Date.now();
@@ -18,21 +14,30 @@ export function useSpellingLists() {
       createdAt: now,
       updatedAt: now,
     };
-    setState((prev) => ({ ...prev, lists: [list, ...prev.lists] }));
+    const current = loadSpellingLists();
+    const next = { ...current, lists: [list, ...current.lists] };
+    saveSpellingLists(next);
+    setState(next);
     return list.id;
   }, []);
 
   const updateList = useCallback((id, updates) => {
-    setState((prev) => ({
-      ...prev,
-      lists: prev.lists.map((l) =>
+    const current = loadSpellingLists();
+    const next = {
+      ...current,
+      lists: current.lists.map((l) =>
         l.id === id ? { ...l, ...updates, updatedAt: Date.now() } : l
       ),
-    }));
+    };
+    saveSpellingLists(next);
+    setState(next);
   }, []);
 
   const deleteList = useCallback((id) => {
-    setState((prev) => ({ ...prev, lists: prev.lists.filter((l) => l.id !== id) }));
+    const current = loadSpellingLists();
+    const next = { ...current, lists: current.lists.filter((l) => l.id !== id) };
+    saveSpellingLists(next);
+    setState(next);
   }, []);
 
   const getList = useCallback(
@@ -42,3 +47,4 @@ export function useSpellingLists() {
 
   return { lists: state.lists, createList, updateList, deleteList, getList };
 }
+
