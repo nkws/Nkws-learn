@@ -15,7 +15,7 @@ const LEVELS = [
 
 const SUBJECTS_PREVIEW = ["Math", "English", "Science", "Chinese"];
 
-export default function HomeScreen({ progress, activeChild, user, isPlus, onSelectLevel, onDashboard, onSwitchChild, onManageSubscription, onSignOut, onSignIn, onAbout, onHowTo }) {
+export default function HomeScreen({ progress, activeChild, user, isPlus, onSelectLevel, onDashboard, onSwitchChild, onManageSubscription, onSignOut, onSignIn, onAbout, onHowTo, onSpelling }) {
   const totalStars = getTotalStars(progress.moduleStars || {});
   const streak = loadStreak();
   const [showUpgrade, setShowUpgrade] = useState(false);
@@ -67,6 +67,27 @@ export default function HomeScreen({ progress, activeChild, user, isPlus, onSele
           </button>
         ))}
       </div>
+
+      {onSpelling && (
+        <>
+          <p className="home-pick-label">Practice tools</p>
+          <div className="topic-list">
+            <button
+              className="topic-card spelling-home-tile"
+              onClick={onSpelling}
+            >
+              <span className="topic-icon">📝</span>
+              <div className="topic-info">
+                <h2 className="topic-title">Spelling Practice</h2>
+                <p className="topic-desc">
+                  Add this week's words — by camera or by typing.
+                </p>
+              </div>
+              <span className="topic-arrow">›</span>
+            </button>
+          </div>
+        </>
+      )}
 
       <div className="home-links">
         {activeChild && (
