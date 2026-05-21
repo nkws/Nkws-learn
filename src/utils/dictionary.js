@@ -1,7 +1,11 @@
-// Dictionary lookup for spelling-list words. Two free, no-API-key sources:
+// Dictionary lookup for spelling-list words. Free, no-API-key sources:
 //   - English: api.dictionaryapi.dev (Free Dictionary API)
-//   - Chinese: pinyin via pinyin-pro (already a dep) + MyMemory free translation
-//     API for an English gloss so the child has a concrete meaning to anchor to
+//   - Chinese: moedict.tw — Taiwan MOE's online dictionary, modern Chinese
+//     definitions with pinyin and examples. Inputs are converted from
+//     simplified → traditional via opencc-js before querying.
+//   - Chinese fallback: zh.wiktionary.org for entries moedict doesn't have.
+//   - Chinese secondary: MyMemory free translation for an English gloss so
+//     parents and bilingual learners still see a quick English meaning.
 //
 // Results are cached forever in localStorage — definitions don't change and
 // network can be slow. Cache key is `koko-dictionary-cache`; value is a map
@@ -11,7 +15,7 @@
 const CACHE_KEY = "koko-dictionary-cache";
 // Bump this when the entry shape changes so old cached payloads get re-fetched
 // instead of being returned with missing fields (e.g. no `explanation`).
-const CACHE_VERSION = 2;
+const CACHE_VERSION = 3;
 
 function loadCache() {
   try {
@@ -78,22 +82,82 @@ async function fetchChineseTranslation(word) {
   return t;
 }
 
-async function fetchChineseExplanation(word) {
-  // Chinese Wiktionary (zh.wiktionary.org) has Chinese-language definitions
-  // for most common 词语. The summary endpoint returns a clean text extract.
+// Lazy-loaded simplified→traditional converter (opencc-js). Tiny but only
+// needed for Chinese lookups, so we don't ship it in the main bundle.
+let s2tConverterPromise = null;
+async function getS2tConverter() {
+  if (!s2tConverterPromise) {
+    s2tConverterPromise = import("opencc-js").then((opencc) =>
+      opencc.Converter({ from: "cn", to: "tw" })
+    );
+  }
+  return s2tConverterPromise;
+}
+
+async function fetchMoedict(word) {
+  // moedict.tw: Taiwan MOE's online Chinese dictionary. Modern definitions,
+  // free, CORS-enabled. The /uni endpoint returns JSON with `heteronyms`
+  // (different readings) each containing `definitions`. We pull the first
+  // definition's `def` field — the most common modern sense.
+  const url = `https://www.moedict.tw/uni/${encodeURIComponent(word)}.json`;
+  const res = await fetch(url);
+  if (!res.ok) return null;
+  const data = await res.json();
+  const heteronyms = data?.heteronyms;
+  if (!Array.isArray(heteronyms) || heteronyms.length === 0) return null;
+  // Concatenate the first 2 definitions across the first heteronym; if the
+  // first one is too short, allow more.
+  const first = heteronyms[0];
+  const defs = first?.definitions;
+  if (!Array.isArray(defs) || defs.length === 0) return null;
+  const cleanDef = (d) => {
+    const raw = (d?.def || "").replace(/<[^>]+>/g, "").trim();
+    return raw;
+  };
+  const top = defs.map(cleanDef).filter(Boolean);
+  if (top.length === 0) return null;
+  // Prefer up to two short definitions joined; if first one is already long,
+  // use it alone.
+  const combined = top[0].length > 60 ? top[0] : top.slice(0, 2).join("；");
+  return combined;
+}
+
+async function fetchWiktionary(word) {
   const url = `https://zh.wiktionary.org/api/rest_v1/page/summary/${encodeURIComponent(word)}`;
   const res = await fetch(url);
   if (!res.ok) return null;
   const data = await res.json();
   const raw = data?.extract;
   if (!raw) return null;
-  // Strip wikitext-style template residue and trim. Keep paragraph breaks.
   const cleaned = raw
     .replace(/\[\d+\]/g, "")
     .replace(/\{\{[^}]*\}\}/g, "")
     .trim();
   if (!cleaned) return null;
   return cleaned;
+}
+
+async function fetchChineseExplanation(word) {
+  // Primary: moedict.tw with the word as-typed (handles traditional input).
+  let r = await fetchMoedict(word).catch(() => null);
+  if (r) return r;
+
+  // Convert simplified → traditional and retry moedict — Singapore inputs are
+  // simplified and moedict is keyed by traditional, so this is the common path.
+  try {
+    const conv = await getS2tConverter();
+    const trad = conv(word);
+    if (trad && trad !== word) {
+      r = await fetchMoedict(trad).catch(() => null);
+      if (r) return r;
+    }
+  } catch { /* ignore */ }
+
+  // Fallback: Chinese Wiktionary.
+  r = await fetchWiktionary(word).catch(() => null);
+  if (r) return r;
+
+  return null;
 }
 
 export async function lookupWord(word, lang) {

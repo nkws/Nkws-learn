@@ -2200,10 +2200,19 @@ button:focus-visible {
   background: transparent;
 }
 
+.practice-canvas-block {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
 .practice-canvas-clear {
   font-size: 14px;
   padding: 8px 18px;
   min-height: 36px;
+  align-self: flex-end;
+  margin-right: 8px;
 }
 
 /* Practice cards */
