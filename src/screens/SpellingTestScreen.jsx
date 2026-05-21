@@ -8,7 +8,7 @@ const PHASE = {
   DONE: "done",
 };
 
-export default function SpellingTestScreen({ listId, onBack }) {
+export default function SpellingTestScreen({ listId, mode = "write", onBack }) {
   const { getList } = useSpellingLists();
   const list = getList(listId);
   const { speak } = useTTS(list?.lang === "zh" ? "zh" : "en");
@@ -18,10 +18,77 @@ export default function SpellingTestScreen({ listId, onBack }) {
   const [phase, setPhase] = useState(PHASE.WRITING);
   const [snapshot, setSnapshot] = useState(null);
   const [results, setResults] = useState([]);
+  const [pinyinMap, setPinyinMap] = useState({});
   const canvasRef = useRef(null);
   const drawingRef = useRef(false);
   const lastPointRef = useRef(null);
   const spokenForRef = useRef(-1);
+
+  const isZh = list?.lang === "zh";
+  const isPinyinMode = mode === "pinyin";
+  const labels = isZh
+    ? {
+        prompt: "听一听，写下来。",
+        hearAgain: "🔊 再听一次",
+        clear: "擦掉",
+        check: "检查",
+        gotIt: "✅ 对了",
+        missed: "❌ 错了",
+        compareIntro: isPinyinMode
+          ? "对一对你写的拼音，跟下面的一样吗？"
+          : "对一对你写的字，跟下面的一样吗？",
+        yourAnswer: "你写的",
+        correctLabel: isPinyinMode ? "正确拼音" : "正确汉字",
+        tryAgain: "再来一次",
+        backToList: "回到词语表",
+        wordsToRevisit: "要再练的词：",
+        allDone: "都做完了！",
+        perfect: "全对了！🌟",
+        notPerfect: "做得很好！没做对的再练几遍吧。",
+        progress: (i, n) => `第 ${i} 个 / 共 ${n} 个`,
+      }
+    : {
+        prompt: "Listen and write the word.",
+        hearAgain: "🔊 Hear again",
+        clear: "Clear",
+        check: "Check",
+        gotIt: "✅ Got it",
+        missed: "❌ Missed",
+        compareIntro: "Compare your writing to the correct word. Did you spell it right?",
+        yourAnswer: "Your answer",
+        correctLabel: "Correct word",
+        tryAgain: "Try again",
+        backToList: "Back to list",
+        wordsToRevisit: "Words to revisit:",
+        allDone: "All done!",
+        perfect: "Perfect score! 🌟",
+        notPerfect: "Great effort! Practise the missed ones again.",
+        progress: (i, n) => `Word ${i} of ${n}`,
+      };
+
+  // Lazy-derive pinyin only when we're in pinyin mode and only for words we
+  // haven't seen yet. Cached in component state so we don't re-derive each
+  // render.
+  useEffect(() => {
+    if (!isPinyinMode || words.length === 0) return;
+    const missing = words.filter((w) => !(w in pinyinMap));
+    if (missing.length === 0) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const { pinyin } = await import("pinyin-pro");
+        if (cancelled) return;
+        const next = { ...pinyinMap };
+        for (const w of missing) {
+          next[w] = pinyin(w, { toneType: "symbol", type: "string" });
+        }
+        setPinyinMap(next);
+      } catch (err) {
+        console.error("Failed to load pinyin-pro", err);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [isPinyinMode, words, pinyinMap]);
 
   const currentWord = words[index] || "";
 
@@ -161,7 +228,11 @@ export default function SpellingTestScreen({ listId, onBack }) {
           <button className="back-btn" onClick={onBack}>←</button>
           <span className="topbar-topic">{list.title}</span>
         </div>
-        <p className="spelling-empty">Add some words to the list before starting a test.</p>
+        <p className="spelling-empty">
+          {isZh
+            ? "先在词语表里加几个词再来听写。"
+            : "Add some words to the list before starting a test."}
+        </p>
       </div>
     );
   }
@@ -177,24 +248,30 @@ export default function SpellingTestScreen({ listId, onBack }) {
           <span className="topbar-topic">{list.title}</span>
         </div>
         <div className="spelling-card">
-          <p className="spelling-card-position">All done!</p>
+          <p className="spelling-card-position">{labels.allDone}</p>
           <div className="spelling-card-word" style={{ color: isPerfect ? "var(--coral)" : "var(--teal)" }}>
             {correctCount} / {words.length}
           </div>
           <p className="reward-subtitle">
-            {isPerfect ? "Perfect score! 🌟" : "Great effort! Practise the missed ones again."}
+            {isPerfect ? labels.perfect : labels.notPerfect}
           </p>
           {missed.length > 0 && (
             <div className="spelling-missed-list">
-              <p className="spelling-missed-title">Words to revisit:</p>
+              <p className="spelling-missed-title">{labels.wordsToRevisit}</p>
               <ul>
-                {missed.map((m, i) => <li key={i}>{m.word}</li>)}
+                {missed.map((m, i) => (
+                  <li key={i}>
+                    {isPinyinMode && pinyinMap[m.word]
+                      ? `${m.word} → ${pinyinMap[m.word]}`
+                      : m.word}
+                  </li>
+                ))}
               </ul>
             </div>
           )}
           <div className="spelling-card-nav">
-            <button className="btn-primary" onClick={restart}>Try again</button>
-            <button className="btn-secondary" onClick={onBack}>Back to list</button>
+            <button className="btn-primary" onClick={restart}>{labels.tryAgain}</button>
+            <button className="btn-secondary" onClick={onBack}>{labels.backToList}</button>
           </div>
         </div>
       </div>
@@ -210,7 +287,7 @@ export default function SpellingTestScreen({ listId, onBack }) {
 
       <div className="chat-progress-bar">
         <span className="chat-stars">
-          Word {index + 1} of {words.length}
+          {labels.progress(index + 1, words.length)}
         </span>
         <span className="chat-reward-hint">
           ⭐ {results.filter((r) => r.correct).length}
@@ -221,13 +298,13 @@ export default function SpellingTestScreen({ listId, onBack }) {
         <>
           <div className="spelling-test-prompt">
             <p className="reward-subtitle" style={{ margin: 0 }}>
-              Listen and write the word.
+              {labels.prompt}
             </p>
             <button
               className="btn-secondary spelling-test-hear"
               onClick={() => speak(currentWord)}
             >
-              🔊 Hear again
+              {labels.hearAgain}
             </button>
           </div>
 
@@ -246,8 +323,8 @@ export default function SpellingTestScreen({ listId, onBack }) {
           </div>
 
           <div className="spelling-test-actions">
-            <button className="btn-secondary" onClick={clearCanvas}>Clear</button>
-            <button className="btn-primary" onClick={handleCheck}>Check</button>
+            <button className="btn-secondary" onClick={clearCanvas}>{labels.clear}</button>
+            <button className="btn-primary" onClick={handleCheck}>{labels.check}</button>
           </div>
         </>
       )}
@@ -255,24 +332,33 @@ export default function SpellingTestScreen({ listId, onBack }) {
       {phase === PHASE.REVIEW && (
         <>
           <p className="reward-subtitle spelling-review-intro">
-            Compare your writing to the correct word. Did you spell it right?
+            {labels.compareIntro}
           </p>
           <div className="spelling-review-grid">
             <div className="spelling-review-cell">
-              <p className="spelling-review-label">Your answer</p>
+              <p className="spelling-review-label">{labels.yourAnswer}</p>
               <div className="spelling-review-pad">
-                {snapshot && <img src={snapshot} alt="Your writing" />}
+                {snapshot && <img src={snapshot} alt={labels.yourAnswer} />}
               </div>
             </div>
             <div className="spelling-review-cell">
-              <p className="spelling-review-label">Correct word</p>
-              <div className="spelling-review-pad spelling-review-correct">
-                {currentWord}
+              <p className="spelling-review-label">{labels.correctLabel}</p>
+              <div className={`spelling-review-pad spelling-review-correct${isPinyinMode ? " spelling-review-pinyin" : ""}`}>
+                {isPinyinMode ? (
+                  <>
+                    <span className="spelling-review-character">{currentWord}</span>
+                    <span className="spelling-review-pinyintext">
+                      {pinyinMap[currentWord] || "…"}
+                    </span>
+                  </>
+                ) : (
+                  currentWord
+                )}
               </div>
               <button
                 className="spelling-word-speak spelling-review-speak"
                 onClick={() => speak(currentWord)}
-                aria-label="Hear the word"
+                aria-label={isZh ? "再听一次" : "Hear the word"}
               >
                 🔊
               </button>
@@ -284,13 +370,13 @@ export default function SpellingTestScreen({ listId, onBack }) {
               className="btn-secondary spelling-mark-wrong"
               onClick={() => recordResult(false)}
             >
-              ❌ Missed
+              {labels.missed}
             </button>
             <button
               className="btn-primary spelling-mark-right"
               onClick={() => recordResult(true)}
             >
-              ✅ Got it
+              {labels.gotIt}
             </button>
           </div>
         </>

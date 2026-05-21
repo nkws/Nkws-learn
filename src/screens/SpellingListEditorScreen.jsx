@@ -13,6 +13,24 @@ export default function SpellingListEditorScreen({ listId, onBack, onStartTest }
   const [bulkInput, setBulkInput] = useState("");
   const [cardIndex, setCardIndex] = useState(0);
   const [showCards, setShowCards] = useState(false);
+  const [showModeChooser, setShowModeChooser] = useState(false);
+
+  const isZh = list?.lang === "zh";
+
+  const startTest = useCallback((mode) => {
+    if (!list || !onStartTest) return;
+    setShowModeChooser(false);
+    onStartTest(list.id, mode);
+  }, [list, onStartTest]);
+
+  const handleStartTestClick = useCallback(() => {
+    if (!list || !onStartTest) return;
+    if (isZh) {
+      setShowModeChooser(true);
+    } else {
+      onStartTest(list.id, "write");
+    }
+  }, [list, onStartTest, isZh]);
 
   const words = useMemo(() => list?.words || [], [list]);
 
@@ -99,11 +117,15 @@ export default function SpellingListEditorScreen({ listId, onBack, onStartTest }
             className="btn-primary spelling-card-speak"
             onClick={() => speak(word)}
           >
-            🔊 Hear it
+            🔊 {list.lang === "zh" ? "听一听" : "Hear it"}
           </button>
           <div className="spelling-card-nav">
-            <button className="btn-secondary" onClick={goPrev}>← Previous</button>
-            <button className="btn-secondary" onClick={goNext}>Next →</button>
+            <button className="btn-secondary" onClick={goPrev}>
+              {list.lang === "zh" ? "← 上一个" : "← Previous"}
+            </button>
+            <button className="btn-secondary" onClick={goNext}>
+              {list.lang === "zh" ? "下一个 →" : "Next →"}
+            </button>
           </div>
         </div>
       </div>
@@ -134,11 +156,15 @@ export default function SpellingListEditorScreen({ listId, onBack, onStartTest }
             onClick={() => { setTitleDraft(list.title); setTitleEditing(true); }}
           >
             <h1 className="hero-title">{list.title}</h1>
-            <span className="spelling-title-edit-hint">✏️ Edit name</span>
+            <span className="spelling-title-edit-hint">
+              ✏️ {isZh ? "改名" : "Edit name"}
+            </span>
           </button>
         )}
         <p className="topic-desc">
-          {words.length} word{words.length === 1 ? "" : "s"}
+          {words.length}{isZh
+            ? ` 个词语`
+            : ` word${words.length === 1 ? "" : "s"}`}
         </p>
       </div>
 
@@ -148,14 +174,14 @@ export default function SpellingListEditorScreen({ listId, onBack, onStartTest }
             className="btn-primary"
             onClick={() => { setCardIndex(0); setShowCards(true); }}
           >
-            🃏 Practice cards
+            🃏 {isZh ? "练习卡片" : "Practice cards"}
           </button>
           {onStartTest && (
             <button
               className="btn-secondary"
-              onClick={() => onStartTest(list.id)}
+              onClick={handleStartTestClick}
             >
-              ✍️ Start test
+              ✍️ {isZh ? "开始听写" : "Start test"}
             </button>
           )}
         </div>
@@ -187,7 +213,7 @@ export default function SpellingListEditorScreen({ listId, onBack, onStartTest }
           onClick={handleAddFromInput}
           disabled={!bulkInput.trim()}
         >
-          Add to list
+          {isZh ? "加入词语表" : "Add to list"}
         </button>
       </div>
 
@@ -226,6 +252,38 @@ export default function SpellingListEditorScreen({ listId, onBack, onStartTest }
         </ul>
       )}
 
+      {showModeChooser && (
+        <div className="reward-overlay" onClick={() => setShowModeChooser(false)}>
+          <div className="reward-modal" onClick={(e) => e.stopPropagation()}>
+            <h2 className="reward-title">选哪种听写？</h2>
+            <p className="reward-subtitle">
+              老师听一听词，你可以写汉字，或者写拼音。
+            </p>
+            <div className="spelling-mode-choice">
+              <button
+                className="btn-primary spelling-mode-btn"
+                onClick={() => startTest("character")}
+              >
+                <span className="spelling-mode-icon">字</span>
+                <span>写汉字</span>
+              </button>
+              <button
+                className="btn-primary spelling-mode-btn"
+                onClick={() => startTest("pinyin")}
+              >
+                <span className="spelling-mode-icon">ā</span>
+                <span>写拼音</span>
+              </button>
+            </div>
+            <button
+              className="confirm-cancel"
+              onClick={() => setShowModeChooser(false)}
+            >
+              取消
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

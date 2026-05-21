@@ -48,6 +48,8 @@ export default function App() {
   const [activeModule, setActiveModule] = useState(null);
   const [activePaperId, setActivePaperId] = useState(null);
   const [activeSpellingListId, setActiveSpellingListId] = useState(null);
+  const [activeSpellingLang, setActiveSpellingLang] = useState("en");
+  const [activeTestMode, setActiveTestMode] = useState("write");
   const [progress, setProgress] = useState(() => loadProgress());
   const [moduleVideos, setModuleVideos] = useState(() => loadModuleVideos());
   const [topicVideos, setTopicVideos] = useState(() => loadTopicVideos());
@@ -278,6 +280,7 @@ export default function App() {
     return (
       <SpellingTestScreen
         listId={activeSpellingListId}
+        mode={activeTestMode}
         onBack={() => setScreen("spelling-editor")}
       />
     );
@@ -287,8 +290,9 @@ export default function App() {
     return (
       <SpellingListEditorScreen
         listId={activeSpellingListId}
-        onStartTest={(id) => {
+        onStartTest={(id, mode) => {
           setActiveSpellingListId(id);
+          setActiveTestMode(mode);
           setScreen("spelling-test");
         }}
         onBack={() => {
@@ -302,6 +306,7 @@ export default function App() {
   if (screen === "spelling-lists") {
     return (
       <SpellingListsScreen
+        lang={activeSpellingLang}
         onOpenList={(id) => {
           setActiveSpellingListId(id);
           setScreen("spelling-editor");
@@ -412,7 +417,14 @@ export default function App() {
       onSignIn={() => setSkippedLogin(false)}
       onHowTo={() => setScreen("howto")}
       onAbout={() => setScreen("about")}
-      onSpelling={() => setScreen("spelling-lists")}
+      onEnglishSpelling={() => {
+        setActiveSpellingLang("en");
+        setScreen("spelling-lists");
+      }}
+      onChineseDictation={() => {
+        setActiveSpellingLang("zh");
+        setScreen("spelling-lists");
+      }}
     />
   );
 }
