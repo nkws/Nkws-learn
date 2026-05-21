@@ -3,16 +3,13 @@ import { lookupWord } from "../utils/dictionary";
 import { useTTS } from "../hooks/useSpeech";
 
 // Shared content panel for both the per-word modal and the Learn-mode card.
-// Caller controls layout/wrapping; this component renders the lookup payload
-// with a 🔊 button that reads the entire card (word + pinyin/phonetic +
-// meanings + examples) in the appropriate language(s).
+// For English lists it shows the dictionary entry (phonetic, meanings,
+// examples) from api.dictionaryapi.dev. For Chinese lists it shows the
+// pinyin only — no definition lookup, since no free source gave acceptable
+// quality for primary-school 词语.
 export default function WordDetail({ word, lang, compact = false }) {
-  // Both languages available so Chinese cards can read the word in Mandarin
-  // and the English translation in English, in sequence.
   const ttsZh = useTTS("zh");
   const ttsEn = useTTS("en");
-  // Track which word the current entry belongs to so we can derive a loading
-  // state without setting state synchronously inside the effect body.
   const [loadedFor, setLoadedFor] = useState(null);
   const [entry, setEntry] = useState(null);
 
@@ -32,21 +29,13 @@ export default function WordDetail({ word, lang, compact = false }) {
   const safeEntry = loadedFor === key ? entry : null;
 
   const isZh = lang === "zh";
-  const noDefinitionsCopy = isZh
-    ? "暂时找不到这个词的释义。"
-    : "No dictionary entry found for this word.";
 
-  // Read the whole card aloud. First utterance cancels any in-flight speech;
-  // subsequent ones queue with a short gap so the readout stays paced.
+  // Read aloud. First utterance cancels in-flight speech; subsequent queue.
+  // Chinese cards just read the word — no definition to chain. English cards
+  // read the word then up to two definitions and their example sentences.
   const readAll = useCallback(() => {
     if (lang === "zh") {
       ttsZh.speak(word);
-      if (safeEntry?.explanation) {
-        ttsZh.speak(safeEntry.explanation, null, { cancel: false });
-      }
-      if (safeEntry?.translation) {
-        ttsEn.speak(safeEntry.translation, null, { cancel: false });
-      }
       return;
     }
     ttsEn.speak(word);
@@ -67,8 +56,8 @@ export default function WordDetail({ word, lang, compact = false }) {
         <button
           className="spelling-word-speak word-detail-speak"
           onClick={readAll}
-          aria-label={isZh ? "听全部" : "Read aloud"}
-          title={isZh ? "读全部" : "Read aloud"}
+          aria-label={isZh ? "听一听" : "Read aloud"}
+          title={isZh ? "听一听" : "Read aloud"}
         >
           🔊
         </button>
@@ -81,24 +70,8 @@ export default function WordDetail({ word, lang, compact = false }) {
         <p className="word-detail-pinyin">{safeEntry.phonetic}</p>
       )}
 
-      {loading && (
-        <p className="word-detail-loading">
-          {isZh ? "查找中…" : "Looking up…"}
-        </p>
-      )}
-
-      {!loading && isZh && safeEntry?.explanation && (
-        <div className="word-detail-section">
-          <p className="word-detail-section-label">释义</p>
-          <p className="word-detail-text">{safeEntry.explanation}</p>
-        </div>
-      )}
-
-      {!loading && isZh && safeEntry?.translation && (
-        <div className="word-detail-section word-detail-secondary">
-          <p className="word-detail-section-label">English meaning</p>
-          <p className="word-detail-text">{safeEntry.translation}</p>
-        </div>
+      {loading && !isZh && (
+        <p className="word-detail-loading">Looking up…</p>
       )}
 
       {!loading && !isZh && safeEntry?.meanings && safeEntry.meanings.length > 0 && (
@@ -121,11 +94,8 @@ export default function WordDetail({ word, lang, compact = false }) {
         </div>
       )}
 
-      {!loading && isZh && !safeEntry?.explanation && !safeEntry?.translation && (
-        <p className="word-detail-empty">{noDefinitionsCopy}</p>
-      )}
       {!loading && !isZh && (!safeEntry?.meanings || safeEntry.meanings.length === 0) && (
-        <p className="word-detail-empty">{noDefinitionsCopy}</p>
+        <p className="word-detail-empty">No dictionary entry found for this word.</p>
       )}
     </div>
   );
