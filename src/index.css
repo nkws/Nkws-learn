@@ -1789,7 +1789,11 @@ button:focus-visible {
 }
 
 .spelling-review-pinyintext {
-  font-family: 'Fredoka One', cursive;
+  /* System sans-serif covers all pinyin tone marks consistently (Fredoka One
+     lacks ǎ ǐ ǔ ǚ and falls back, causing a mixed-font look). Scoped to
+     pinyin display only — the rest of the app keeps its existing fonts. */
+  font-family: 'Helvetica Neue', Arial, system-ui, sans-serif;
+  font-weight: 700;
   font-size: 30px;
   color: var(--teal);
   line-height: 1.2;
@@ -2063,7 +2067,12 @@ button:focus-visible {
 }
 
 .word-detail-pinyin {
-  font-family: 'Fredoka One', cursive;
+  /* Same reasoning as .spelling-review-pinyintext — Fredoka One can't render
+     every pinyin tone mark, so use a system sans-serif here for consistent
+     glyph coverage. This also fits English IPA phonetics shown in the same
+     slot for English lists. */
+  font-family: 'Helvetica Neue', Arial, system-ui, sans-serif;
+  font-weight: 700;
   font-size: 22px;
   color: var(--coral);
   margin: 0;
