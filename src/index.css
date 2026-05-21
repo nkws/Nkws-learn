@@ -1723,6 +1723,18 @@ button:focus-visible {
   background: linear-gradient(135deg, #FFFFFF 0%, #FFF3E0 100%);
 }
 
+.spelling-device-note {
+  font-size: 12px;
+  color: #888;
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: 10px;
+  padding: 8px 14px;
+  margin: 8px 16px 0;
+  text-align: center;
+  line-height: 1.45;
+  max-width: 420px;
+}
+
 .spelling-new-btn {
   align-self: center;
   margin: 16px auto;
