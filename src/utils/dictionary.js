@@ -15,7 +15,7 @@
 const CACHE_KEY = "koko-dictionary-cache";
 // Bump this when the entry shape changes so old cached payloads get re-fetched
 // instead of being returned with missing fields (e.g. no `explanation`).
-const CACHE_VERSION = 3;
+const CACHE_VERSION = 4;
 
 function loadCache() {
   try {
@@ -82,8 +82,12 @@ async function fetchChineseTranslation(word) {
   return t;
 }
 
-// Lazy-loaded simplified→traditional converter (opencc-js). Tiny but only
-// needed for Chinese lookups, so we don't ship it in the main bundle.
+// Lazy-loaded character converters (opencc-js). Only needed for Chinese
+// lookups so we don't ship them in the main bundle.
+//   - s2t: simplified → traditional (to query moedict.tw, which is keyed by
+//     traditional characters)
+//   - t2s: traditional → simplified (to convert moedict / Wiktionary output
+//     back to simplified, since Singapore reads simplified)
 let s2tConverterPromise = null;
 async function getS2tConverter() {
   if (!s2tConverterPromise) {
@@ -92,6 +96,26 @@ async function getS2tConverter() {
     );
   }
   return s2tConverterPromise;
+}
+
+let t2sConverterPromise = null;
+async function getT2sConverter() {
+  if (!t2sConverterPromise) {
+    t2sConverterPromise = import("opencc-js").then((opencc) =>
+      opencc.Converter({ from: "tw", to: "cn" })
+    );
+  }
+  return t2sConverterPromise;
+}
+
+async function toSimplified(text) {
+  if (!text) return text;
+  try {
+    const conv = await getT2sConverter();
+    return conv(text);
+  } catch {
+    return text;
+  }
 }
 
 async function fetchMoedict(word) {
@@ -140,7 +164,7 @@ async function fetchWiktionary(word) {
 async function fetchChineseExplanation(word) {
   // Primary: moedict.tw with the word as-typed (handles traditional input).
   let r = await fetchMoedict(word).catch(() => null);
-  if (r) return r;
+  if (r) return toSimplified(r);
 
   // Convert simplified → traditional and retry moedict — Singapore inputs are
   // simplified and moedict is keyed by traditional, so this is the common path.
@@ -149,13 +173,14 @@ async function fetchChineseExplanation(word) {
     const trad = conv(word);
     if (trad && trad !== word) {
       r = await fetchMoedict(trad).catch(() => null);
-      if (r) return r;
+      if (r) return toSimplified(r);
     }
   } catch { /* ignore */ }
 
-  // Fallback: Chinese Wiktionary.
+  // Fallback: Chinese Wiktionary. Output can be either form, so normalise to
+  // simplified before returning.
   r = await fetchWiktionary(word).catch(() => null);
-  if (r) return r;
+  if (r) return toSimplified(r);
 
   return null;
 }
