@@ -225,6 +225,7 @@ export default function SpellingListEditorScreen({ listId, onBack, onStartTest }
 
       {showCamera && (
         <CameraCaptureModal
+          lang={list.lang === "zh" ? "zh" : "en"}
           onClose={() => setShowCamera(false)}
           onAddWords={addWords}
         />

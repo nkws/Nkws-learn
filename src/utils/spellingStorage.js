@@ -21,12 +21,27 @@ export function newListId() {
   return `sl-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
-// Tokenise raw OCR text into candidate English spelling words.
-// Strategy: split on whitespace and punctuation, drop empties and short
-// numeric-only tokens, and keep apostrophes (e.g. "don't") and hyphens
-// (e.g. "ice-cream"). Returns lowercase candidates; parent edits anyway.
-export function parseOcrText(rawText) {
+// Tokenise raw OCR text into candidate spelling words. Behaviour depends
+// on the list's language:
+//   - "en": split on whitespace/punctuation, keep apostrophes and hyphens
+//     (e.g. "don't", "ice-cream"), lowercase, dedupe, drop very short tokens.
+//   - "zh": extract runs of CJK Unified Ideographs as candidate 词语. Stray
+//     pinyin/numbers are dropped; the parent can edit/merge afterwards.
+export function parseOcrText(rawText, lang = "en") {
   if (!rawText) return [];
+
+  if (lang === "zh") {
+    const matches = rawText.match(/[㐀-䶿一-鿿]+/g) || [];
+    const cleaned = [];
+    const seen = new Set();
+    for (const tok of matches) {
+      if (!tok || seen.has(tok)) continue;
+      seen.add(tok);
+      cleaned.push(tok);
+    }
+    return cleaned;
+  }
+
   const tokens = rawText
     .replace(/[“”"]/g, "")
     .split(/[^A-Za-zÀ-ſ'-]+/)

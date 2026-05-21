@@ -8,7 +8,7 @@ const STATE = {
   ERROR: "error",
 };
 
-export default function CameraCaptureModal({ onClose, onAddWords }) {
+export default function CameraCaptureModal({ onClose, onAddWords, lang = "en" }) {
   const fileInputRef = useRef(null);
   const [phase, setPhase] = useState(STATE.PROMPT);
   const [errorMsg, setErrorMsg] = useState("");
@@ -22,21 +22,25 @@ export default function CameraCaptureModal({ onClose, onAddWords }) {
     setProgress(0);
     try {
       const { createWorker, PSM } = await import("tesseract.js");
-      const worker = await createWorker("eng", 1, {
+      const trained = lang === "zh" ? "chi_sim" : "eng";
+      const worker = await createWorker(trained, 1, {
         logger: (m) => {
           if (m.status === "recognizing text") setProgress(Math.round(m.progress * 100));
         },
       });
       // PSM 6: single uniform block of text — best for column-style word lists.
-      // The char whitelist nudges Tesseract away from 0/O, 1/l/I confusions.
-      await worker.setParameters({
-        tessedit_pageseg_mode: PSM ? PSM.SINGLE_BLOCK : "6",
-        tessedit_char_whitelist:
-          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'- ",
-      });
+      // For English, restrict to the alphabet + apostrophe/hyphen so 0↔O, 1↔l,
+      // 5↔S substitutions go away. For Chinese leave the charset wide open so
+      // Tesseract can use the full chi_sim model.
+      const params = { tessedit_pageseg_mode: PSM ? PSM.SINGLE_BLOCK : "6" };
+      if (lang !== "zh") {
+        params.tessedit_char_whitelist =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'- ";
+      }
+      await worker.setParameters(params);
       const { data } = await worker.recognize(canvas);
       await worker.terminate();
-      const words = parseOcrText(data?.text || "");
+      const words = parseOcrText(data?.text || "", lang);
       if (words.length === 0) {
         setErrorMsg("No words found. Try a clearer photo with good lighting.");
         setPhase(STATE.ERROR);
@@ -50,7 +54,7 @@ export default function CameraCaptureModal({ onClose, onAddWords }) {
       setErrorMsg("Couldn't read the image. Please try again.");
       setPhase(STATE.ERROR);
     }
-  }, []);
+  }, [lang]);
 
   const handleFile = useCallback(
     (e) => {

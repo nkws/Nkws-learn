@@ -5,14 +5,16 @@ export default function SpellingListsScreen({ onBack, onOpenList }) {
   const { lists, createList, deleteList } = useSpellingLists();
   const [creating, setCreating] = useState(false);
   const [titleInput, setTitleInput] = useState("");
+  const [langInput, setLangInput] = useState("en");
   const [confirmDelete, setConfirmDelete] = useState(null);
 
   const handleCreate = () => {
     const title = titleInput.trim();
     if (!title) return;
-    const id = createList(title, "en");
+    const id = createList(title, langInput);
     setCreating(false);
     setTitleInput("");
+    setLangInput("en");
     onOpenList(id);
   };
 
@@ -51,11 +53,31 @@ export default function SpellingListsScreen({ onBack, onOpenList }) {
             onKeyDown={(e) => { if (e.key === "Enter") handleCreate(); }}
             autoFocus
           />
+          <div className="spelling-lang-toggle" role="radiogroup" aria-label="Language">
+            <button
+              type="button"
+              role="radio"
+              aria-checked={langInput === "en"}
+              className={`spelling-lang-option${langInput === "en" ? " active" : ""}`}
+              onClick={() => setLangInput("en")}
+            >
+              English
+            </button>
+            <button
+              type="button"
+              role="radio"
+              aria-checked={langInput === "zh"}
+              className={`spelling-lang-option${langInput === "zh" ? " active" : ""}`}
+              onClick={() => setLangInput("zh")}
+            >
+              华文
+            </button>
+          </div>
           <div className="spelling-form-actions">
             <button className="btn-primary" onClick={handleCreate}>Create</button>
             <button
               className="btn-secondary"
-              onClick={() => { setCreating(false); setTitleInput(""); }}
+              onClick={() => { setCreating(false); setTitleInput(""); setLangInput("en"); }}
             >
               Cancel
             </button>
@@ -74,10 +96,14 @@ export default function SpellingListsScreen({ onBack, onOpenList }) {
               className="spelling-list-main"
               onClick={() => onOpenList(list.id)}
             >
-              <span className="topic-icon">📚</span>
+              <span className="topic-icon">{list.lang === "zh" ? "字" : "📚"}</span>
               <div className="topic-info">
                 <h2 className="topic-title">{list.title}</h2>
                 <p className="topic-desc">
+                  <span className="spelling-list-langbadge">
+                    {list.lang === "zh" ? "华文" : "English"}
+                  </span>
+                  {" · "}
                   {list.words.length} word{list.words.length === 1 ? "" : "s"}
                 </p>
               </div>

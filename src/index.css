@@ -1745,6 +1745,43 @@ button:focus-visible {
   justify-content: center;
 }
 
+.spelling-lang-toggle {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.spelling-lang-option {
+  flex: 1;
+  max-width: 140px;
+  background: white;
+  color: var(--teal);
+  border: 2px solid var(--teal-light);
+  border-radius: 50px;
+  padding: 10px 16px;
+  font-family: 'Fredoka One', cursive;
+  font-size: 16px;
+  min-height: 44px;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.spelling-lang-option.active {
+  background: var(--teal);
+  color: white;
+  border-color: var(--teal);
+}
+
+.spelling-list-langbadge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--teal);
+  background: var(--teal-light);
+  padding: 2px 8px;
+  border-radius: 999px;
+  margin-right: 2px;
+}
+
 .spelling-text-input {
   width: 100%;
   font-family: 'Nunito', sans-serif;
