@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from "react";
-import { parseOcrText } from "../utils/spellingStorage";
+import { parseOcrText, preprocessForOcr } from "../utils/spellingStorage";
 
 const STATE = {
   PROMPT: "prompt",
@@ -21,11 +21,18 @@ export default function CameraCaptureModal({ onClose, onAddWords }) {
     setPhase(STATE.PROCESSING);
     setProgress(0);
     try {
-      const { createWorker } = await import("tesseract.js");
+      const { createWorker, PSM } = await import("tesseract.js");
       const worker = await createWorker("eng", 1, {
         logger: (m) => {
           if (m.status === "recognizing text") setProgress(Math.round(m.progress * 100));
         },
+      });
+      // PSM 6: single uniform block of text — best for column-style word lists.
+      // The char whitelist nudges Tesseract away from 0/O, 1/l/I confusions.
+      await worker.setParameters({
+        tessedit_pageseg_mode: PSM ? PSM.SINGLE_BLOCK : "6",
+        tessedit_char_whitelist:
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'- ",
       });
       const { data } = await worker.recognize(canvas);
       await worker.terminate();
@@ -53,11 +60,7 @@ export default function CameraCaptureModal({ onClose, onAddWords }) {
       setPreviewSrc(url);
       const img = new Image();
       img.onload = () => {
-        const canvas = document.createElement("canvas");
-        canvas.width = img.naturalWidth;
-        canvas.height = img.naturalHeight;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(img, 0, 0);
+        const canvas = preprocessForOcr(img);
         runOcr(canvas);
       };
       img.onerror = () => {
