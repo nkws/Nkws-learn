@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { useSpellingLists } from "../hooks/useSpellingLists";
 import { useTTS } from "../hooks/useSpeech";
-import CameraCaptureModal from "../components/CameraCaptureModal";
+import { splitWordInput } from "../utils/spellingStorage";
 
 export default function SpellingListEditorScreen({ listId, onBack, onStartTest }) {
   const { getList, updateList } = useSpellingLists();
@@ -10,8 +10,7 @@ export default function SpellingListEditorScreen({ listId, onBack, onStartTest }
 
   const [titleDraft, setTitleDraft] = useState(list?.title || "");
   const [titleEditing, setTitleEditing] = useState(false);
-  const [newWord, setNewWord] = useState("");
-  const [showCamera, setShowCamera] = useState(false);
+  const [bulkInput, setBulkInput] = useState("");
   const [cardIndex, setCardIndex] = useState(0);
   const [showCards, setShowCards] = useState(false);
 
@@ -22,16 +21,6 @@ export default function SpellingListEditorScreen({ listId, onBack, onStartTest }
     if (t && list && t !== list.title) updateList(list.id, { title: t });
     setTitleEditing(false);
   }, [titleDraft, list, updateList]);
-
-  const addWord = useCallback(
-    (word) => {
-      const w = (word || "").trim();
-      if (!w || !list) return;
-      if (list.words.includes(w)) return;
-      updateList(list.id, { words: [...list.words, w] });
-    },
-    [list, updateList]
-  );
 
   const addWords = useCallback(
     (incoming) => {
@@ -44,10 +33,20 @@ export default function SpellingListEditorScreen({ listId, onBack, onStartTest }
         merged.push(trimmed);
         seen.add(trimmed);
       }
-      updateList(list.id, { words: merged });
+      if (merged.length !== list.words.length) {
+        updateList(list.id, { words: merged });
+      }
     },
     [list, updateList]
   );
+
+  const handleAddFromInput = useCallback(() => {
+    if (!list) return;
+    const parsed = splitWordInput(bulkInput, list.lang === "zh" ? "zh" : "en");
+    if (parsed.length === 0) return;
+    addWords(parsed);
+    setBulkInput("");
+  }, [bulkInput, list, addWords]);
 
   const editWord = useCallback(
     (index, value) => {
@@ -143,56 +142,60 @@ export default function SpellingListEditorScreen({ listId, onBack, onStartTest }
         </p>
       </div>
 
-      <div className="spelling-editor-actions">
-        <button className="btn-primary" onClick={() => setShowCamera(true)}>
-          📷 Scan word list
-        </button>
-        {words.length > 0 && (
-          <>
+      {words.length > 0 && (
+        <div className="spelling-editor-actions">
+          <button
+            className="btn-primary"
+            onClick={() => { setCardIndex(0); setShowCards(true); }}
+          >
+            🃏 Practice cards
+          </button>
+          {onStartTest && (
             <button
               className="btn-secondary"
-              onClick={() => { setCardIndex(0); setShowCards(true); }}
+              onClick={() => onStartTest(list.id)}
             >
-              🃏 Practice cards
+              ✍️ Start test
             </button>
-            {onStartTest && (
-              <button
-                className="btn-secondary"
-                onClick={() => onStartTest(list.id)}
-              >
-                ✍️ Start test
-              </button>
-            )}
-          </>
-        )}
-      </div>
+          )}
+        </div>
+      )}
 
-      <div className="spelling-add-row">
-        <input
-          type="text"
-          className="spelling-text-input"
-          placeholder="Type a word and press Enter"
-          value={newWord}
-          onChange={(e) => setNewWord(e.target.value)}
+      <div className="spelling-add-block">
+        <p className="spelling-add-hint">
+          {list.lang === "zh"
+            ? "一行一个词，或用逗号 / 空格分开。可以一次性粘贴整张词语表。"
+            : "One word per line, or separate with commas or spaces. Paste a whole list at once if you like."}
+        </p>
+        <textarea
+          className="spelling-text-input spelling-bulk-input"
+          placeholder={list.lang === "zh"
+            ? "例如：\n学校\n老师\n同学"
+            : "e.g.\ncat\nhouse\nschool"}
+          value={bulkInput}
+          onChange={(e) => setBulkInput(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              addWord(newWord);
-              setNewWord("");
+            if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+              e.preventDefault();
+              handleAddFromInput();
             }
           }}
+          rows={4}
         />
         <button
           className="btn-primary spelling-add-btn"
-          onClick={() => { addWord(newWord); setNewWord(""); }}
+          onClick={handleAddFromInput}
+          disabled={!bulkInput.trim()}
         >
-          Add
+          Add to list
         </button>
       </div>
 
       {words.length === 0 ? (
         <p className="spelling-empty">
-          No words yet. Tap "Scan word list" to capture them with the camera,
-          or type each word above.
+          {list.lang === "zh"
+            ? "还没有词语。先在上方加入这周要学的词。"
+            : "No words yet. Add this week's words above."}
         </p>
       ) : (
         <ul className="spelling-word-list">
@@ -223,13 +226,6 @@ export default function SpellingListEditorScreen({ listId, onBack, onStartTest }
         </ul>
       )}
 
-      {showCamera && (
-        <CameraCaptureModal
-          lang={list.lang === "zh" ? "zh" : "en"}
-          onClose={() => setShowCamera(false)}
-          onAddWords={addWords}
-        />
-      )}
     </div>
   );
 }
