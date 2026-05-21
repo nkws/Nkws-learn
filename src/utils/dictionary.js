@@ -9,16 +9,21 @@
 // meaning fields) so we don't hammer the API on repeated misses.
 
 const CACHE_KEY = "koko-dictionary-cache";
+// Bump this when the entry shape changes so old cached payloads get re-fetched
+// instead of being returned with missing fields (e.g. no `explanation`).
+const CACHE_VERSION = 2;
 
 function loadCache() {
   try {
     const raw = localStorage.getItem(CACHE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (parsed && typeof parsed === "object") return parsed;
+      if (parsed && typeof parsed === "object" && parsed.__v === CACHE_VERSION) {
+        return parsed;
+      }
     }
   } catch { /* ignore */ }
-  return {};
+  return { __v: CACHE_VERSION };
 }
 
 function saveCache(cache) {
