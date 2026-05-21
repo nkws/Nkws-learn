@@ -15,7 +15,7 @@ const LEVELS = [
 
 const SUBJECTS_PREVIEW = ["Math", "English", "Science", "Chinese"];
 
-export default function HomeScreen({ progress, activeChild, user, isPlus, onSelectLevel, onDashboard, onSwitchChild, onManageSubscription, onSignOut, onSignIn, onAbout, onHowTo }) {
+export default function HomeScreen({ progress, activeChild, user, isPlus, onSelectLevel, onDashboard, onSwitchChild, onManageSubscription, onSignOut, onSignIn, onAbout, onHowTo, onEnglishSpelling, onChineseDictation }) {
   const totalStars = getTotalStars(progress.moduleStars || {});
   const streak = loadStreak();
   const [showUpgrade, setShowUpgrade] = useState(false);
@@ -67,6 +67,44 @@ export default function HomeScreen({ progress, activeChild, user, isPlus, onSele
           </button>
         ))}
       </div>
+
+      {(onEnglishSpelling || onChineseDictation) && (
+        <>
+          <p className="home-pick-label">Practice tools</p>
+          <div className="topic-list">
+            {onEnglishSpelling && (
+              <button
+                className="topic-card spelling-home-tile"
+                onClick={onEnglishSpelling}
+              >
+                <span className="topic-icon">✏️</span>
+                <div className="topic-info">
+                  <h2 className="topic-title">English Spelling</h2>
+                  <p className="topic-desc">
+                    Hear the word, write it on the screen.
+                  </p>
+                </div>
+                <span className="topic-arrow">›</span>
+              </button>
+            )}
+            {onChineseDictation && (
+              <button
+                className="topic-card spelling-home-tile"
+                onClick={onChineseDictation}
+              >
+                <span className="topic-icon">字</span>
+                <div className="topic-info">
+                  <h2 className="topic-title">中文听写</h2>
+                  <p className="topic-desc">
+                    听一听，写汉字 或 写拼音。
+                  </p>
+                </div>
+                <span className="topic-arrow">›</span>
+              </button>
+            )}
+          </div>
+        </>
+      )}
 
       <div className="home-links">
         {activeChild && (

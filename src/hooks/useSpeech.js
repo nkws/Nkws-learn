@@ -1,8 +1,22 @@
 import { useCallback, useRef, useEffect } from "react";
 import { cleanForSpeech } from "../utils/parseClock";
 
-const PREFERRED_EN = ["samantha", "karen", "moira", "tessa", "martha", "fiona", "google uk english female"];
-const PREFERRED_ZH = ["tingting", "meijia", "sinji", "google 普通话", "google mandarin"];
+// Preference order: modern enhanced/neural voices first (better quality on
+// iOS 17+, Android Chrome, Edge), then the older Apple voices as fallback.
+// pickVoice does a case-insensitive `includes` match on voice.name so
+// variants like "Samantha (Enhanced)" and "Microsoft Aria Online (Natural) -
+// English (United States)" all match.
+const PREFERRED_EN = [
+  "ava (premium)", "zoe (premium)", "nicky (premium)", "samantha (enhanced)",
+  "google us english", "microsoft aria online", "microsoft jenny online",
+  "samantha", "karen", "moira", "tessa", "martha", "fiona", "google uk english female",
+];
+const PREFERRED_ZH = [
+  "tingting (enhanced)", "mei-jia (enhanced)", "meijia (enhanced)",
+  "microsoft xiaoxiao online", "microsoft yunxi online",
+  "google 中文（普通话",
+  "tingting", "meijia", "sinji", "google 普通话", "google mandarin",
+];
 
 const MALE_NAMES = ["male", "david", "daniel", "james", "tom", "alex", "fred", "ralph"];
 
@@ -80,7 +94,9 @@ export function useTTS(lang = "en") {
   const makeUtterance = useCallback((text) => {
     const utterance = new SpeechSynthesisUtterance(text);
     const isZh = langRef.current === "zh";
-    utterance.rate = isZh ? 0.8 : 0.9;
+    // Slightly snappier rates — premium/neural voices stay clear at natural
+    // pace, and the old too-slow defaults made every readout feel sluggish.
+    utterance.rate = isZh ? 0.95 : 1.0;
     utterance.pitch = isZh ? 1.0 : 1.3;
     if (voiceRef.current) {
       utterance.voice = voiceRef.current;

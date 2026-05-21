@@ -11,6 +11,9 @@ import ChildPickerScreen from "./screens/ChildPickerScreen";
 import DashboardScreen from "./screens/DashboardScreen";
 import MockPaperListScreen from "./screens/MockPaperListScreen";
 import MockPaperScreen from "./screens/MockPaperScreen";
+import SpellingListsScreen from "./screens/SpellingListsScreen";
+import SpellingListEditorScreen from "./screens/SpellingListEditorScreen";
+import SpellingTestScreen from "./screens/SpellingTestScreen";
 import { getPaper } from "./topics/mockpapers";
 import { useAuth } from "./contexts/AuthContext";
 import { getSubjectsForLevel, getTotalStars } from "./utils/constants";
@@ -44,6 +47,9 @@ export default function App() {
   const [activeTopic, setActiveTopic] = useState(null);
   const [activeModule, setActiveModule] = useState(null);
   const [activePaperId, setActivePaperId] = useState(null);
+  const [activeSpellingListId, setActiveSpellingListId] = useState(null);
+  const [activeSpellingLang, setActiveSpellingLang] = useState("en");
+  const [activeTestMode, setActiveTestMode] = useState("write");
   const [progress, setProgress] = useState(() => loadProgress());
   const [moduleVideos, setModuleVideos] = useState(() => loadModuleVideos());
   const [topicVideos, setTopicVideos] = useState(() => loadTopicVideos());
@@ -270,6 +276,46 @@ export default function App() {
     return <AboutScreen onBack={() => setScreen("home")} />;
   }
 
+  if (screen === "spelling-test" && activeSpellingListId) {
+    return (
+      <SpellingTestScreen
+        listId={activeSpellingListId}
+        mode={activeTestMode}
+        onBack={() => setScreen("spelling-editor")}
+      />
+    );
+  }
+
+  if (screen === "spelling-editor" && activeSpellingListId) {
+    return (
+      <SpellingListEditorScreen
+        listId={activeSpellingListId}
+        onStartTest={(id, mode) => {
+          setActiveSpellingListId(id);
+          setActiveTestMode(mode);
+          setScreen("spelling-test");
+        }}
+        onBack={() => {
+          setActiveSpellingListId(null);
+          setScreen("spelling-lists");
+        }}
+      />
+    );
+  }
+
+  if (screen === "spelling-lists") {
+    return (
+      <SpellingListsScreen
+        lang={activeSpellingLang}
+        onOpenList={(id) => {
+          setActiveSpellingListId(id);
+          setScreen("spelling-editor");
+        }}
+        onBack={() => setScreen("home")}
+      />
+    );
+  }
+
   if (screen === "chat" && activeModule && activeTopic && activeSubject && activeLevel) {
     return (
       <ChatScreen
@@ -371,6 +417,14 @@ export default function App() {
       onSignIn={() => setSkippedLogin(false)}
       onHowTo={() => setScreen("howto")}
       onAbout={() => setScreen("about")}
+      onEnglishSpelling={() => {
+        setActiveSpellingLang("en");
+        setScreen("spelling-lists");
+      }}
+      onChineseDictation={() => {
+        setActiveSpellingLang("zh");
+        setScreen("spelling-lists");
+      }}
     />
   );
 }
