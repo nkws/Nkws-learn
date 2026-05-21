@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback } from "react";
 import { useSpellingLists } from "../hooks/useSpellingLists";
 import { useTTS } from "../hooks/useSpeech";
 import { splitWordInput } from "../utils/spellingStorage";
+import WordDetail from "../components/WordDetail";
 
 export default function SpellingListEditorScreen({ listId, onBack, onStartTest }) {
   const { getList, updateList } = useSpellingLists();
@@ -14,6 +15,7 @@ export default function SpellingListEditorScreen({ listId, onBack, onStartTest }
   const [cardIndex, setCardIndex] = useState(0);
   const [showCards, setShowCards] = useState(false);
   const [showModeChooser, setShowModeChooser] = useState(false);
+  const [lookupWord, setLookupWord] = useState(null);
 
   const isZh = list?.lang === "zh";
 
@@ -97,7 +99,7 @@ export default function SpellingListEditorScreen({ listId, onBack, onStartTest }
     );
   }
 
-  // Practice cards view: one word per screen, big, with a Hear-it button.
+  // Learn view: one word per screen with meaning, pinyin (for zh) and TTS.
   if (showCards && words.length > 0) {
     const word = words[cardIndex];
     const goPrev = () => setCardIndex((i) => (i - 1 + words.length) % words.length);
@@ -108,23 +110,21 @@ export default function SpellingListEditorScreen({ listId, onBack, onStartTest }
           <button className="back-btn" onClick={() => setShowCards(false)}>←</button>
           <span className="topbar-topic">{list.title}</span>
         </div>
-        <div className="spelling-card">
+        <div className="spelling-card spelling-learn-card">
           <p className="spelling-card-position">
             {cardIndex + 1} / {words.length}
           </p>
-          <div className="spelling-card-word">{word}</div>
-          <button
-            className="btn-primary spelling-card-speak"
-            onClick={() => speak(word)}
-          >
-            🔊 {list.lang === "zh" ? "听一听" : "Hear it"}
-          </button>
+          <WordDetail
+            word={word}
+            lang={isZh ? "zh" : "en"}
+            onSpeak={speak}
+          />
           <div className="spelling-card-nav">
             <button className="btn-secondary" onClick={goPrev}>
-              {list.lang === "zh" ? "← 上一个" : "← Previous"}
+              {isZh ? "← 上一个" : "← Previous"}
             </button>
             <button className="btn-secondary" onClick={goNext}>
-              {list.lang === "zh" ? "下一个 →" : "Next →"}
+              {isZh ? "下一个 →" : "Next →"}
             </button>
           </div>
         </div>
@@ -174,14 +174,14 @@ export default function SpellingListEditorScreen({ listId, onBack, onStartTest }
             className="btn-primary"
             onClick={() => { setCardIndex(0); setShowCards(true); }}
           >
-            🃏 {isZh ? "练习卡片" : "Practice cards"}
+            📖 {isZh ? "学习" : "Learn"}
           </button>
           {onStartTest && (
             <button
               className="btn-secondary"
               onClick={handleStartTestClick}
             >
-              ✍️ {isZh ? "开始听写" : "Start test"}
+              ✍️ {isZh ? "开始听写" : "Test"}
             </button>
           )}
         </div>
@@ -230,7 +230,7 @@ export default function SpellingListEditorScreen({ listId, onBack, onStartTest }
               <button
                 className="spelling-word-speak"
                 onClick={() => speak(word)}
-                aria-label={`Hear ${word}`}
+                aria-label={isZh ? `听 ${word}` : `Hear ${word}`}
               >
                 🔊
               </button>
@@ -241,15 +241,38 @@ export default function SpellingListEditorScreen({ listId, onBack, onStartTest }
                 onChange={(e) => editWord(i, e.target.value)}
               />
               <button
+                className="spelling-word-lookup"
+                onClick={() => setLookupWord(word)}
+                aria-label={isZh ? `查 ${word}` : `Look up ${word}`}
+                title={isZh ? "查释义" : "Look up meaning"}
+              >
+                📖
+              </button>
+              <button
                 className="spelling-word-remove"
                 onClick={() => removeWord(i)}
-                aria-label={`Remove ${word}`}
+                aria-label={isZh ? `删除 ${word}` : `Remove ${word}`}
               >
                 ✕
               </button>
             </li>
           ))}
         </ul>
+      )}
+
+      {lookupWord && (
+        <div className="reward-overlay" onClick={() => setLookupWord(null)}>
+          <div className="reward-modal word-detail-modal" onClick={(e) => e.stopPropagation()}>
+            <WordDetail
+              word={lookupWord}
+              lang={isZh ? "zh" : "en"}
+              onSpeak={speak}
+            />
+            <button className="confirm-cancel" onClick={() => setLookupWord(null)}>
+              {isZh ? "关闭" : "Close"}
+            </button>
+          </div>
+        </div>
       )}
 
       {showModeChooser && (
