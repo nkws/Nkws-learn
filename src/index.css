@@ -2095,6 +2095,19 @@ button:focus-visible {
   gap: 10px;
 }
 
+.word-detail-section.word-detail-secondary {
+  background: #F5F5F5;
+}
+
+.word-detail-section.word-detail-secondary .word-detail-section-label {
+  color: #999;
+}
+
+.word-detail-section.word-detail-secondary .word-detail-text {
+  font-size: 14px;
+  color: #777;
+}
+
 .word-detail-section-label {
   font-size: 12px;
   font-weight: 700;
@@ -2162,19 +2175,29 @@ button:focus-visible {
 
 .practice-canvas-wrapper {
   width: 100%;
-  background: white;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 39px,
+      rgba(0,137,123,0.12) 39px,
+      rgba(0,137,123,0.12) 40px
+    ),
+    #FFFDF5;
   border-radius: 16px;
   box-shadow: 0 1px 4px rgba(0,0,0,0.06);
   overflow: hidden;
-  border: 2px dashed var(--teal-light);
+  border: 3px dashed var(--teal);
+  min-height: 200px;
 }
 
 .practice-canvas {
   display: block;
   width: 100%;
+  height: 200px;
   touch-action: none;
   cursor: crosshair;
-  background: white;
+  background: transparent;
 }
 
 .practice-canvas-clear {

@@ -41,6 +41,9 @@ export default function WordDetail({ word, lang, compact = false }) {
   const readAll = useCallback(() => {
     if (lang === "zh") {
       ttsZh.speak(word);
+      if (safeEntry?.explanation) {
+        ttsZh.speak(safeEntry.explanation, null, { cancel: false });
+      }
       if (safeEntry?.translation) {
         ttsEn.speak(safeEntry.translation, null, { cancel: false });
       }
@@ -84,8 +87,15 @@ export default function WordDetail({ word, lang, compact = false }) {
         </p>
       )}
 
-      {!loading && isZh && safeEntry?.translation && (
+      {!loading && isZh && safeEntry?.explanation && (
         <div className="word-detail-section">
+          <p className="word-detail-section-label">释义</p>
+          <p className="word-detail-text">{safeEntry.explanation}</p>
+        </div>
+      )}
+
+      {!loading && isZh && safeEntry?.translation && (
+        <div className="word-detail-section word-detail-secondary">
           <p className="word-detail-section-label">English meaning</p>
           <p className="word-detail-text">{safeEntry.translation}</p>
         </div>
@@ -111,7 +121,7 @@ export default function WordDetail({ word, lang, compact = false }) {
         </div>
       )}
 
-      {!loading && isZh && !safeEntry?.translation && (
+      {!loading && isZh && !safeEntry?.explanation && !safeEntry?.translation && (
         <p className="word-detail-empty">{noDefinitionsCopy}</p>
       )}
       {!loading && !isZh && (!safeEntry?.meanings || safeEntry.meanings.length === 0) && (

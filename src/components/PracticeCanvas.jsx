@@ -24,8 +24,9 @@ export default function PracticeCanvas({ clearLabel = "Clear", height = 180 }) {
       ctx.lineJoin = "round";
       ctx.strokeStyle = "#1A237E";
       ctx.lineWidth = 5;
-      ctx.fillStyle = "#FFFFFF";
-      ctx.fillRect(0, 0, rect.width, rect.height);
+      // Keep the canvas transparent so the wrapper's writing-guide lines
+      // show through.
+      ctx.clearRect(0, 0, rect.width, rect.height);
     };
     resize();
     window.addEventListener("resize", resize);
@@ -41,8 +42,7 @@ export default function PracticeCanvas({ clearLabel = "Clear", height = 180 }) {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     const rect = canvas.getBoundingClientRect();
-    ctx.fillStyle = "#FFFFFF";
-    ctx.fillRect(0, 0, rect.width, rect.height);
+    ctx.clearRect(0, 0, rect.width, rect.height);
   }, []);
 
   const getPoint = (e) => {

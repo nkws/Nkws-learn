@@ -73,6 +73,24 @@ async function fetchChineseTranslation(word) {
   return t;
 }
 
+async function fetchChineseExplanation(word) {
+  // Chinese Wiktionary (zh.wiktionary.org) has Chinese-language definitions
+  // for most common 词语. The summary endpoint returns a clean text extract.
+  const url = `https://zh.wiktionary.org/api/rest_v1/page/summary/${encodeURIComponent(word)}`;
+  const res = await fetch(url);
+  if (!res.ok) return null;
+  const data = await res.json();
+  const raw = data?.extract;
+  if (!raw) return null;
+  // Strip wikitext-style template residue and trim. Keep paragraph breaks.
+  const cleaned = raw
+    .replace(/\[\d+\]/g, "")
+    .replace(/\{\{[^}]*\}\}/g, "")
+    .trim();
+  if (!cleaned) return null;
+  return cleaned;
+}
+
 export async function lookupWord(word, lang) {
   if (!word) return null;
   const cached = cacheGet(lang, word);
@@ -80,15 +98,15 @@ export async function lookupWord(word, lang) {
 
   if (lang === "zh") {
     let pinyinStr = null;
-    let translation = null;
     try {
       const { pinyin } = await import("pinyin-pro");
       pinyinStr = pinyin(word, { toneType: "symbol", type: "string" });
     } catch { /* ignore */ }
-    try {
-      translation = await fetchChineseTranslation(word);
-    } catch { /* ignore */ }
-    const entry = { lang: "zh", word, pinyin: pinyinStr, translation };
+    const [explanation, translation] = await Promise.all([
+      fetchChineseExplanation(word).catch(() => null),
+      fetchChineseTranslation(word).catch(() => null),
+    ]);
+    const entry = { lang: "zh", word, pinyin: pinyinStr, explanation, translation };
     cachePut("zh", word, entry);
     return entry;
   }
