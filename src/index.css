@@ -2145,6 +2145,44 @@ button:focus-visible {
   align-items: stretch;
 }
 
+.practice-canvas-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.practice-canvas-hint {
+  font-size: 14px;
+  color: #888;
+  margin: 0;
+  text-align: center;
+}
+
+.practice-canvas-wrapper {
+  width: 100%;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  overflow: hidden;
+  border: 2px dashed var(--teal-light);
+}
+
+.practice-canvas {
+  display: block;
+  width: 100%;
+  touch-action: none;
+  cursor: crosshair;
+  background: white;
+}
+
+.practice-canvas-clear {
+  font-size: 14px;
+  padding: 8px 18px;
+  min-height: 36px;
+}
+
 /* Practice cards */
 .spelling-card {
   margin: 24px 16px;

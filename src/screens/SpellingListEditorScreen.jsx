@@ -3,6 +3,7 @@ import { useSpellingLists } from "../hooks/useSpellingLists";
 import { useTTS } from "../hooks/useSpeech";
 import { splitWordInput } from "../utils/spellingStorage";
 import WordDetail from "../components/WordDetail";
+import PracticeCanvas from "../components/PracticeCanvas";
 
 export default function SpellingListEditorScreen({ listId, onBack, onStartTest }) {
   const { getList, updateList } = useSpellingLists();
@@ -119,6 +120,15 @@ export default function SpellingListEditorScreen({ listId, onBack, onStartTest }
             lang={isZh ? "zh" : "en"}
             onSpeak={speak}
           />
+          <div className="practice-canvas-section">
+            <p className="practice-canvas-hint">
+              {isZh ? "试一试，自己写写看 ✍️" : "Try writing it yourself ✍️"}
+            </p>
+            <PracticeCanvas
+              key={`learn-${cardIndex}`}
+              clearLabel={isZh ? "擦掉" : "Clear"}
+            />
+          </div>
           <div className="spelling-card-nav">
             <button className="btn-secondary" onClick={goPrev}>
               {isZh ? "← 上一个" : "← Previous"}
