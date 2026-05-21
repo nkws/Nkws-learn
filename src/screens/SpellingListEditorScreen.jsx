@@ -118,7 +118,6 @@ export default function SpellingListEditorScreen({ listId, onBack, onStartTest }
           <WordDetail
             word={word}
             lang={isZh ? "zh" : "en"}
-            onSpeak={speak}
           />
           <div className="practice-canvas-section">
             <p className="practice-canvas-hint">
@@ -276,8 +275,7 @@ export default function SpellingListEditorScreen({ listId, onBack, onStartTest }
             <WordDetail
               word={lookupWord}
               lang={isZh ? "zh" : "en"}
-              onSpeak={speak}
-            />
+              />
             <button className="confirm-cancel" onClick={() => setLookupWord(null)}>
               {isZh ? "关闭" : "Close"}
             </button>

@@ -1,10 +1,16 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { lookupWord } from "../utils/dictionary";
+import { useTTS } from "../hooks/useSpeech";
 
 // Shared content panel for both the per-word modal and the Learn-mode card.
-// Caller controls layout/wrapping; this component just renders the lookup
-// payload with a 🔊 button and a loading state.
-export default function WordDetail({ word, lang, onSpeak, compact = false }) {
+// Caller controls layout/wrapping; this component renders the lookup payload
+// with a 🔊 button that reads the entire card (word + pinyin/phonetic +
+// meanings + examples) in the appropriate language(s).
+export default function WordDetail({ word, lang, compact = false }) {
+  // Both languages available so Chinese cards can read the word in Mandarin
+  // and the English translation in English, in sequence.
+  const ttsZh = useTTS("zh");
+  const ttsEn = useTTS("en");
   // Track which word the current entry belongs to so we can derive a loading
   // state without setting state synchronously inside the effect body.
   const [loadedFor, setLoadedFor] = useState(null);
@@ -30,19 +36,39 @@ export default function WordDetail({ word, lang, onSpeak, compact = false }) {
     ? "暂时找不到这个词的释义。"
     : "No dictionary entry found for this word.";
 
+  // Read the whole card aloud. First utterance cancels any in-flight speech;
+  // subsequent ones queue with a short gap so the readout stays paced.
+  const readAll = useCallback(() => {
+    if (lang === "zh") {
+      ttsZh.speak(word);
+      if (safeEntry?.translation) {
+        ttsEn.speak(safeEntry.translation, null, { cancel: false });
+      }
+      return;
+    }
+    ttsEn.speak(word);
+    if (safeEntry?.meanings) {
+      for (const m of safeEntry.meanings.slice(0, 2)) {
+        for (const d of m.definitions.slice(0, 2)) {
+          if (d.definition) ttsEn.speak(d.definition, null, { cancel: false });
+          if (d.example) ttsEn.speak(d.example, null, { cancel: false });
+        }
+      }
+    }
+  }, [lang, word, safeEntry, ttsZh, ttsEn]);
+
   return (
     <div className={`word-detail${compact ? " compact" : ""}`}>
       <div className="word-detail-head">
         <h2 className="word-detail-word">{word}</h2>
-        {onSpeak && (
-          <button
-            className="spelling-word-speak word-detail-speak"
-            onClick={() => onSpeak(word)}
-            aria-label={isZh ? "听一听" : "Hear the word"}
-          >
-            🔊
-          </button>
-        )}
+        <button
+          className="spelling-word-speak word-detail-speak"
+          onClick={readAll}
+          aria-label={isZh ? "听全部" : "Read aloud"}
+          title={isZh ? "读全部" : "Read aloud"}
+        >
+          🔊
+        </button>
       </div>
 
       {safeEntry?.pinyin && (
