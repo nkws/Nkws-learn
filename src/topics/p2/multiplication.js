@@ -58,9 +58,10 @@ function buildMul2() {
       choices: shuffle([String(answer), String(wrongs[0]), String(wrongs[1])]),
     });
   }
-  // Add 2 extras to reach 12
+  // Add 2 extras to reach 12 — must not repeat a pair from the loop above
+  // (the loop already produces 2x6 via i=6).
   const extras = [
-    { a: 2, b: 6 }, { a: 5, b: 8 },
+    { a: 2, b: 8 }, { a: 5, b: 8 },
   ];
   for (const e of extras) {
     const answer = e.a * e.b;
@@ -87,9 +88,10 @@ function buildMul3() {
       choices: shuffle([String(answer), String(wrongs[0]), String(wrongs[1])]),
     });
   }
-  // Add 2 extras to reach 12
+  // Add 2 extras to reach 12 — must not repeat a pair from the loop above
+  // (the loop already produces 4x9 via i=9).
   const extras = [
-    { a: 3, b: 7 }, { a: 4, b: 9 },
+    { a: 3, b: 7 }, { a: 4, b: 4 },
   ];
   for (const e of extras) {
     const answer = e.a * e.b;

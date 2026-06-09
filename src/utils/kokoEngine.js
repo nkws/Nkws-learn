@@ -209,6 +209,9 @@ const BUILDERS = {
   "p6s-re": buildRevisionQuestions,
   "p6c-rd": buildCnReading6Questions,
   "p6c-bj": buildCnAdvanced6Questions, "p6c-sy": buildCnAdvanced6Questions,
+  // p6c-vc2 lives in cn-advanced6, not cn-vocab6 — its exact key must come
+  // before the "p6c-vc" prefix or the lookup routes it to the wrong builder.
+  "p6c-vc2": buildCnAdvanced6Questions,
   "p6c-vc": buildCnVocab6Questions, "p6c-gr": buildCnVocab6Questions,
   // Wellbeing (P1–P3)
   "p1wb-": buildP1WellbeingQuestions,

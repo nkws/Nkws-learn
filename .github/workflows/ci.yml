@@ -22,5 +22,8 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Validate questions
+        run: npm run validate
+
       - name: Build
         run: npm run build

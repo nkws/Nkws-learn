@@ -57,11 +57,15 @@ function buildN20_3() {
   const pairs = [[12, 15], [18, 13], [11, 19], [20, 14], [16, 17], [13, 11], [19, 20], [14, 18], [15, 12], [17, 16]];
   for (const [a, b] of pairs) {
     const bigger = Math.max(a, b);
-    const wrongs = [Math.min(a, b), nearby(bigger, 11, 20, 1)[0] || bigger - 2];
+    const smaller = Math.min(a, b);
+    // Third choice must differ from both compared numbers, or the question
+    // ends up with only two options.
+    const third = [bigger - 1, bigger + 1, bigger - 2, bigger + 2]
+      .find((n) => n >= 11 && n <= 20 && n !== smaller);
     questions.push({
       question: `Which is bigger: ${a} or ${b}?`,
       answer: String(bigger),
-      choices: shuffle([String(bigger), ...wrongs.map(String)].filter((v, i, arr) => arr.indexOf(v) === i).slice(0, 3)),
+      choices: shuffle([bigger, smaller, third].map(String)),
     });
   }
   return shuffle(questions);
