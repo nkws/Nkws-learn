@@ -144,7 +144,7 @@ export default function ChatScreen({
       } else {
         wrongThisRoundRef.current.push(currentQ);
         allWrongRef.current.push({ question: currentQ.question, userAnswer: choice, correctAnswer: currentQ.answer });
-        replyText = getHint(currentQ.answer, ttsLang);
+        replyText = getHint(currentQ.answer, ttsLang, currentQ.explain);
         if (!isLast) {
           questionText = questions[nextIdx].question;
           nextChoices = questions[nextIdx].choices;

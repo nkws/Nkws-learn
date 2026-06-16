@@ -69,10 +69,13 @@ function buildN100_4() {
   return pairs.slice(0, 10).map(([a, b]) => {
     const bigger = Math.max(a, b);
     const smaller = Math.min(a, b);
+    // The nearby wrong must not collide with the smaller number (e.g. 88 vs
+    // 78: nearby(88) can return 78), or the question gets duplicate choices.
+    const wrong = nearby(bigger, 10, 99, 2).find((w) => w !== smaller) ?? bigger - 1;
     return {
       question: `Which is bigger: ${a} or ${b}?`,
       answer: String(bigger),
-      choices: shuffle([String(bigger), String(smaller), String(nearby(bigger, 10, 99, 1)[0])]),
+      choices: shuffle([String(bigger), String(smaller), String(wrong)]),
     };
   });
 }

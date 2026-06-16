@@ -45,7 +45,7 @@ function buildP3eTn3() {
     { q: "Which sentence uses the past tense?", a: "He walked to school.", choices: ["He walked to school.", "He is walking to school.", "He walks to school."] },
     { q: "Which sentence uses the past continuous tense?", a: "They were playing football.", choices: ["They were playing football.", "They play football.", "They played football."] },
     { q: "She __ (dance) on stage right now.", a: "is dancing", choices: ["is dancing", "danced", "was dancing"] },
-    { q: "Yesterday at 5pm, I __ (do) my homework.", a: "was doing", choices: ["was doing", "am doing", "did"] },
+    { q: "Yesterday at 5pm, I __ (do) my homework.", a: "was doing", choices: ["was doing", "am doing", "is doing"] },
     { q: "Look! The birds __ (fly) in the sky.", a: "are flying", choices: ["are flying", "flew", "were flying"] },
     { q: "He __ (eat) breakfast when the phone rang.", a: "was eating", choices: ["was eating", "is eating", "eats"] },
     { q: "Which sentence uses the present tense?", a: "I drink milk every day.", choices: ["I drink milk every day.", "I am drinking milk.", "I was drinking milk."] },

@@ -19,7 +19,7 @@ function buildP3eCl1() {
   return shuffle([
     { q: "She ___ to the library every Tuesday.", a: "goes", choices: ["goes", "go", "going"] },
     { q: "The boys ___ playing football in the field.", a: "are", choices: ["are", "is", "was"] },
-    { q: "He ___ already finished his homework.", a: "has", choices: ["has", "have", "had"] },
+    { q: "He ___ already finished his homework.", a: "has", choices: ["has", "have", "is"] },
     { q: "We went to the zoo ___ saw many animals.", a: "and", choices: ["and", "but", "or"] },
     { q: "She was happy ___ she won a prize.", a: "because", choices: ["because", "but", "so"] },
     { q: "Tom is taller ___ his sister.", a: "than", choices: ["than", "then", "that"] },

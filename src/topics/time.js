@@ -176,7 +176,9 @@ function buildTime4() {
 
 function buildTime5() {
   const fiveMinValues = [5, 10, 20, 25, 35, 40, 50, 55];
-  const picked = shuffle(fiveMinValues).slice(0, 12);
+  // 8 distinct minute values + 4 repeats; each pairs with a different hour
+  // below, so all 12 clock faces are unique.
+  const picked = shuffle([...fiveMinValues, ...shuffle(fiveMinValues).slice(0, 4)]);
   const hours = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
   return shuffle(
     picked.map((m, i) => {

@@ -7,7 +7,7 @@ export const BODY_INTRO = {
     pages: [
       { text: "We have 5 senses that help us understand the world around us!", emoji: "👀 👂 👃 👅 ✋" },
       { text: "We use our EYES to SEE things. Seeing is our sense of sight!", emoji: "👀 🌈" },
-      { text: "We use our EARS to HEAR sounds. Hearing is our sense of sound!", emoji: "👂 🎵" },
+      { text: "We use our EARS to HEAR sounds. Hearing is our sense of hearing!", emoji: "👂 🎵" },
       { text: "We use our NOSE to SMELL things. Smelling is our sense of smell!", emoji: "👃 🌹" },
       { text: "We use our TONGUE to TASTE food. Tasting is our sense of taste!", emoji: "👅 🍭" },
       { text: "We use our HANDS to TOUCH and feel things. Touching is our sense of touch!", emoji: "✋ 🧸" },

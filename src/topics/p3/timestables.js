@@ -29,7 +29,8 @@ function buildTT1() {
       choices: shuffle([String(answer), String(wrongs[0]), String(wrongs[1])]),
     });
   }
-  const extras = [{ a: 6, b: 8 }, { a: 7, b: 9 }];
+  // Extras must not repeat a pair from the loop above (7x9 comes from i=9).
+  const extras = [{ a: 6, b: 8 }, { a: 7, b: 4 }];
   for (const e of extras) {
     const answer = e.a * e.b;
     const wrongs = nearbyWrongs(answer, e.a);
@@ -55,7 +56,8 @@ function buildTT2() {
       choices: shuffle([String(answer), String(wrongs[0]), String(wrongs[1])]),
     });
   }
-  const extras = [{ a: 8, b: 7 }, { a: 9, b: 6 }];
+  // Extras must not repeat a pair from the loop above (9x6 comes from i=6).
+  const extras = [{ a: 8, b: 7 }, { a: 9, b: 4 }];
   for (const e of extras) {
     const answer = e.a * e.b;
     const wrongs = nearbyWrongs(answer, e.a);
