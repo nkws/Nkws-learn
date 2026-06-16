@@ -87,7 +87,7 @@ function buildSw4() {
     { q: "Which word means to own something?", a: "have", choices: ["have", "want", "not"] },
     { q: "Which word means to wish for something?", a: "want", choices: ["want", "have", "can"] },
     { q: "Which word means to enjoy something?", a: "like", choices: ["like", "not", "will"] },
-    { q: "Which word means the opposite of yes?", a: "not", choices: ["not", "can", "like"] },
+    { q: "Which word do we use to say something is untrue, as in 'I am ___ sad'?", a: "not", choices: ["not", "can", "like"] },
   ]).map((item) => ({
     question: item.q,
     answer: item.a,

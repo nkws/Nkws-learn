@@ -29,9 +29,9 @@ function buildP3eVc2() {
     { q: "What is the opposite of 'light'?", a: "dark", choices: ["dark", "bright", "dim"] },
     { q: "What is the opposite of 'hard'?", a: "soft", choices: ["soft", "tough", "rough"] },
     { q: "What is the opposite of 'open'?", a: "close", choices: ["close", "push", "pull"] },
-    { q: "What is the opposite of 'old'?", a: "young", choices: ["young", "aged", "new"] },
+    { q: "What is the opposite of 'old'?", a: "young", choices: ["young", "aged", "elderly"] },
     { q: "What is the opposite of 'tall'?", a: "short", choices: ["short", "long", "thin"] },
-    { q: "What is the opposite of 'loud'?", a: "quiet", choices: ["quiet", "noisy", "soft"] },
+    { q: "What is the opposite of 'loud'?", a: "quiet", choices: ["quiet", "noisy", "deafening"] },
   ]).map((item) => ({
     question: item.q,
     answer: item.a,

@@ -42,7 +42,7 @@ function buildMN3() {
     { q: "Which is cheaper per item: 5 for $10 or 2 for $6?", a: "5 for $10", choices: ["5 for $10", "2 for $6", "Same price"] },
     { q: "Which is cheaper: 4 for $4 or 2 for $3?", a: "4 for $4", choices: ["4 for $4", "2 for $3", "Same price"] },
     { q: "Shop A sells 3 apples for $3. Shop B sells 2 apples for $2. Which is cheaper per apple?", a: "Same price", choices: ["Same price", "Shop A", "Shop B"] },
-    { q: "Which costs less: 6 for $12 or 4 for $12?", a: "6 for $12", choices: ["6 for $12", "4 for $12", "Same price"] },
+    { q: "Which costs less per item: 6 for $12 or 4 for $12?", a: "6 for $12", choices: ["6 for $12", "4 for $12", "Same price"] },
     { q: "Which is cheaper: 5 for $5 or 3 for $6?", a: "5 for $5", choices: ["5 for $5", "3 for $6", "Same price"] },
   ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]) }));
 }
