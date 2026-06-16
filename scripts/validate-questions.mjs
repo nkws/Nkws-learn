@@ -87,6 +87,10 @@ function validateQuestion(q, idx) {
   if (new Set(q.choices).size !== q.choices.length) {
     errors.push(`q${idx + 1} "${q.question}": duplicate choices [${q.choices.join(" | ")}]`);
   }
+  // `explain` is optional, but if present it must be a non-empty string.
+  if (q.explain !== undefined && (typeof q.explain !== "string" || q.explain.trim() === "")) {
+    errors.push(`q${idx + 1} "${q.question}": explain present but empty or not a string`);
+  }
   return errors;
 }
 

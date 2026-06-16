@@ -377,10 +377,17 @@ export function getPraise(lang = "en") {
   return value;
 }
 
-export function getHint(correctAnswer, lang = "en") {
+export function getHint(correctAnswer, lang = "en", explain = "") {
   const arr = lang === "zh" ? HINTS_ZH : HINTS_EN;
   const { value, idx } = pickNoRepeat(arr, lastHintIdx);
   lastHintIdx = idx;
   const answerLabel = lang === "zh" ? `答案是 ${correctAnswer}。` : `The answer was ${correctAnswer}.`;
-  return `${value} ${answerLabel}`;
+  // Optional per-question worked explanation. Absent on most questions, so
+  // those keep their original hint text unchanged.
+  const why = explain
+    ? lang === "zh"
+      ? ` 为什么：${explain}`
+      : ` Why: ${explain}`
+    : "";
+  return `${value} ${answerLabel}${why}`;
 }
