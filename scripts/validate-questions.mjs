@@ -23,24 +23,15 @@
  * Usage: node scripts/validate-questions.mjs
  */
 
-import { registerHooks } from "node:module";
+import { register } from "node:module";
 import { readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
-// The app's source uses Vite-style extensionless relative imports
-// ("../utils/helpers"); plain Node needs the ".js" added back.
-registerHooks({
-  resolve(specifier, context, nextResolve) {
-    if (
-      (specifier.startsWith("./") || specifier.startsWith("../")) &&
-      !/\.[a-z]+$/i.test(specifier)
-    ) {
-      return nextResolve(`${specifier}.js`, context);
-    }
-    return nextResolve(specifier, context);
-  },
-});
+// Teach Node to resolve the source's extensionless Vite-style imports.
+// register() (Node 20.6+) keeps this working on the Node 20 that CI pins;
+// the hook itself lives in ./resolve-hook.mjs.
+register("./resolve-hook.mjs", import.meta.url);
 
 const ROOT = join(fileURLToPath(import.meta.url), "..", "..");
 const TOPICS_DIR = join(ROOT, "src", "topics");
