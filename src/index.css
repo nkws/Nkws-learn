@@ -1854,6 +1854,14 @@ button:focus-visible {
   min-height: 56px;
 }
 
+.spelling-list-lastscore {
+  font-size: 12px;
+  color: var(--teal);
+  font-weight: 700;
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+
 .spelling-list-delete {
   background: none;
   font-size: 20px;
@@ -1968,6 +1976,68 @@ button:focus-visible {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.spelling-history {
+  margin: 24px 16px 8px;
+  padding: 14px 16px 10px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.spelling-history-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--teal);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 8px;
+}
+
+.spelling-history-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.spelling-history-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #555;
+  padding: 6px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.spelling-history-row:last-child {
+  border-bottom: none;
+}
+
+.spelling-history-score {
+  font-family: 'Fredoka One', cursive;
+  font-size: 15px;
+  color: var(--coral);
+  min-width: 60px;
+}
+
+.spelling-history-mode {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--teal);
+  background: var(--teal-light);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+.spelling-history-date {
+  margin-left: auto;
+  font-size: 12px;
+  color: #999;
 }
 
 .spelling-word-row {

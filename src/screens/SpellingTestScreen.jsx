@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSpellingLists } from "../hooks/useSpellingLists";
 import { useTTS } from "../hooks/useSpeech";
+import { recordSpellingAttempt } from "../utils/spellingStorage";
 
 const PHASE = {
   WRITING: "writing",
@@ -191,6 +192,18 @@ export default function SpellingTestScreen({ listId, mode = "write", onBack }) {
     const next = [...results, { word: currentWord, correct, image: snapshot }];
     setResults(next);
     if (index + 1 >= words.length) {
+      // Persist a single attempt row to spelling-only score history. This is
+      // independent of the main progress system on purpose — spelling stays
+      // its own surface.
+      const score = next.filter((r) => r.correct).length;
+      const missed = next.filter((r) => !r.correct).map((r) => r.word);
+      recordSpellingAttempt(listId, {
+        score,
+        total: words.length,
+        mode,
+        completedAt: Date.now(),
+        missed,
+      });
       setPhase(PHASE.DONE);
     } else {
       setIndex(index + 1);
