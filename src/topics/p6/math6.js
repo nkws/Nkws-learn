@@ -71,7 +71,7 @@ function buildP6mRa2() {
     { q: "The ratio of Ali's height to Ben's is 5:6. If Ben is 174 cm, how tall is Ali?", a: "145 cm", choices: ["145 cm", "150 cm", "180 cm"] },
     { q: "A drink is mixed with syrup and water in the ratio 1:4. To make 750 ml of drink, how much syrup is needed?", a: "150 ml", choices: ["150 ml", "187.5 ml", "600 ml"] },
     { q: "There are red, blue and green balls in the ratio 2:3:5. There are 60 balls in total. How many are blue?", a: "18", choices: ["18", "12", "30"] },
-    { q: "The ratio of Sam's to Tom's stamps is 3:4. After Sam buys 12 more, the ratio becomes 3:2. How many stamps did Tom have?", a: "8", choices: ["8", "12", "16"] },
+    { q: "The ratio of Sam's to Tom's stamps is 3:4. After Sam buys 12 more, the ratio becomes 3:2. How many stamps did Tom have?", a: "16", choices: ["8", "12", "16"] },
     { q: "A recipe uses flour and sugar in the ratio 5:2. Mary uses 350 g of flour. How much sugar does she need?", a: "140 g", choices: ["140 g", "70 g", "175 g"] },
     { q: "The ratio of boys to girls in a club is 7:9. There are 18 more girls than boys. How many children are in the club?", a: "144", choices: ["144", "126", "72"] },
     { q: "Money is shared between A, B and C in the ratio 1:2:3. C gets $60 more than A. What is the total amount shared?", a: "$180", choices: ["$180", "$120", "$90"] },
