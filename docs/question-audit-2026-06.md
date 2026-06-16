@@ -99,6 +99,38 @@ All of these reuse existing data and engine plumbing — **no new external APIs,
 
 ---
 
+## 4a. Closing the PSLE gap within current constraints
+
+Constraints assumed: solo, founder-authored content; no CMS; the existing 3-option MCQ chat engine; browser-native TTS (free); zero added per-use cost; freemium model. The goal is **not** to turn an MCQ app into a full PSLE simulator — it is to push the MCQ format as far toward PSLE skills as it can honestly go, and to be straight with parents about the rest.
+
+**Status:** Step 1 below (the `explain` field) is now **implemented** for P6 Maths (math6.js) — engine plumbing + reference content. The rest are authoring/format extensions that reuse it.
+
+1. **Teach method, not just the answer — done, now extend.** The new `explain` field turns every wrong answer into a mini worked solution. Roll the same pattern out, file by file, to the other PSLE-heavy modules (percentage, fractions, bar models, volume, geometry, and the science word items). Pure content; no code.
+
+2. **Add "reasoning MCQs" that drill open-ended thinking without leaving MCQ.** PSLE open-ended marks reward *method*. You can assess method inside 3–4 option MCQ by changing what you ask:
+   - "Which is the correct **first step**?"
+   - "Which **working** is correct?" (show 3 worked attempts, one right)
+   - "Which statement **explains why**?" (science cause-and-effect)
+   These are founder-authored in the existing `{q,a,choices,explain}` shape — zero new infra, and they target exactly the skill the MCQ-only format currently misses.
+
+3. **Self-marked open-ended practice (no AI grading needed).** Add a question variant that presents a true open-ended question, lets the child think, then reveals a **model answer with full working** and asks "Did you get it right? (yes / nearly / no)" as the MCQ. This delivers genuine structured-question practice and model answers using only a reveal + self-report — within the existing engine, at zero cost. Honest about its limits, but real practice.
+
+4. **Free listening comprehension via the TTS you already have.** `useSpeech` (Web Speech API) is browser-native and free. A "listening" module = TTS reads a passage aloud, then standard MCQ questions. This adds a whole PSLE-assessed skill (English & Chinese listening) at no cost.
+
+5. **Close the concrete content gaps with new topic files** (same pattern, no infra): **P6 Circles** (the single biggest Maths omission), and dedicated P6 Science modules for body systems / cells / reproduction / water cycle / electrical (currently only sampled in revision). For Chinese, add 综合填空 (passage cloze) and 词语搭配.
+
+6. **Move P5–P6 questions to 4 options** where natural (the engine and validator already allow 3–4) to match PSLE MCQ and cut the guess rate.
+
+7. **Composition & oral — be honest, but still add value cheaply.** Auto-grading prose or speech needs human marking or paid AI, so don't fake it. Instead: provide **model compositions + a self-check rubric** (MCQ checklist: "does your story have a clear beginning, middle, end?"), and **situational-writing component drills** as MCQ ("which opening is correct for a formal email?"). For oral, offer model spoken responses (TTS) and practice prompts as self-practice. This teaches the building blocks without pretending to mark the final piece.
+
+8. **Make it stick for the exam.** Pair the above with the mastery threshold + "Review Day" (suggestions #3 and #5 in section 4), both built on existing local progress data, so knowledge is retained under exam conditions rather than just "completed once."
+
+**Sequencing (highest leverage first):** finish rolling out `explain` across P6/P5 maths → add reasoning MCQs to P6 maths & science → ship the P6 Circles module → add TTS listening modules → self-marked open-ended practice → 4-option migration → composition/oral scaffolding. Every step is founder-authored content or small engine tweaks; none requires a CMS, a backend change, or any per-use spend.
+
+**Positioning:** market honestly as *"master the fundamentals and the MCQ booklets, and learn the method"* — paired with past-paper practice for full open-ended/composition/oral. That keeps the product promise truthful while these steps progressively widen real PSLE coverage.
+
+---
+
 ## 5. Verification
 
 ```
