@@ -1,14 +1,60 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useSpellingLists } from "../hooks/useSpellingLists";
+import { getLastSpellingAttempt } from "../utils/spellingStorage";
 
-export default function SpellingListsScreen({ lang = "en", onBack, onOpenList }) {
-  const { lists, createList, deleteList } = useSpellingLists();
+const SCOPE_DECIDED_KEY = "koko-spelling-childscope-decided";
+
+// Short relative-time label for the "Last test" badge. Keeps the prose tight
+// so it fits on one line on a phone card.
+function relativeTime(ts, isZh) {
+  if (!ts) return "";
+  const diff = Date.now() - ts;
+  if (diff < 60_000) return isZh ? "刚刚" : "just now";
+  const mins = Math.floor(diff / 60_000);
+  if (mins < 60) return isZh ? `${mins} 分钟前` : `${mins} min ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return isZh ? `${hours} 小时前` : `${hours} hr ago`;
+  const days = Math.floor(hours / 24);
+  if (days === 1) return isZh ? "昨天" : "yesterday";
+  if (days < 7) return isZh ? `${days} 天前` : `${days} days ago`;
+  const weeks = Math.floor(days / 7);
+  if (weeks < 5) return isZh ? `${weeks} 周前` : `${weeks} wk ago`;
+  return isZh ? `${Math.floor(days / 30)} 月前` : `${Math.floor(days / 30)} mo ago`;
+}
+
+export default function SpellingListsScreen({ lang = "en", activeChild, onBack, onOpenList }) {
+  const { lists, allLists, createList, deleteList, claimSharedLists } = useSpellingLists(activeChild);
   const [creating, setCreating] = useState(false);
   const [titleInput, setTitleInput] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(null);
+  const [promptDismissed, setPromptDismissed] = useState(false);
 
   const isZh = lang === "zh";
   const visibleLists = lists.filter((l) => (l.lang === "zh") === isZh);
+
+  // Migration prompt shows once per device, when an active child opens the
+  // spelling tool and lists from before per-child mode still exist. Derived
+  // rather than set-via-effect so the lint rule about cascading state stays
+  // happy.
+  const shouldShowMigrationPrompt = useMemo(() => {
+    if (!activeChild) return false;
+    let decided = false;
+    try {
+      decided = localStorage.getItem(SCOPE_DECIDED_KEY) === "1";
+    } catch { /* ignore */ }
+    if (decided) return false;
+    return allLists.some((l) => l.childId == null);
+  }, [activeChild, allLists]);
+  const showMigrationPrompt = shouldShowMigrationPrompt && !promptDismissed;
+
+  // Last-test attempt per visible list, recomputed when the lists or
+  // localStorage scores change. (`Date.now()` in dependency would over-fire;
+  // we just refresh on render.)
+  const lastByList = useMemo(() => {
+    const map = {};
+    for (const l of visibleLists) map[l.id] = getLastSpellingAttempt(l.id);
+    return map;
+  }, [visibleLists]);
 
   const handleCreate = () => {
     const title = titleInput.trim();
@@ -17,6 +63,21 @@ export default function SpellingListsScreen({ lang = "en", onBack, onOpenList })
     setCreating(false);
     setTitleInput("");
     onOpenList(id);
+  };
+
+  const persistScopeDecision = () => {
+    try { localStorage.setItem(SCOPE_DECIDED_KEY, "1"); } catch { /* ignore */ }
+  };
+
+  const handleMigrationSave = () => {
+    claimSharedLists();
+    persistScopeDecision();
+    setPromptDismissed(true);
+  };
+
+  const handleMigrationKeepShared = () => {
+    persistScopeDecision();
+    setPromptDismissed(true);
   };
 
   return (
@@ -86,32 +147,42 @@ export default function SpellingListsScreen({ lang = "en", onBack, onOpenList })
       )}
 
       <div className="topic-list">
-        {visibleLists.map((list) => (
-          <div key={list.id} className="topic-card spelling-list-card">
-            <button
-              className="spelling-list-main"
-              onClick={() => onOpenList(list.id)}
-            >
-              <span className="topic-icon">{isZh ? "字" : "📚"}</span>
-              <div className="topic-info">
-                <h2 className="topic-title">{list.title}</h2>
-                <p className="topic-desc">
-                  {list.words.length}{isZh
-                    ? ` 个词语`
-                    : ` word${list.words.length === 1 ? "" : "s"}`}
-                </p>
-              </div>
-              <span className="topic-arrow">›</span>
-            </button>
-            <button
-              className="spelling-list-delete"
-              onClick={() => setConfirmDelete(list.id)}
-              aria-label={isZh ? "删除词语表" : "Delete list"}
-            >
-              🗑️
-            </button>
-          </div>
-        ))}
+        {visibleLists.map((list) => {
+          const last = lastByList[list.id];
+          return (
+            <div key={list.id} className="topic-card spelling-list-card">
+              <button
+                className="spelling-list-main"
+                onClick={() => onOpenList(list.id)}
+              >
+                <span className="topic-icon">{isZh ? "字" : "📚"}</span>
+                <div className="topic-info">
+                  <h2 className="topic-title">{list.title}</h2>
+                  <p className="topic-desc">
+                    {list.words.length}{isZh
+                      ? ` 个词语`
+                      : ` word${list.words.length === 1 ? "" : "s"}`}
+                  </p>
+                  {last && (
+                    <p className="spelling-list-lastscore">
+                      {isZh
+                        ? `上次：${last.score}/${last.total} · ${relativeTime(last.completedAt, true)}`
+                        : `Last test: ${last.score}/${last.total} · ${relativeTime(last.completedAt, false)}`}
+                    </p>
+                  )}
+                </div>
+                <span className="topic-arrow">›</span>
+              </button>
+              <button
+                className="spelling-list-delete"
+                onClick={() => setConfirmDelete(list.id)}
+                aria-label={isZh ? "删除词语表" : "Delete list"}
+              >
+                🗑️
+              </button>
+            </div>
+          );
+        })}
       </div>
 
       {confirmDelete && (
@@ -133,6 +204,30 @@ export default function SpellingListsScreen({ lang = "en", onBack, onOpenList })
             </button>
             <button className="confirm-cancel" onClick={() => setConfirmDelete(null)}>
               {isZh ? "取消" : "Cancel"}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showMigrationPrompt && activeChild && (
+        <div className="reward-overlay">
+          <div className="reward-modal" onClick={(e) => e.stopPropagation()}>
+            <h2 className="reward-title">
+              {isZh ? "把以前的词语表分给孩子？" : "Save your lists to a child?"}
+            </h2>
+            <p className="reward-subtitle">
+              {isZh
+                ? `以前做的词语表还不属于任何一个孩子。要把它们都分给 ${activeChild.name} 吗？还是先和其他孩子一起共用？`
+                : `Your existing spelling lists aren't tied to a child yet. Save them all to ${activeChild.name}, or keep them shared with everyone on this device?`}
+            </p>
+            <button
+              className="btn-primary reward-dismiss"
+              onClick={handleMigrationSave}
+            >
+              {isZh ? `分给 ${activeChild.name}` : `Save to ${activeChild.name}`}
+            </button>
+            <button className="confirm-cancel" onClick={handleMigrationKeepShared}>
+              {isZh ? "保持共用" : "Keep shared"}
             </button>
           </div>
         </div>

@@ -1,12 +1,31 @@
 import { useState, useMemo, useCallback } from "react";
 import { useSpellingLists } from "../hooks/useSpellingLists";
 import { useTTS } from "../hooks/useSpeech";
-import { splitWordInput } from "../utils/spellingStorage";
+import { splitWordInput, getSpellingHistory } from "../utils/spellingStorage";
 import WordDetail from "../components/WordDetail";
 import PracticeCanvas from "../components/PracticeCanvas";
 
-export default function SpellingListEditorScreen({ listId, onBack, onStartTest }) {
-  const { getList, updateList } = useSpellingLists();
+const MODE_LABELS = {
+  write: { en: "Write", zh: "写" },
+  character: { en: "Character", zh: "写汉字" },
+  pinyin: { en: "Pinyin", zh: "写拼音" },
+};
+
+function relativeAttemptDate(ts, isZh) {
+  if (!ts) return "";
+  const diff = Date.now() - ts;
+  const day = 24 * 60 * 60 * 1000;
+  if (diff < 60_000) return isZh ? "刚刚" : "just now";
+  if (diff < 60 * 60_000) return isZh ? `${Math.floor(diff / 60_000)} 分钟前` : `${Math.floor(diff / 60_000)} min ago`;
+  if (diff < day) return isZh ? `${Math.floor(diff / (60 * 60_000))} 小时前` : `${Math.floor(diff / (60 * 60_000))} hr ago`;
+  if (diff < 2 * day) return isZh ? "昨天" : "yesterday";
+  if (diff < 7 * day) return isZh ? `${Math.floor(diff / day)} 天前` : `${Math.floor(diff / day)} days ago`;
+  const d = new Date(ts);
+  return `${d.getMonth() + 1}/${d.getDate()}`;
+}
+
+export default function SpellingListEditorScreen({ listId, activeChild, onBack, onStartTest }) {
+  const { getList, updateList } = useSpellingLists(activeChild);
   const list = getList(listId);
   const { speak } = useTTS(list?.lang === "zh" ? "zh" : "en");
 
@@ -269,6 +288,8 @@ export default function SpellingListEditorScreen({ listId, onBack, onStartTest }
         </ul>
       )}
 
+      <RecentTestsPanel listId={list.id} isZh={isZh} />
+
       {lookupWord && (
         <div className="reward-overlay" onClick={() => setLookupWord(null)}>
           <div className="reward-modal word-detail-modal" onClick={(e) => e.stopPropagation()}>
@@ -315,6 +336,37 @@ export default function SpellingListEditorScreen({ listId, onBack, onStartTest }
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function RecentTestsPanel({ listId, isZh }) {
+  const history = getSpellingHistory(listId);
+  if (!history || history.length === 0) return null;
+  const recent = history.slice(0, 5);
+  return (
+    <div className="spelling-history">
+      <p className="spelling-history-title">
+        {isZh ? "最近的听写记录" : "Recent tests"}
+      </p>
+      <ul className="spelling-history-list">
+        {recent.map((a, i) => {
+          const modeLabel = MODE_LABELS[a.mode]?.[isZh ? "zh" : "en"] || "";
+          return (
+            <li key={i} className="spelling-history-row">
+              <span className="spelling-history-score">
+                ⭐ {a.score}/{a.total}
+              </span>
+              {modeLabel && (
+                <span className="spelling-history-mode">{modeLabel}</span>
+              )}
+              <span className="spelling-history-date">
+                {relativeAttemptDate(a.completedAt, isZh)}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 }
