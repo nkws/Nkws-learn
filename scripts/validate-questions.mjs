@@ -16,6 +16,16 @@
  *   - returned count matches MODULE_QUESTION_COUNTS (across several runs,
  *     since some builders generate questions procedurally)
  *   - no duplicate questions (same text AND same choices) within a single run
+ *
+ * Explanation-quality checks (heuristic, high-precision — Layer 1 of the
+ * explanation audit; see docs/explanation-rubric.md). `explain` is optional,
+ * but where a module uses it these catch the mechanical tells of a weak one:
+ *   - partial coverage: a module must be all-or-nothing on explanations
+ *   - length out of band (too terse to teach, or too long for a bubble/TTS)
+ *   - barely adds beyond restating the answer
+ *   - the same explanation reused for different questions in a module
+ * Nuanced "is this concept-first?" judgement is Layer 2 (a Claude rubric pass).
+ *
  * Checks for mock papers:
  *   - every questionRef points at a real module with enough questions
  *   - per-paper ref counts sum to 20 (the nominal paper size)
@@ -36,6 +46,12 @@ register("./resolve-hook.mjs", import.meta.url);
 const ROOT = join(fileURLToPath(import.meta.url), "..", "..");
 const TOPICS_DIR = join(ROOT, "src", "topics");
 const RUNS_PER_MODULE = 5;
+
+// Explanation length window (chars). Below MIN is too terse to teach a concept;
+// above MAX is a wall of text in a chat bubble and tiresome read aloud by TTS.
+// Tune if a genuinely longer explanation is ever needed.
+const MIN_EXPLAIN = 40;
+const MAX_EXPLAIN = 360;
 
 // Map each moduleId to the topic file that declares it, for error reporting.
 function buildModuleFileMap() {
@@ -85,6 +101,45 @@ function validateQuestion(q, idx) {
   return errors;
 }
 
+// Layer-1 explanation quality: mechanical, high-precision signals only.
+// Runs once per module on a single build (explanations are static per question).
+function checkExplanations(questions) {
+  const errors = [];
+  const hasExplain = (q) => typeof q.explain === "string" && q.explain.trim() !== "";
+  const withExplain = questions.filter(hasExplain);
+  if (withExplain.length === 0) return errors; // module hasn't been given explanations yet
+
+  // A module should be all-or-nothing: partial coverage is almost always an
+  // author oversight (a question silently shipped without its explanation).
+  if (withExplain.length < questions.length) {
+    errors.push(
+      `partial explanation coverage: ${withExplain.length}/${questions.length} questions have an explanation (a module should be all-or-nothing)`
+    );
+  }
+
+  const seen = new Set();
+  for (const q of withExplain) {
+    const ex = q.explain.trim();
+    if (ex.length < MIN_EXPLAIN) {
+      errors.push(`explanation too short (${ex.length} chars) for "${q.question}": "${ex}"`);
+    }
+    if (ex.length > MAX_EXPLAIN) {
+      errors.push(`explanation too long (${ex.length} chars; hard to read in a bubble/TTS) for "${q.question}"`);
+    }
+    // Strip the answer text and punctuation; what remains is the actual
+    // teaching. Almost nothing left ⇒ it just restates the answer.
+    const added = ex.toLowerCase().split(String(q.answer).toLowerCase()).join("").replace(/[^a-z]/g, "");
+    if (added.length < 12) {
+      errors.push(`explanation barely adds beyond the answer for "${q.question}": "${ex}"`);
+    }
+    if (seen.has(ex)) {
+      errors.push(`explanation reused verbatim for a different question in this module: "${ex}"`);
+    }
+    seen.add(ex);
+  }
+  return errors;
+}
+
 async function main() {
   const { buildModuleQuestions, MODULE_QUESTION_COUNTS } = await import(
     "../src/utils/kokoEngine.js"
@@ -124,6 +179,11 @@ async function main() {
           seen.add(key);
         }
       });
+    }
+
+    // Explanation quality runs on a single build (explanations are static).
+    for (const e of checkExplanations(buildModuleQuestions(moduleId))) {
+      moduleErrors.add(e);
     }
 
     if (moduleErrors.size > 0) {
