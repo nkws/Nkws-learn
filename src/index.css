@@ -542,6 +542,32 @@ button {
   transform: scale(0.92);
 }
 
+.module-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.module-reward-btn {
+  background: var(--purple, #7E57C2);
+  color: white;
+  font-size: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(126, 87, 194, 0.3);
+  transition: transform 0.15s;
+}
+
+.module-reward-btn:active {
+  transform: scale(0.92);
+}
+
 /* ============ PRIMARY BUTTON ============ */
 .btn-primary {
   background: linear-gradient(135deg, var(--coral), #FF8A65);

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { getSubject, getTopicStars } from "../utils/constants";
 import { extractVideoId } from "../utils/videos";
+import RewardModal from "../components/RewardModal";
 
 
 export default function TopicListScreen({
@@ -15,6 +16,7 @@ export default function TopicListScreen({
   const [editingTopic, setEditingTopic] = useState(null);
   const [videoInput, setVideoInput] = useState("");
   const [error, setError] = useState("");
+  const [playingVideoId, setPlayingVideoId] = useState(null);
 
   const subject = getSubject(subjectId, level);
   if (!subject) return null;
@@ -46,7 +48,7 @@ export default function TopicListScreen({
 
       <div className="video-tip-banner">
         <p className="video-tip-text">
-          🎬 <strong>Tip for parents:</strong> Tap the video link on any topic to add a YouTube reward. Your child earns it by getting a perfect score!
+          🎬 <strong>Tip for parents:</strong> Tap the video link on any topic to add a reward. Your child earns it by getting a perfect score! Only YouTube links work for now.
         </p>
       </div>
 
@@ -94,17 +96,32 @@ export default function TopicListScreen({
                 )}
               </div>
 
-              <button
-                className="module-play-btn"
-                onClick={() => onSelectTopic(topic.id)}
-              >
-                ▶
-              </button>
+              <div className="module-actions">
+                {allCompleted && hasVideo && (
+                  <button
+                    className="module-reward-btn"
+                    onClick={() => setPlayingVideoId(topicVideos[topic.id])}
+                    aria-label="Play topic reward video"
+                    title="Play topic reward video"
+                  >
+                    🎬
+                  </button>
+                )}
+                <button
+                  className="module-play-btn"
+                  onClick={() => onSelectTopic(topic.id)}
+                >
+                  ▶
+                </button>
+              </div>
             </div>
           );
         })}
       </div>
 
+      {playingVideoId && (
+        <RewardModal videoId={playingVideoId} onDismiss={() => setPlayingVideoId(null)} />
+      )}
     </div>
   );
 }
