@@ -2,6 +2,7 @@ import { useState } from "react";
 import { getTopic, getTopicStars } from "../utils/constants";
 import { MODULE_QUESTION_COUNTS } from "../utils/kokoEngine";
 import { extractVideoId } from "../utils/videos";
+import RewardModal from "../components/RewardModal";
 
 
 export default function ModuleListScreen({
@@ -22,6 +23,7 @@ export default function ModuleListScreen({
   const [confirmModule, setConfirmModule] = useState(null);
   const [showResetConfirm, setShowResetConfirm] = useState(false);
   const [showClearVideosConfirm, setShowClearVideosConfirm] = useState(false);
+  const [playingVideoId, setPlayingVideoId] = useState(null);
   const topic = getTopic(subjectId, topicId, level);
   const topicStars = getTopicStars(topicId, progress.moduleStars || {});
   const completedModules = progress.completedModules || [];
@@ -139,13 +141,25 @@ export default function ModuleListScreen({
                   🔒
                 </div>
               ) : isCompleted ? (
-                <button
-                  className="module-redo-btn"
-                  onClick={() => onReattempt(mod.id)}
-                  aria-label="Try again"
-                >
-                  ↻
-                </button>
+                <div className="module-actions">
+                  {hasVideo && (
+                    <button
+                      className="module-reward-btn"
+                      onClick={() => setPlayingVideoId(moduleVideos[mod.id])}
+                      aria-label="Play reward video"
+                      title="Play reward video"
+                    >
+                      🎬
+                    </button>
+                  )}
+                  <button
+                    className="module-redo-btn"
+                    onClick={() => onReattempt(mod.id)}
+                    aria-label="Try again"
+                  >
+                    ↻
+                  </button>
+                </div>
               ) : (
                 <button
                   className="module-play-btn"
@@ -223,6 +237,10 @@ export default function ModuleListScreen({
             </button>
           </div>
         </div>
+      )}
+
+      {playingVideoId && (
+        <RewardModal videoId={playingVideoId} onDismiss={() => setPlayingVideoId(null)} />
       )}
 
       {confirmModule !== null && (
