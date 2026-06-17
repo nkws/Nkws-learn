@@ -69,7 +69,7 @@ export default function ModuleListScreen({
 
       <div className="video-tip-banner">
         <p className="video-tip-text">
-          🎬 <strong>Tip for parents:</strong> Tap the video link on any module to add a YouTube reward. Your child earns it by getting a perfect score!
+          🎬 <strong>Tip for parents:</strong> Tap the video link on any module to add a reward. Your child earns it by getting a perfect score! Only YouTube links work for now.
         </p>
       </div>
 
