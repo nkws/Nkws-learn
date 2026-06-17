@@ -21,9 +21,9 @@ export const WEATHER_INTRO = {
 function buildWt1() {
   return shuffle([
     { q: "What is the weather like when the sun is shining?", a: "Sunny", choices: ["Sunny", "Rainy", "Stormy"], explain: "We name weather after what we see in the sky. When the bright sun shines and it feels warm, we call it sunny." },
-    { q: "What is the weather like when water falls from the sky?", a: "Rainy", choices: ["Sunny", "Rainy", "Windy"], explain: "When water drops fall down from the clouds, we call that weather rainy." },
-    { q: "What is the weather like when clouds cover the sky?", a: "Cloudy", choices: ["Cloudy", "Sunny", "Stormy"], explain: "When grey clouds cover the sky and hide the sun, we call that weather cloudy." },
-    { q: "What is the weather like when the air blows hard?", a: "Windy", choices: ["Rainy", "Windy", "Sunny"], explain: "When the air blows hard enough to move trees and hats, we call that weather windy." },
+    { q: "What is the weather like when water falls from the sky?", a: "Rainy", choices: ["Sunny", "Rainy", "Windy"], explain: "Weather is named after what is happening in the sky. When water drops fall down from the clouds, we call that rainy." },
+    { q: "What is the weather like when clouds cover the sky?", a: "Cloudy", choices: ["Cloudy", "Sunny", "Stormy"], explain: "We name the weather from what fills the sky. When grey clouds spread out and hide the sun, we call that cloudy." },
+    { q: "What is the weather like when the air blows hard?", a: "Windy", choices: ["Rainy", "Windy", "Sunny"], explain: "Wind is moving air. When the air rushes hard enough to bend trees and tug your hat, we call that weather windy." },
     { q: "What is the weather like when there is thunder?", a: "Stormy", choices: ["Sunny", "Cloudy", "Stormy"], explain: "Loud thunder and flashes of lightning come together in a big storm, so that weather is called stormy." },
     { q: "On a sunny day, the sky is usually ___.", a: "Blue", choices: ["Blue", "Black", "Green"], explain: "When the sun shines and there are few clouds, sunlight makes the sky look a clear blue colour." },
     { q: "What falls from clouds when it rains?", a: "Water", choices: ["Water", "Sand", "Rocks"], explain: "Rain is made of tiny water drops that grow heavy in the clouds and then fall down as water." },
