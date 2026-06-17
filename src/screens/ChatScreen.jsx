@@ -192,8 +192,13 @@ export default function ChatScreen({
           if (topicVideoId) {
             const topic = getTopic(subjectId, topicId, level);
             if (topic) {
+              // saveModuleScore persists via a setProgress updater that runs
+              // after this handler, so loadProgress() does not yet include the
+              // module just finished. Add it explicitly, otherwise the topic
+              // reward never fires on completing the final module of the topic.
               const latest = loadProgress();
-              topicDone = topic.modules.every((m) => latest.completedModules?.includes(m.id));
+              const completed = new Set([...(latest.completedModules || []), moduleId]);
+              topicDone = topic.modules.every((m) => completed.has(m.id));
             }
           }
           if (isPerfect && videoId && topicDone && topicVideoId) {
