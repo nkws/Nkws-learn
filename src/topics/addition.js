@@ -25,6 +25,7 @@ function makeQ(a, b) {
     question: `What is ${a} + ${b}?`,
     answer: String(answer),
     choices: shuffle([String(answer), String(wrongs[0]), String(wrongs[1])]),
+    explain: `Adding means putting groups together. Begin with ${a}, then count on ${b} more, one at a time, to reach ${answer}.`,
   };
 }
 
@@ -63,18 +64,19 @@ export const ADDITION_INTRO = {
 function buildAdd1() {
   // Intro quiz — basic concept questions
   return shuffle([
-    { q: "What does the + sign mean?", a: "Add", choices: ["Add", "Take away", "Equal"], },
-    { q: "If you have 1 apple and get 1 more, how many?", a: "2", choices: ["1", "2", "3"] },
-    { q: "2 + 1 = ?", a: "3", choices: ["2", "3", "4"] },
-    { q: "1 + 1 = ?", a: "2", choices: ["1", "2", "3"] },
-    { q: "What is 0 + 3?", a: "3", choices: ["0", "3", "4"] },
-    { q: "3 + 0 = ?", a: "3", choices: ["0", "3", "1"] },
-    { q: "When we add, do we get more or less?", a: "More", choices: ["More", "Less", "Same"] },
-    { q: "2 + 2 = ?", a: "4", choices: ["3", "4", "5"] },
+    { q: "What does the + sign mean?", a: "Add", choices: ["Add", "Take away", "Equal"], explain: "The plus sign tells us to put groups together to get more. That is what we call adding." },
+    { q: "If you have 1 apple and get 1 more, how many?", a: "2", choices: ["1", "2", "3"], explain: "Adding means putting groups together. You had 1 apple, then 1 more came, so count them all: 1, 2 — that makes 2." },
+    { q: "2 + 1 = ?", a: "3", choices: ["2", "3", "4"], explain: "Adding puts groups together. Start at the bigger number, 2, and count on 1 more: 3." },
+    { q: "1 + 1 = ?", a: "2", choices: ["1", "2", "3"], explain: "Adding puts two groups together. Start at 1 and count on 1 more to make 2." },
+    { q: "What is 0 + 3?", a: "3", choices: ["0", "3", "4"], explain: "Adding zero means nothing is added, so the group stays the same. You start with nothing and put 3 with it, which is still 3." },
+    { q: "3 + 0 = ?", a: "3", choices: ["0", "3", "1"], explain: "Adding zero means you put nothing extra in, so the amount does not change. 3 with no more added stays 3." },
+    { q: "When we add, do we get more or less?", a: "More", choices: ["More", "Less", "Same"], explain: "Adding puts groups together, so the pile grows bigger. That means you always get more, not less." },
+    { q: "2 + 2 = ?", a: "4", choices: ["3", "4", "5"], explain: "Adding puts groups together. Start at 2 and count on 2 more: 3, 4 — that makes 4." },
   ]).map((item) => ({
     question: item.q,
     answer: item.a,
     choices: shuffle([...item.choices]),
+    explain: item.explain,
   }));
 }
 

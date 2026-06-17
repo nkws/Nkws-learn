@@ -12,13 +12,15 @@ function nearbyWrongs(correct, min = 0, max = 20, count = 2) {
 function addQ(a, b) {
   const ans = a + b;
   const w = nearbyWrongs(ans);
-  return { question: `What is ${a} + ${b}?`, answer: String(ans), choices: shuffle([String(ans), String(w[0]), String(w[1])]) };
+  const bigger = Math.max(a, b);
+  const smaller = Math.min(a, b);
+  return { question: `What is ${a} + ${b}?`, answer: String(ans), choices: shuffle([String(ans), String(w[0]), String(w[1])]), explain: `Adding puts groups together. Start at the bigger number, ${bigger}, and count on ${smaller} more to make ${ans}.` };
 }
 
 function subQ(a, b) {
   const ans = a - b;
   const w = nearbyWrongs(ans);
-  return { question: `What is ${a} - ${b}?`, answer: String(ans), choices: shuffle([String(ans), String(w[0]), String(w[1])]) };
+  return { question: `What is ${a} - ${b}?`, answer: String(ans), choices: shuffle([String(ans), String(w[0]), String(w[1])]), explain: `Subtracting means taking some away. Start at ${a} and count back ${b} to leave ${ans}.` };
 }
 
 function buildAS1() {
@@ -44,38 +46,38 @@ function buildAS2() {
 function buildAS3() {
   // Addition word problems
   return shuffle([
-    { q: "You have 8 stickers. You get 5 more. How many now?", a: "13" },
-    { q: "There are 7 birds. 6 more come. How many birds?", a: "13" },
-    { q: "You read 9 pages. Then you read 4 more. How many total?", a: "13" },
-    { q: "There are 11 apples. You add 3. How many?", a: "14" },
-    { q: "You have 6 toys. You get 8 more. How many now?", a: "14" },
-    { q: "There are 12 children. 5 more join. How many?", a: "17" },
-    { q: "You score 10 points, then 7 more. Total?", a: "17" },
-    { q: "There are 9 fish. 9 more swim in. How many?", a: "18" },
-    { q: "You have 11 cards. You find 4 more. How many?", a: "15" },
-    { q: "There are 8 chairs. We add 8 more. How many?", a: "16" },
+    { q: "You have 8 stickers. You get 5 more. How many now?", a: "13", explain: "Getting more means we add. Start at 8 stickers and count on 5 more to make 13." },
+    { q: "There are 7 birds. 6 more come. How many birds?", a: "13", explain: "More birds joining means we add. Start at 7 and count on 6 more to make 13." },
+    { q: "You read 9 pages. Then you read 4 more. How many total?", a: "13", explain: "Reading more pages means we add. Start at 9 and count on 4 more to make 13 in total." },
+    { q: "There are 11 apples. You add 3. How many?", a: "14", explain: "Adding more apples means we put groups together. Start at 11 and count on 3 more to make 14." },
+    { q: "You have 6 toys. You get 8 more. How many now?", a: "14", explain: "Getting more toys means we add. Start at the bigger number, 8, and count on 6 more to make 14." },
+    { q: "There are 12 children. 5 more join. How many?", a: "17", explain: "More children joining means we add. Start at 12 and count on 5 more to make 17." },
+    { q: "You score 10 points, then 7 more. Total?", a: "17", explain: "Scoring more points means we add. Start at 10 and count on 7 more to make 17." },
+    { q: "There are 9 fish. 9 more swim in. How many?", a: "18", explain: "More fish swimming in means we add. Put the two groups of 9 together to make 18." },
+    { q: "You have 11 cards. You find 4 more. How many?", a: "15", explain: "Finding more cards means we add. Start at 11 and count on 4 more to make 15." },
+    { q: "There are 8 chairs. We add 8 more. How many?", a: "16", explain: "Adding more chairs means we put groups together. Two groups of 8 make 16." },
   ]).map((item) => {
     const w = nearbyWrongs(Number(item.a));
-    return { question: item.q, answer: item.a, choices: shuffle([item.a, String(w[0]), String(w[1])]) };
+    return { question: item.q, answer: item.a, choices: shuffle([item.a, String(w[0]), String(w[1])]), explain: item.explain };
   });
 }
 
 function buildAS4() {
   // Subtraction word problems
   return shuffle([
-    { q: "You have 15 sweets. You eat 5. How many left?", a: "10" },
-    { q: "There are 18 balloons. 8 pop. How many left?", a: "10" },
-    { q: "You have 14 stickers. You give away 4. How many?", a: "10" },
-    { q: "There are 20 children. 7 go home. How many left?", a: "13" },
-    { q: "You have 16 crayons. You lose 3. How many left?", a: "13" },
-    { q: "There are 17 cookies. You eat 5. How many left?", a: "12" },
-    { q: "You have 19 marbles. You give 6 away. How many?", a: "13" },
-    { q: "There are 13 birds. 3 fly away. How many left?", a: "10" },
-    { q: "You have 12 pencils. You break 2. How many left?", a: "10" },
-    { q: "There are 20 stars. 10 disappear. How many left?", a: "10" },
+    { q: "You have 15 sweets. You eat 5. How many left?", a: "10", explain: "Eating sweets takes them away, so we subtract. Start at 15 and count back 5 to leave 10." },
+    { q: "There are 18 balloons. 8 pop. How many left?", a: "10", explain: "Balloons popping take some away, so we subtract. Start at 18 and count back 8 to leave 10." },
+    { q: "You have 14 stickers. You give away 4. How many?", a: "10", explain: "Giving stickers away takes some away, so we subtract. Start at 14 and count back 4 to leave 10." },
+    { q: "There are 20 children. 7 go home. How many left?", a: "13", explain: "Children going home take some away, so we subtract. Start at 20 and count back 7 to leave 13." },
+    { q: "You have 16 crayons. You lose 3. How many left?", a: "13", explain: "Losing crayons takes some away, so we subtract. Start at 16 and count back 3 to leave 13." },
+    { q: "There are 17 cookies. You eat 5. How many left?", a: "12", explain: "Eating cookies takes some away, so we subtract. Start at 17 and count back 5 to leave 12." },
+    { q: "You have 19 marbles. You give 6 away. How many?", a: "13", explain: "Giving marbles away takes some away, so we subtract. Start at 19 and count back 6 to leave 13." },
+    { q: "There are 13 birds. 3 fly away. How many left?", a: "10", explain: "Birds flying away take some away, so we subtract. Start at 13 and count back 3 to leave 10." },
+    { q: "You have 12 pencils. You break 2. How many left?", a: "10", explain: "Broken pencils are taken away, so we subtract. Start at 12 and count back 2 to leave 10." },
+    { q: "There are 20 stars. 10 disappear. How many left?", a: "10", explain: "Stars disappearing take some away, so we subtract. Start at 20 and count back 10 to leave 10." },
   ]).map((item) => {
     const w = nearbyWrongs(Number(item.a));
-    return { question: item.q, answer: item.a, choices: shuffle([item.a, String(w[0]), String(w[1])]) };
+    return { question: item.q, answer: item.a, choices: shuffle([item.a, String(w[0]), String(w[1])]), explain: item.explain };
   });
 }
 

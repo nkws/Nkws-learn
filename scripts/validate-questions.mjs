@@ -49,8 +49,10 @@ const RUNS_PER_MODULE = 5;
 
 // Explanation length window (chars). Below MIN is too terse to teach a concept;
 // above MAX is a wall of text in a chat bubble and tiresome read aloud by TTS.
-// Tune if a genuinely longer explanation is ever needed.
+// Chinese is information-dense (each character ≈ a word), so CJK explanations
+// get a lower floor. Tune if a genuinely longer explanation is ever needed.
 const MIN_EXPLAIN = 40;
+const MIN_EXPLAIN_CJK = 20;
 const MAX_EXPLAIN = 360;
 
 // Map each moduleId to the topic file that declares it, for error reporting.
@@ -120,15 +122,18 @@ function checkExplanations(questions) {
   const seen = new Set();
   for (const q of withExplain) {
     const ex = q.explain.trim();
-    if (ex.length < MIN_EXPLAIN) {
+    const hasCJK = /[一-鿿]/.test(ex);
+    const minLen = hasCJK ? MIN_EXPLAIN_CJK : MIN_EXPLAIN;
+    if (ex.length < minLen) {
       errors.push(`explanation too short (${ex.length} chars) for "${q.question}": "${ex}"`);
     }
     if (ex.length > MAX_EXPLAIN) {
       errors.push(`explanation too long (${ex.length} chars; hard to read in a bubble/TTS) for "${q.question}"`);
     }
     // Strip the answer text and punctuation; what remains is the actual
-    // teaching. Almost nothing left ⇒ it just restates the answer.
-    const added = ex.toLowerCase().split(String(q.answer).toLowerCase()).join("").replace(/[^a-z]/g, "");
+    // teaching. Almost nothing left ⇒ it just restates the answer. Count Latin
+    // letters AND CJK characters so Chinese explanations are judged fairly.
+    const added = ex.toLowerCase().split(String(q.answer).toLowerCase()).join("").replace(/[^a-z一-鿿]/g, "");
     if (added.length < 12) {
       errors.push(`explanation barely adds beyond the answer for "${q.question}": "${ex}"`);
     }

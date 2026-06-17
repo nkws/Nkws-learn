@@ -21,6 +21,7 @@ function makeQ(a, b) {
     question: `What is ${a} - ${b}?`,
     answer: String(answer),
     choices: shuffle([String(answer), String(wrongs[0]), String(wrongs[1])]),
+    explain: `Subtracting means taking some away. Start at ${a} and count back ${b}, and you are left with ${answer}.`,
   };
 }
 
@@ -39,15 +40,15 @@ export const SUBTRACTION_INTRO = {
 
 function buildSub1() {
   return shuffle([
-    { q: "What does the - sign mean?", a: "Take away", choices: ["Add", "Take away", "Equal"] },
-    { q: "If you have 3 apples and eat 1, how many left?", a: "2", choices: ["1", "2", "3"] },
-    { q: "5 - 1 = ?", a: "4", choices: ["3", "4", "5"] },
-    { q: "3 - 2 = ?", a: "1", choices: ["0", "1", "2"] },
-    { q: "4 - 0 = ?", a: "4", choices: ["0", "4", "3"] },
-    { q: "2 - 2 = ?", a: "0", choices: ["0", "1", "2"] },
-    { q: "When we subtract, do we get more or less?", a: "Less", choices: ["More", "Less", "Same"] },
-    { q: "5 - 3 = ?", a: "2", choices: ["1", "2", "3"] },
-  ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]) }));
+    { q: "What does the - sign mean?", a: "Take away", choices: ["Add", "Take away", "Equal"], explain: "The minus sign tells us to take some away from a group, which leaves us with less. That is what subtracting means." },
+    { q: "If you have 3 apples and eat 1, how many left?", a: "2", choices: ["1", "2", "3"], explain: "Subtracting means taking some away. You had 3 apples and 1 was eaten, so count what is left: 2 apples remain." },
+    { q: "5 - 1 = ?", a: "4", choices: ["3", "4", "5"], explain: "Subtracting takes some away. Start at 5 and count back 1 step to land on 4." },
+    { q: "3 - 2 = ?", a: "1", choices: ["0", "1", "2"], explain: "Subtracting takes some away. Start at 3 and count back 2 steps: 2, then 1 is left." },
+    { q: "4 - 0 = ?", a: "4", choices: ["0", "4", "3"], explain: "Taking away zero means nothing leaves the group, so the amount stays the same. 4 with none taken away is still 4." },
+    { q: "2 - 2 = ?", a: "0", choices: ["0", "1", "2"], explain: "Subtracting takes away. If you take away the whole group, nothing is left, so you end with none." },
+    { q: "When we subtract, do we get more or less?", a: "Less", choices: ["More", "Less", "Same"], explain: "Subtracting takes some away from a group, so the pile gets smaller. That means you end up with less." },
+    { q: "5 - 3 = ?", a: "2", choices: ["1", "2", "3"], explain: "Subtracting takes some away. Start at 5 and count back 3 steps: 4, 3, 2 — so 2 is left." },
+  ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]), explain: item.explain }));
 }
 
 function buildSub2() {
