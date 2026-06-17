@@ -87,7 +87,7 @@ export default function TopicListScreen({
                 ) : (
                   <button
                     className={`module-video-btn ${hasVideo ? "" : "no-video"}`}
-                    onClick={() => { setEditingTopic(topic.id); setVideoInput(topicVideos[topic.id] || ""); setError(""); }}
+                    onClick={() => { setEditingTopic(topic.id); setVideoInput(topicVideos[topic.id] ? `https://www.youtube.com/watch?v=${topicVideos[topic.id]}` : ""); setError(""); }}
                   >
                     {hasVideo ? "✅ Topic reward video set" : "⚠️ Set topic reward video"}
                   </button>

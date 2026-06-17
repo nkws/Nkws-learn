@@ -125,7 +125,7 @@ export default function ModuleListScreen({
                     className={`module-video-btn ${hasVideo ? "" : "no-video"}`}
                     onClick={() => {
                       setEditingModule(mod.id);
-                      setVideoInput(moduleVideos[mod.id] || "");
+                      setVideoInput(moduleVideos[mod.id] ? `https://www.youtube.com/watch?v=${moduleVideos[mod.id]}` : "");
                       setError("");
                     }}
                   >
