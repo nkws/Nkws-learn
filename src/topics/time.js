@@ -95,22 +95,23 @@ export const TIME_INTRO = {
 
 function buildTime1() {
   return shuffle([
-    { q: "How many numbers are on a clock face?", a: "12", choices: ["10", "12", "24"], h: 12, m: 0 },
-    { q: "Which hand is shorter?", a: "Hour hand", choices: ["Hour hand", "Minute hand", "They're the same"], h: 3, m: 0 },
-    { q: "The short hand tells us the...?", a: "Hour", choices: ["Hour", "Minutes", "Seconds"], h: 9, m: 0 },
-    { q: "The long hand tells us the...?", a: "Minutes", choices: ["Hour", "Minutes", "Day"], h: 6, m: 30 },
-    { q: "What number is at the very top of the clock?", a: "12", choices: ["1", "12", "6"], h: 12, m: 0 },
-    { q: "What number is at the very bottom of the clock?", a: "6", choices: ["3", "6", "9"], h: 6, m: 0 },
-    { q: "When the long hand points to 12, it means...?", a: "Exactly o'clock", choices: ["Exactly o'clock", "Half past", "Quarter past"], h: 3, m: 0 },
-    { q: "When the long hand points to 6, it means...?", a: "Half past", choices: ["Exactly o'clock", "Half past", "Quarter to"], h: 8, m: 30 },
-    { q: "What number comes after 12 on a clock?", a: "1", choices: ["1", "13", "0"], h: 12, m: 0 },
-    { q: "How many hands does a clock have?", a: "2", choices: ["1", "2", "3"], h: 10, m: 10 },
+    { q: "How many numbers are on a clock face?", a: "12", choices: ["10", "12", "24"], h: 12, m: 0, explain: "A clock face shows the hours of the day in a circle, numbered 1 all the way round to 12. So there are 12 numbers on a clock." },
+    { q: "Which hand is shorter?", a: "Hour hand", choices: ["Hour hand", "Minute hand", "They're the same"], h: 3, m: 0, explain: "A clock has a short hand and a long hand. The short one points to the hour, so the shorter hand is the hour hand." },
+    { q: "The short hand tells us the...?", a: "Hour", choices: ["Hour", "Minutes", "Seconds"], h: 9, m: 0, explain: "The two hands do different jobs. The short hand points to the hour, and the long hand shows the minutes." },
+    { q: "The long hand tells us the...?", a: "Minutes", choices: ["Hour", "Minutes", "Day"], h: 6, m: 30, explain: "The two hands do different jobs. The long hand shows the minutes, and the short hand points to the hour." },
+    { q: "What number is at the very top of the clock?", a: "12", choices: ["1", "12", "6"], h: 12, m: 0, explain: "The numbers go round in a circle, and the count starts and ends at the top. The number at the very top of the clock is 12." },
+    { q: "What number is at the very bottom of the clock?", a: "6", choices: ["3", "6", "9"], h: 6, m: 0, explain: "The numbers go round in a circle. Halfway down from the 12 at the top, right at the bottom, is the number 6." },
+    { q: "When the long hand points to 12, it means...?", a: "Exactly o'clock", choices: ["Exactly o'clock", "Half past", "Quarter past"], h: 3, m: 0, explain: "The long hand shows the minutes. When it points straight up to 12, no minutes have passed yet, so it is exactly o'clock." },
+    { q: "When the long hand points to 6, it means...?", a: "Half past", choices: ["Exactly o'clock", "Half past", "Quarter to"], h: 8, m: 30, explain: "The long hand shows the minutes by going round the clock. When it reaches 6 it is halfway around, so it means half past." },
+    { q: "What number comes after 12 on a clock?", a: "1", choices: ["1", "13", "0"], h: 12, m: 0, explain: "A clock only goes up to 12, then starts again. After 12 the hands go back to 1, so the next number is 1." },
+    { q: "How many hands does a clock have?", a: "2", choices: ["1", "2", "3"], h: 10, m: 10, explain: "A clock has one short hand for the hour and one long hand for the minutes. That makes 2 hands in all." },
   ]).map((item) => ({
     question: `[CLOCK:${formatTime(item.h, item.m)}] ${item.q}`,
     answer: item.a,
     choices: shuffle([...item.choices]),
     hours: item.h,
     minutes: item.m,
+    explain: item.explain,
   }));
 }
 
@@ -125,6 +126,7 @@ function buildTime2() {
         answer,
         choices: shuffle([answer, `${nearby[0]} o'clock`, `${nearby[1]} o'clock`]),
         hours: h, minutes: 0,
+        explain: `When the long minute hand points straight up to 12, no minutes have passed, so it is o'clock. The short hand is on ${h}, so this clock reads ${answer}.`,
       };
     })
   );
@@ -141,6 +143,7 @@ function buildTime3() {
         answer,
         choices: shuffle([answer, `half past ${nearby[0]}`, `half past ${nearby[1]}`]),
         hours: h, minutes: 30,
+        explain: `When the long minute hand points down to 6, it has gone half way round, so it is half past. The short hand has just passed ${h}, so this clock reads ${answer}.`,
       };
     })
   );
@@ -157,6 +160,7 @@ function buildTime4() {
       answer,
       choices: shuffle([answer, ...wrongs.slice(0, 2)]),
       hours: h, minutes: 15,
+      explain: `When the long minute hand points to 3, it has gone a quarter of the way round, so it is quarter past. The short hand has just passed ${h}, so this clock reads ${answer}.`,
     });
   }
   const qtHours = shuffle([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]).slice(0, 6);
@@ -169,6 +173,7 @@ function buildTime4() {
       answer,
       choices: shuffle([answer, ...wrongs.slice(0, 2)]),
       hours: h, minutes: 45,
+      explain: `When the long minute hand points to 9, there is just a quarter left before the next hour, so it is quarter to. The next hour is ${nextH}, so this clock reads ${answer}.`,
     });
   }
   return shuffle(questions);
@@ -190,6 +195,7 @@ function buildTime5() {
         answer,
         choices: shuffle([answer, ...wrongs.slice(0, 2)]),
         hours: h, minutes: m,
+        explain: `The short hand shows the hour and the long hand shows the minutes. Count the minutes by 5s round the clock to get ${m} minutes past ${h}, so this clock reads ${answer}.`,
       };
     })
   );
@@ -218,6 +224,7 @@ function buildTime6() {
         answer,
         choices: shuffle([answer, describeTime(nearby[0], s.m), describeTime(nearby[1], s.m)]),
         hours: s.h, minutes: s.m,
+        explain: `To find a later time, count forward on the hours. Start at ${describeTime(s.h, s.m)} and add ${s.add} hour${s.add === 1 ? "" : "s"}: ${s.h} + ${s.add} = ${resultH}, so it will be ${answer}.`,
       };
     })
   );
@@ -246,6 +253,7 @@ function buildTime7() {
         answer,
         choices: shuffle([answer, describeTime(nearby[0], s.m), describeTime(nearby[1], s.m)]),
         hours: s.h, minutes: s.m,
+        explain: `To find an earlier time, count back on the hours. Start at ${describeTime(s.h, s.m)} and take away ${s.sub} hour${s.sub === 1 ? "" : "s"}: ${s.h} − ${s.sub} = ${resultH}, so it was ${answer}.`,
       };
     })
   );
