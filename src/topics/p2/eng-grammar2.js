@@ -3,16 +3,16 @@ import { shuffle } from "../../utils/helpers";
 
 function buildP2eGr1() {
   return shuffle([
-    { q: "The __ cat sat on the mat.", a: "big", choices: ["big", "run", "quickly"], explain: "A describing word, called an adjective, tells us more about a noun. 'Big' describes the cat, so it is the right word." },
-    { q: "She wore a __ dress.", a: "pretty", choices: ["pretty", "swim", "loudly"], explain: "We need an adjective to describe the dress. 'Pretty' tells us what the dress is like, so it fits." },
-    { q: "The __ boy ran home.", a: "little", choices: ["little", "jump", "slowly"], explain: "An adjective describes a noun. 'Little' tells us more about the boy, so it is the describing word we need." },
-    { q: "I ate a __ apple.", a: "red", choices: ["red", "walk", "happily"], explain: "A describing word tells us about the noun. 'Red' describes the apple, so it is an adjective and fits here." },
-    { q: "We saw a __ elephant at the zoo.", a: "huge", choices: ["huge", "sing", "softly"], explain: "We need an adjective to describe the elephant. 'Huge' tells us its size, so it is the right word." },
-    { q: "The soup was very __.", a: "hot", choices: ["hot", "eat", "nicely"], explain: "After 'very' we need a describing word. 'Hot' is an adjective that tells us what the soup is like." },
-    { q: "She has __ hair.", a: "long", choices: ["long", "play", "gently"], explain: "An adjective describes a noun. 'Long' tells us more about her hair, so it is the describing word we need." },
-    { q: "The __ dog chased the ball.", a: "happy", choices: ["happy", "read", "slowly"], explain: "A describing word tells us about the dog. 'Happy' is an adjective, so it fits in front of the noun." },
-    { q: "He found a __ shell on the beach.", a: "beautiful", choices: ["beautiful", "climb", "carefully"], explain: "We need an adjective to describe the shell. 'Beautiful' tells us what it is like, so it is the right word." },
-    { q: "The ice cream was __.", a: "cold", choices: ["cold", "throw", "loudly"], explain: "A describing word tells us what the ice cream is like. 'Cold' is an adjective, so it fits here." },
+    { q: "The __ cat sat on the mat.", a: "big", choices: ["big", "tiny", "quickly"], explain: "A describing word (adjective) tells us what a noun is like. 'Quickly' tells how something is done, not what the cat is like — so 'big' is the adjective that fits here." },
+    { q: "She wore a __ dress.", a: "pretty", choices: ["pretty", "plain", "loudly"], explain: "We need a word that describes the dress. 'Loudly' tells how something is done and cannot describe a dress, so 'pretty' is the adjective that fits." },
+    { q: "The __ boy ran home.", a: "little", choices: ["little", "tired", "slowly"], explain: "An adjective goes before a noun to describe it. 'Slowly' tells how something is done, not what the boy is like, so 'little' is the describing word here." },
+    { q: "I ate a __ apple.", a: "red", choices: ["red", "green", "happily"], explain: "A describing word tells us about the noun. 'Happily' tells how something is done and cannot describe an apple, so 'red' is the adjective that fits." },
+    { q: "We saw a __ elephant at the zoo.", a: "huge", choices: ["huge", "grey", "softly"], explain: "We need a word that describes the elephant. 'Softly' tells how something is done and cannot describe an elephant, so 'huge' is the adjective." },
+    { q: "The soup was very __.", a: "hot", choices: ["hot", "thick", "nicely"], explain: "After 'very' we need a describing word. 'Nicely' tells how something is done and cannot describe soup, so 'hot' is the adjective that fits." },
+    { q: "She has __ hair.", a: "long", choices: ["long", "dark", "gently"], explain: "An adjective describes a noun. 'Gently' tells how something is done and cannot describe hair, so 'long' is the describing word here." },
+    { q: "The __ dog chased the ball.", a: "happy", choices: ["happy", "tired", "slowly"], explain: "A describing word goes before a noun to tell us what it is like. 'Slowly' tells how something is done, not what the dog is like, so 'happy' is the adjective." },
+    { q: "He found a __ shell on the beach.", a: "beautiful", choices: ["beautiful", "broken", "carefully"], explain: "We need a word that describes the shell. 'Carefully' tells how something is done and cannot describe a shell, so 'beautiful' is the adjective that fits." },
+    { q: "The ice cream was __.", a: "cold", choices: ["cold", "sweet", "loudly"], explain: "A describing word tells us what the ice cream is like. 'Loudly' tells how something is done and cannot describe ice cream, so 'cold' is the right adjective." },
   ]).map((item) => ({
     question: item.q,
     answer: item.a,

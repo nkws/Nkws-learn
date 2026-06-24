@@ -24,7 +24,7 @@ function buildFr1() {
     { q: "What does 'half' mean?", a: "1 of 2 equal parts", choices: ["1 of 2 equal parts", "1 of 3 equal parts", "1 of 4 equal parts"], explain: "A fraction is one of the equal parts of a whole. A half means the whole was split into 2 equal parts and you take 1." },
     { q: "How many halves make a whole?", a: "2", choices: ["1", "2", "4"], explain: "Equal parts join back into the whole they came from. A half is 1 of 2 equal parts, so 2 halves rebuild the whole." },
     { q: "How many quarters make a whole?", a: "4", choices: ["2", "3", "4"], explain: "All the equal parts together make the whole again. A quarter is 1 of 4 equal parts, so it takes 4 quarters." },
-    { q: "A fraction is a __ of a whole.", a: "Part", choices: ["Part", "Whole", "Double"], explain: "A fraction is one of the equal parts of a whole, never the whole thing and never more than it." },
+    { q: "A ribbon is cut into 3 equal pieces. Tom gets 1 piece. What fraction does Tom have?", a: "One third", choices: ["One third", "One half", "Three thirds"], explain: "A fraction is one equal part of a whole. The ribbon was split into 3 equal parts and Tom got 1 of them, so his fraction is one third." },
     { q: "How many thirds make a whole?", a: "3", choices: ["2", "3", "4"], explain: "The equal parts together rebuild the whole. A third is 1 of 3 equal parts, so 3 thirds make the whole." },
   ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]), explain: item.explain }));
 }

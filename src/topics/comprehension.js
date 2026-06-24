@@ -9,7 +9,7 @@ function buildCp1() {
     { q: `${passage}\n\nWho is Tom's best friend?`, a: "Sam", choices: ["Sam", "Tom", "Dad"], explain: "Look at the last line. It says 'His best friend is Sam', so the story tells us the friend's name." },
     { q: `${passage}\n\nWhere does Tom go every day?`, a: "School", choices: ["School", "Park", "Shop"], explain: "The first line says 'Tom goes to school every day'. The word 'school' tells us the place he goes." },
     { q: `${passage}\n\nHow often does Tom go to school?`, a: "Every day", choices: ["Every day", "Sometimes", "Never"], explain: "Look for the words about time. The story says he goes 'every day', so that tells us how often." },
-    { q: `${passage}\n\nWhat does Tom like to read?`, a: "Books", choices: ["Books", "Letters", "Comics"], explain: "The story says 'He likes to read books'. The word 'books' tells us exactly what he reads." },
+    { q: `${passage}\n\nDoes Tom have any friends?`, a: "Yes — his best friend is Sam", choices: ["Yes — his best friend is Sam", "No, the story does not say", "Yes, he has many friends"], explain: "The last line tells us: 'His best friend is Sam', so Tom does have a friend — and Sam is his very best one." },
   ]).map((item) => ({
     question: item.q,
     answer: item.a,
@@ -59,7 +59,7 @@ function buildCp4() {
     { q: `${passage}\n\nWhat animals did Amy see?`, a: "Birds, fish and rabbits", choices: ["Birds, fish and rabbits", "Dogs and cats", "Horses and cows"], explain: "The second line lists them: 'She saw birds, fish and rabbits', so those are the animals she saw." },
     { q: `${passage}\n\nWhat did Amy choose?`, a: "A rabbit", choices: ["A rabbit", "A bird", "A fish"], explain: "The last line says 'She chose a small white rabbit', so the story tells us she picked the rabbit." },
     { q: `${passage}\n\nWhat colour was the rabbit?`, a: "White", choices: ["White", "Brown", "Black"], explain: "The last line describes it as 'a small white rabbit', so the colour word in the story is white." },
-    { q: `${passage}\n\nWhat size was the rabbit?`, a: "Small", choices: ["Small", "Big", "Medium"], explain: "The last line calls it 'a small white rabbit', so the size word in the story is small." },
+    { q: `${passage}\n\nWhy did Amy go to the pet shop?`, a: "To choose a pet", choices: ["To choose a pet", "To buy pet food", "To visit her friend"], explain: "The story says Amy went to the pet shop and chose a small white rabbit. Choosing an animal from a pet shop means she went there to get a pet." },
     { q: `${passage}\n\nWho went to the pet shop?`, a: "Amy", choices: ["Amy", "Ben", "Tom"], explain: "The first line names the person: 'Amy went to the pet shop', so the story tells us who went." },
   ]).map((item) => ({
     question: item.q,

@@ -33,7 +33,7 @@ export const P3_SYSTEMS_INTRO = {
 
 function buildP3sSy1() {
   return shuffle([
-    { q: "Roots absorb?", a: "Water and minerals", choices: ["Water and minerals", "Sunlight", "Carbon dioxide"], explain: "Each plant part has a job. The roots' job is to take in water and minerals from the soil so the rest of the plant can use them." },
+    { q: "Which part of a plant takes in water and minerals from the soil?", a: "Roots", choices: ["Roots", "Stem", "Leaves"], explain: "Roots grow underground and their job is to absorb water and minerals from the soil. The stem then carries those up to the leaves." },
     { q: "Which part of the plant carries water from roots to leaves?", a: "Stem", choices: ["Stem", "Flower", "Fruit"], explain: "The stem's job is to carry water up from the roots to the leaves, like a straw. It also holds the plant up." },
     { q: "Leaves use sunlight to make food. This process is called?", a: "Photosynthesis", choices: ["Photosynthesis", "Respiration", "Digestion"], explain: "Making food from sunlight, water and air in the leaves is called photosynthesis. That is the special job leaves do for the plant." },
     { q: "Which part of the plant makes seeds?", a: "Flower", choices: ["Flower", "Root", "Leaf"], explain: "The flower's job is to help the plant make seeds so new plants can grow. That is why flowers, not roots or leaves, make seeds." },
@@ -53,12 +53,12 @@ function buildP3sSy1() {
 
 function buildP3sSy2() {
   return shuffle([
-    { q: "The heart pumps?", a: "Blood", choices: ["Blood", "Air", "Water"], explain: "The heart's job is to push blood around your body, like a pump. The blood carries what your body needs to every part." },
+    { q: "Which organ pushes blood all around your body?", a: "Heart", choices: ["Heart", "Lungs", "Stomach"], explain: "The heart's job is to act as a pump that keeps blood moving all around the body. Blood carries oxygen and nutrients to every part, and the heart never stops pushing it." },
     { q: "Which organ do we use to breathe?", a: "Lungs", choices: ["Lungs", "Heart", "Stomach"], explain: "The lungs' job is to take in air so the body can get oxygen and let out air it does not need. That is breathing." },
     { q: "Food is broken down in the?", a: "Stomach", choices: ["Stomach", "Lungs", "Heart"], explain: "The stomach's job is to mash and break down the food you eat so your body can use it. That is why food goes to the stomach." },
-    { q: "The digestive system helps us?", a: "Break down food", choices: ["Break down food", "Breathe air", "Move our body"], explain: "The digestive system's job is to break down food into tiny bits the body can take in and use for energy and growth." },
-    { q: "The respiratory system helps us?", a: "Breathe", choices: ["Breathe", "Digest food", "Pump blood"], explain: "The respiratory system's job is breathing. It takes oxygen from the air into the body and pushes out air the body does not need." },
-    { q: "The circulatory system moves __ around the body.", a: "Blood", choices: ["Blood", "Food", "Air"], explain: "The circulatory system's job is to move blood around the body. The heart pumps it through tubes so every part gets what it needs." },
+    { q: "Food enters the mouth and is broken down by the stomach and intestines. These organs are all part of which system?", a: "Digestive system", choices: ["Digestive system", "Respiratory system", "Circulatory system"], explain: "The stomach and intestines break food down into small parts the body can use. These organs work together as the digestive system." },
+    { q: "Inhaling oxygen and exhaling carbon dioxide is controlled by which body system?", a: "Respiratory system", choices: ["Respiratory system", "Digestive system", "Circulatory system"], explain: "Breathing — taking in oxygen and releasing carbon dioxide — is the job of the respiratory system. It includes the lungs, which do the gas exchange your body needs." },
+    { q: "The heart and blood vessels together form which body system?", a: "Circulatory system", choices: ["Circulatory system", "Digestive system", "Respiratory system"], explain: "The heart and the network of blood vessels make up the circulatory system. Together they move blood — carrying oxygen and nutrients — to every part of the body." },
     { q: "Which body part is part of the digestive system?", a: "Intestines", choices: ["Intestines", "Lungs", "Brain"], explain: "The intestines help break down food and soak up its goodness, so they belong to the digestive system. The lungs and brain do other jobs." },
     { q: "Blood carries __ to all parts of the body.", a: "Oxygen and nutrients", choices: ["Oxygen and nutrients", "Only water", "Only food"], explain: "Blood's job is to deliver both oxygen from the lungs and nutrients from food to every part of the body so it can work and grow." },
     { q: "When we breathe in, air goes into our?", a: "Lungs", choices: ["Lungs", "Stomach", "Heart"], explain: "When you breathe in, air travels down to the lungs. The lungs take the oxygen out of that air for your body to use." },

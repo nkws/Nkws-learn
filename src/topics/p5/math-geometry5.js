@@ -20,8 +20,8 @@ export const P5_MATH_GEOMETRY_INTRO = {
 
 function buildP5mAn1() {
   return shuffle([
-    { q: "An angle less than 90° is called?", a: "Acute", choices: ["Acute", "Obtuse", "Reflex"], explain: "Angles are named by size against the right angle, 90°. Anything smaller than a right angle is acute — think of a sharp, narrow corner." },
-    { q: "An angle greater than 90° but less than 180° is called?", a: "Obtuse", choices: ["Obtuse", "Acute", "Right"], explain: "Names sort angles by size: bigger than a right angle (90°) but not yet a straight line (180°) is obtuse — a wide, open corner." },
+    { q: "A door opens to 75°. Which type of angle has it turned through?", a: "Acute", choices: ["Acute", "Obtuse", "Reflex"], explain: "75° is less than a right angle (90°), so it is an acute angle — smaller and sharper than a square corner." },
+    { q: "A scissors blade opens to 120°. Which type of angle is this?", a: "Obtuse", choices: ["Obtuse", "Acute", "Right"], explain: "An obtuse angle is bigger than a right angle (90°) but smaller than a straight line (180°). 120° falls in that range, so it is obtuse." },
     { q: "Angles on a straight line add up to?", a: "180°", choices: ["180°", "360°", "90°"], explain: "A straight line is half a full turn, and a full turn is 360°, so the angles sitting along a straight line always total half of that: 180°." },
     { q: "Angles at a point add up to?", a: "360°", choices: ["360°", "180°", "270°"], explain: "Angles meeting at a single point sweep all the way around, which is one complete turn. A full turn is 360°." },
     { q: "Two angles on a straight line are 65° and x°. What is x?", a: "115°", choices: ["115°", "65°", "295°"], explain: "Angles on a straight line sum to 180°, so the unknown is what's left after removing the known one: 180° − 65° = 115°." },

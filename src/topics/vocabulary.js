@@ -42,7 +42,7 @@ function buildVc3() {
     { q: "Which is a fruit?", a: "Apple", choices: ["Apple", "Bread", "Rice"], explain: "Fruit grows on plants and trees and is sweet to eat. The apple is a fruit, while bread and rice are not." },
     { q: "Which is a drink?", a: "Milk", choices: ["Milk", "Cake", "Egg"], explain: "A drink is something you pour and sip. Milk is a drink, while cake and egg are foods you chew." },
     { q: "Which is a vegetable?", a: "Carrot", choices: ["Carrot", "Banana", "Juice"], explain: "Vegetables are plant parts we eat, often in dinner. The carrot is a vegetable, while a banana is a fruit." },
-    { q: "Which do you eat for breakfast?", a: "Cereal", choices: ["Cereal", "Pillow", "Shoe"], explain: "Breakfast is the food we eat in the morning. Cereal is a morning food, but a pillow and a shoe are not for eating." },
+    { q: "Which do you eat for breakfast?", a: "Cereal", choices: ["Cereal", "Noodles", "Rice"], explain: "Breakfast is the first meal of the day. Cereal is a common breakfast food, while noodles and rice are usually eaten at lunch or dinner." },
     { q: "Which fruit is yellow and curved?", a: "Banana", choices: ["Banana", "Apple", "Grape"], explain: "We can name fruit by colour and shape. The fruit that is long, yellow and curved is the banana." },
     { q: "Which is made from flour and baked?", a: "Bread", choices: ["Bread", "Milk", "Mango"], explain: "Some foods are baked in an oven from flour. Bread is made from flour and baked, while milk and mango are not." },
     { q: "Which drink is made from oranges?", a: "Orange juice", choices: ["Orange juice", "Tea", "Soup"], explain: "We can name a drink by what it is made from. Squeezing oranges gives us orange juice." },
@@ -75,8 +75,8 @@ function buildVc4() {
 
 function buildVc5() {
   return shuffle([
-    { q: "You use your eyes to...", a: "See", choices: ["See", "Hear", "Smell"], explain: "Each body part has its own job. Your eyes let in light so you can see things around you." },
-    { q: "You use your ears to...", a: "Hear", choices: ["Hear", "See", "Taste"], explain: "Each body part has its own job. Your ears catch sounds so you can hear them." },
+    { q: "Which body part do we use to see things?", a: "Eyes", choices: ["Eyes", "Ears", "Nose"], explain: "Each body part has its own job. Your eyes let in light and tell your brain what shapes and colours are around you." },
+    { q: "Which body part do we use to hear sounds?", a: "Ears", choices: ["Ears", "Eyes", "Hands"], explain: "Each body part has its own job. Your ears catch sounds from the air and send them to your brain so you can hear them." },
     { q: "You use your nose to...", a: "Smell", choices: ["Smell", "Hear", "Touch"], explain: "Each body part has its own job. Your nose takes in air so you can smell things like flowers and food." },
     { q: "You use your tongue to...", a: "Taste", choices: ["Taste", "Smell", "See"], explain: "Each body part has its own job. Your tongue lets you taste if food is sweet or sour." },
     { q: "You use your hands to...", a: "Touch", choices: ["Touch", "Taste", "Hear"], explain: "Each body part has its own job. Your hands let you touch and feel if things are soft or hard." },

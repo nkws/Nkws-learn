@@ -24,7 +24,7 @@ function buildPl1() {
     { q: "Which part catches sunlight to make food?", a: "Leaves", choices: ["Roots", "Stem", "Leaves"], explain: "Leaves are flat and wide to catch lots of sunlight, which the plant uses to make its own food." },
     { q: "Which part is colorful and makes seeds?", a: "Flower", choices: ["Roots", "Flower", "Stem"], explain: "The flower is the bright, colourful part, and its job is to make seeds for new plants to grow." },
     { q: "Which part holds seeds inside?", a: "Fruit", choices: ["Fruit", "Stem", "Roots"], explain: "Fruit grows around the seeds to keep them safe inside, so the fruit is the part that holds the seeds." },
-    { q: "What do roots drink from the soil?", a: "Water", choices: ["Water", "Milk", "Juice"], explain: "Roots soak up water from the wet soil and send it up to the rest of the plant, so they drink water." },
+    { q: "What do roots absorb from the soil?", a: "Water", choices: ["Water", "Sunlight", "Air"], explain: "Roots reach into the wet soil and soak up water to send up to the rest of the plant. Sunlight and air reach the plant through its leaves, not roots." },
     { q: "Where do roots grow?", a: "Underground", choices: ["In the sky", "Underground", "On top"], explain: "Roots grow down into the soil under the ground to find water, so they grow underground out of sight." },
     { q: "An apple is which part of a plant?", a: "Fruit", choices: ["Flower", "Leaf", "Fruit"], explain: "An apple grows from a flower and has seeds tucked inside it, and the part that holds seeds is the fruit." },
   ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]), explain: item.explain }));
@@ -51,7 +51,7 @@ function buildPl3() {
     { q: "What appears on a grown plant?", a: "Flower", choices: ["Seed", "Sprout", "Flower"], explain: "Once a plant is fully grown it makes colourful flowers, so flowers appear when the plant is grown up." },
     { q: "Put in order: seed, flower, sprout. What comes first?", a: "Seed", choices: ["Seed", "Flower", "Sprout"], explain: "A plant grows seed, then sprout, then flower. The very beginning of that order is the seed." },
     { q: "Put in order: seed, flower, sprout. What comes last?", a: "Flower", choices: ["Seed", "Sprout", "Flower"], explain: "A plant grows seed, then sprout, then flower. The last stage in that order is the flower." },
-    { q: "A seed needs water to start ___.", a: "Growing", choices: ["Sleeping", "Growing", "Flying"], explain: "Water wakes a seed up and helps it sprout, so a seed needs water to start growing into a plant." },
+    { q: "A seed needs water to start ___.", a: "Growing", choices: ["Sleeping", "Growing", "Dying"], explain: "Water wakes a seed up and triggers it to sprout. Without water a seed just stays dormant — it does not grow." },
     { q: "What do flowers turn into?", a: "Fruit", choices: ["Roots", "Stems", "Fruit"], explain: "After a flower blooms, it makes fruit that holds the seeds inside, so flowers turn into fruit." },
   ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]), explain: item.explain }));
 }

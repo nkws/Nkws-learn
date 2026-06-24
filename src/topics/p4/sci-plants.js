@@ -32,7 +32,7 @@ function buildP4sPl1() {
     { q: "What happens if all the leaves of a plant are removed?", a: "The plant cannot make food and will die", choices: ["The plant cannot make food and will die", "The plant will grow faster", "Nothing happens"], explain: "Leaves make the plant's food using sunlight. Without any leaves, the plant cannot make food, so it runs out of energy and dies." },
     { q: "What happens if the roots of a plant are damaged?", a: "The plant cannot absorb water and minerals", choices: ["The plant cannot absorb water and minerals", "The plant makes more food", "The flowers grow bigger"], explain: "Roots take in water and minerals from the soil. If they are damaged, the plant cannot get what it needs and will struggle to survive." },
     { q: "Water travels from the roots to the leaves through the?", a: "Stem", choices: ["Stem", "Flowers", "Soil"], explain: "Water is absorbed by the roots and must reach the leaves. The stem carries it upward like a pipe connecting the roots to the leaves." },
-    { q: "Plants need water, light, air, and?", a: "Minerals", choices: ["Minerals", "Meat", "Sugar"], explain: "To grow well, plants need water, light, and air, plus minerals from the soil. They make their own food, so they do not eat meat or sugar." },
+    { q: "Plants need water, light, air, and?", a: "Minerals", choices: ["Minerals", "Salt", "Extra carbon dioxide"], explain: "To grow well, plants need water, light, air, and minerals from the soil. Salt harms plants by drawing water out of their roots, and plants cannot use more CO₂ than is naturally available." },
   ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]), explain: item.explain }));
 }
 

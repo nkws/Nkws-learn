@@ -20,13 +20,13 @@ export const WEATHER_INTRO = {
 
 function buildWt1() {
   return shuffle([
-    { q: "What is the weather like when the sun is shining?", a: "Sunny", choices: ["Sunny", "Rainy", "Stormy"], explain: "We name weather after what we see in the sky. When the bright sun shines and it feels warm, we call it sunny." },
-    { q: "What is the weather like when water falls from the sky?", a: "Rainy", choices: ["Sunny", "Rainy", "Windy"], explain: "Weather is named after what is happening in the sky. When water drops fall down from the clouds, we call that rainy." },
-    { q: "What is the weather like when clouds cover the sky?", a: "Cloudy", choices: ["Cloudy", "Sunny", "Stormy"], explain: "We name the weather from what fills the sky. When grey clouds spread out and hide the sun, we call that cloudy." },
-    { q: "What is the weather like when the air blows hard?", a: "Windy", choices: ["Rainy", "Windy", "Sunny"], explain: "Wind is moving air. When the air rushes hard enough to bend trees and tug your hat, we call that weather windy." },
-    { q: "What is the weather like when there is thunder?", a: "Stormy", choices: ["Sunny", "Cloudy", "Stormy"], explain: "Loud thunder and flashes of lightning come together in a big storm, so that weather is called stormy." },
+    { q: "It is warm and the sky is bright. What is the weather?", a: "Sunny", choices: ["Sunny", "Rainy", "Stormy"], explain: "We name weather after what we see in the sky. When the bright sun shines and it feels warm, we call it sunny." },
+    { q: "The pavement is getting wet and you need an umbrella. What is the weather?", a: "Rainy", choices: ["Sunny", "Rainy", "Windy"], explain: "Weather is named after what is happening in the sky. When water drops fall down from the clouds, we call that rainy." },
+    { q: "The sky is grey and you cannot see the sun. What is the weather?", a: "Cloudy", choices: ["Cloudy", "Sunny", "Stormy"], explain: "We name the weather from what fills the sky. When grey clouds spread out and hide the sun, we call that cloudy." },
+    { q: "Trees are bending and your kite flies up high. What is the weather?", a: "Windy", choices: ["Rainy", "Windy", "Sunny"], explain: "Wind is moving air. When the air rushes hard enough to bend trees and tug your hat, we call that weather windy." },
+    { q: "There is loud booming in the sky and bright flashes of light. What is the weather?", a: "Stormy", choices: ["Sunny", "Cloudy", "Stormy"], explain: "Loud thunder and bright flashes of lightning come together in a big storm, so that weather is called stormy." },
     { q: "On a sunny day, the sky is usually ___.", a: "Blue", choices: ["Blue", "Black", "Green"], explain: "When the sun shines and there are few clouds, sunlight makes the sky look a clear blue colour." },
-    { q: "What falls from clouds when it rains?", a: "Water", choices: ["Water", "Sand", "Rocks"], explain: "Rain is made of tiny water drops that grow heavy in the clouds and then fall down as water." },
+    { q: "What falls from clouds when it rains?", a: "Water", choices: ["Water", "Snow", "Hail"], explain: "Rain is made of tiny water drops that grow heavy in the clouds and then fall down. Snow and hail can also fall from clouds, but only water drops make rain." },
     { q: "Which weather has lightning?", a: "Stormy", choices: ["Sunny", "Cloudy", "Stormy"], explain: "Bright flashes of lightning happen in a storm along with thunder, so lightning means the weather is stormy." },
   ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]), explain: item.explain }));
 }

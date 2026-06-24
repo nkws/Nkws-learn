@@ -47,10 +47,10 @@ function buildLv2() {
 
 function buildLv3() {
   return shuffle([
-    { q: "What do living things need to drink?", a: "Water", choices: ["Water", "Paint", "Glue"], explain: "Every living thing needs water inside it to stay alive and healthy, so water is what they all drink." },
-    { q: "What do living things breathe?", a: "Air", choices: ["Air", "Smoke", "Sand"], explain: "Living things take in clean air to stay alive, so air is what they breathe, not smoke or sand." },
+    { q: "What do living things need to drink?", a: "Water", choices: ["Water", "Juice", "Milk"], explain: "Every living thing needs water inside it to stay alive and healthy. Juice and milk are mostly water but plain water is what all living things truly need." },
+    { q: "What do living things breathe?", a: "Air", choices: ["Air", "Water", "Sunlight"], explain: "Living things take in air through their lungs, gills, or leaves to stay alive. Water and sunlight are also needed, but breathing means taking in air." },
     { q: "Plants need ___ to make food.", a: "Sunlight", choices: ["Sunlight", "Darkness", "Ice"], explain: "Plants use light from the sun to make their own food in their leaves, so without sunlight they cannot make food." },
-    { q: "What do animals eat to get energy?", a: "Food", choices: ["Food", "Rocks", "Paper"], explain: "Eating food gives animals the energy to move, grow and play, so food is what they eat to get strong." },
+    { q: "What do animals eat to get energy?", a: "Food", choices: ["Food", "Sunlight", "Water"], explain: "Eating food gives animals the energy to move, grow and play. Plants use sunlight for energy, but animals must eat food to get theirs." },
     { q: "Can a plant live without water?", a: "No", choices: ["Yes", "No", "Maybe"], explain: "Plants drink water through their roots to stay alive, so without any water a plant cannot live." },
     { q: "Do fish need water to live?", a: "Yes", choices: ["Yes", "No", "Maybe"], explain: "Fish breathe through gills that only work underwater, so they need water around them to stay alive." },
     { q: "Which do all living things need?", a: "Air", choices: ["Toys", "Air", "TV"], explain: "Air is something every living thing needs to breathe and stay alive. Toys and TV are just for fun." },

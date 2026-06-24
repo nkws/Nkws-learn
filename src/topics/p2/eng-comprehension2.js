@@ -9,7 +9,7 @@ function buildP2eCp1() {
     { q: `${passage}\n\nWhat did the friends do at the party?`, a: "Played games", choices: ["Played games", "Watched TV", "Read books"], explain: "The story tells us 'they played games', so that is what the friends did." },
     { q: `${passage}\n\nWho made the cake?`, a: "Mum", choices: ["Mum", "Mei", "Her friend"], explain: "We find the answer in the words 'Mum made a big chocolate cake', so the answer is Mum." },
     { q: `${passage}\n\nWhat kind of cake was it?`, a: "Chocolate cake", choices: ["Chocolate cake", "Vanilla cake", "Strawberry cake"], explain: "The story says it was a 'big chocolate cake', so the cake was chocolate." },
-    { q: `${passage}\n\nHow big was the cake?`, a: "Big", choices: ["Big", "Small", "Tiny"], explain: "The story says 'a big chocolate cake', so the cake was big." },
+    { q: `${passage}\n\nWhat food did Mum prepare for the party?`, a: "A big chocolate cake", choices: ["A big chocolate cake", "Pizza and sandwiches", "Cupcakes and juice"], explain: "The story says 'Mum made a big chocolate cake', so the food she prepared was a big chocolate cake." },
   ]).map((item) => ({
     question: item.q,
     answer: item.a,
@@ -43,7 +43,7 @@ function buildP2eCp3() {
     { q: `${passage}\n\nWhat did Sam give the puppy?`, a: "Water and food", choices: ["Water and food", "A toy", "A blanket"], explain: "The story says he 'gave it some water and food', so that is what Sam gave the puppy." },
     { q: `${passage}\n\nWho helped Sam?`, a: "Dad", choices: ["Dad", "Mum", "His friend"], explain: "The story says 'Dad helped him', so the answer is Dad." },
     { q: `${passage}\n\nWhat did they put up?`, a: "Signs", choices: ["Signs", "Posters", "Balloons"], explain: "The story says they 'put up signs', so the answer is signs." },
-    { q: `${passage}\n\nWhat size was the puppy?`, a: "Small", choices: ["Small", "Big", "Medium"], explain: "The story says Sam found a 'small puppy', so the puppy was small." },
+    { q: `${passage}\n\nWhy did Sam and Dad put up signs?`, a: "To find the puppy's owner", choices: ["To find the puppy's owner", "To show it was their puppy", "To warn people about the dog"], explain: "Sam found a puppy and wanted to help it. Putting up signs around the neighbourhood is a way to find the owner so the puppy can go home." },
   ]).map((item) => ({
     question: item.q,
     answer: item.a,

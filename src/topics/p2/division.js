@@ -33,14 +33,14 @@ export const P2_DIVISION_INTRO = {
 
 function buildDiv1() {
   return shuffle([
-    { q: "What does the ÷ sign mean?", a: "Share equally", choices: ["Share equally", "Add", "Multiply"], explain: "Division shares a total into equal groups. The ÷ sign tells you to split fairly so every group gets the same amount." },
+    { q: "Which number sentence shows 12 shared equally among 3?", a: "12 ÷ 3 = 4", choices: ["12 ÷ 3 = 4", "12 + 3 = 15", "12 × 3 = 36"], explain: "Division uses the ÷ sign to share equally. 12 shared among 3 groups gives 4 each, so the correct sentence is 12 ÷ 3 = 4." },
     { q: "6 shared equally among 2 is?", a: "3", choices: ["2", "3", "4"], explain: "Division shares into equal groups. Hand out 6 things one at a time to 2 friends and each ends up with 3, so 6 ÷ 2 = 3." },
     { q: "8 shared equally among 2 is?", a: "4", choices: ["3", "4", "5"], explain: "Division splits a total into equal groups. Share 8 fairly between 2 and each side gets 4, so 8 ÷ 2 = 4." },
     { q: "10 shared equally among 5 is?", a: "2", choices: ["2", "3", "5"], explain: "Division makes equal groups. Split 10 into 5 equal shares and each share is 2, so 10 ÷ 5 = 2." },
     { q: "9 shared equally among 3 is?", a: "3", choices: ["2", "3", "4"], explain: "Division shares a total equally. Put 9 into 3 equal groups and each group holds 3, so 9 ÷ 3 = 3." },
     { q: "12 shared equally among 4 is?", a: "3", choices: ["2", "3", "4"], explain: "Division splits fairly. Share 12 between 4 groups and each group gets 3, so 12 ÷ 4 = 3." },
     { q: "4 shared equally among 2 is?", a: "2", choices: ["1", "2", "3"], explain: "Division means equal sharing. Split 4 into 2 equal groups and each one has 2, so 4 ÷ 2 = 2." },
-    { q: "Division means...?", a: "Sharing equally", choices: ["Sharing equally", "Adding more", "Taking away"], explain: "Division is sharing a whole into equal groups. It is the opposite of multiplying, which joins equal groups together." },
+    { q: "5 children share 15 stickers equally. Each child gets?", a: "3", choices: ["2", "3", "5"], explain: "Division shares a total into equal groups. 15 stickers among 5 children: 15 ÷ 5 = 3, so each child gets 3." },
   ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]), explain: item.explain }));
 }
 

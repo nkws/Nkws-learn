@@ -24,9 +24,9 @@ function buildP5mRt1() {
     { q: "A machine makes 100 items in 5 hours. What is the rate?", a: "20 items per hour", choices: ["20 items per hour", "100 items per hour", "5 items per hour"], explain: "A rate is an amount per one unit of time, so divide the total by the time: 100 ÷ 5 = 20 items per hour." },
     { q: "If 8 pencils cost $4, what is the cost per pencil?", a: "$0.50", choices: ["$0.50", "$0.80", "$4.00"], explain: "'Per pencil' means the cost of one, so divide the total by how many: $4 ÷ 8 = $0.50 each." },
     { q: "A runner covers 400 m in 2 minutes. What is the rate?", a: "200 m per minute", choices: ["200 m per minute", "400 m per minute", "800 m per minute"], explain: "A rate is distance per one minute, so divide distance by time: 400 m ÷ 2 min = 200 m per minute." },
-    { q: "Rate = ?", a: "Quantity ÷ Time", choices: ["Quantity ÷ Time", "Quantity × Time", "Time ÷ Quantity"], explain: "A rate tells you how much happens in one unit of time, so you share the quantity over the time: Rate = Quantity ÷ Time." },
+    { q: "A factory makes 300 phones in 5 days. Which calculation finds the production rate per day?", a: "300 ÷ 5 = 60 phones per day", choices: ["300 ÷ 5 = 60 phones per day", "300 × 5 = 1500 phones per day", "5 ÷ 300 = 0.017 days per phone"], explain: "A rate is how much happens in ONE unit of time. To find the daily rate, divide the total quantity by the number of days: 300 ÷ 5 = 60 phones per day." },
     { q: "If the rate is $5 per hour, how much for 6 hours?", a: "$30", choices: ["$30", "$5", "$11"], explain: "Total = rate × time, since the same amount is earned each hour. $5 × 6 hours = $30." },
-    { q: "Total = Rate × ?", a: "Time", choices: ["Time", "Speed", "Distance only"], explain: "A rate is an amount for each unit of time, so to get the total you multiply it by how many time units pass: Total = Rate × Time." },
+    { q: "A printer works at 8 pages per minute. Which calculation finds the total pages printed in 6 minutes?", a: "8 × 6 = 48 pages", choices: ["8 × 6 = 48 pages", "8 ÷ 6 ≈ 1.3 pages", "6 ÷ 8 = 0.75 pages"], explain: "Total = Rate × Time. The rate (8 pages per minute) multiplied by the time (6 minutes) gives the total: 8 × 6 = 48 pages." },
   ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]), explain: item.explain }));
 }
 

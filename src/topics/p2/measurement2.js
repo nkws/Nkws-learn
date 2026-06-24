@@ -52,7 +52,7 @@ function buildMs3() {
     { q: "A bag of sugar weighs about __ kg?", a: "1", choices: ["1", "5", "10"], explain: "Kilograms measure weight. A small bag of sugar is about 1 kg; 10 kg would be a very big sack." },
     { q: "What do we use to measure weight?", a: "A scale", choices: ["A ruler", "A scale", "A clock"], explain: "Each tool measures one thing. A scale measures weight; a ruler measures length and a clock measures time." },
     { q: "Which is heavier: 2 kg or 5 kg?", a: "5 kg", choices: ["2 kg", "5 kg", "Same"], explain: "More kilograms means heavier. Since 5 is more than 2, 5 kg is the heavier weight." },
-    { q: "A chicken egg weighs about __ g? (hint: less than 1 kg)", a: "60", choices: ["10", "60", "200"], explain: "Grams measure light things, and 1000 g make 1 kg. An egg is light, about 60 g; 200 g would be much heavier." },
+    { q: "A chicken egg weighs about __ g?", a: "60", choices: ["10", "60", "200"], explain: "Grams measure light things, and 1000 g make 1 kg. An egg is light, about 60 g; 200 g would be about the weight of a small apple, much heavier than an egg." },
     { q: "1 kg equals __ g?", a: "1000", choices: ["100", "500", "1000"], explain: "A kilogram is the bigger weight unit, made of 1000 equal grams. So 1 kg = 1000 g, used for heavier things." },
   ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]), explain: item.explain }));
 }
