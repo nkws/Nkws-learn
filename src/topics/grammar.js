@@ -53,16 +53,16 @@ function buildGr1() {
 
 function buildGr2() {
   return shuffle([
-    { q: "He found __ apple on his desk.", a: "an", choices: ["an", "a", "the"], explain: "Apple starts with the vowel sound 'a', so we use 'an'. We use 'an' before vowel sounds (a, e, i, o, u)." },
-    { q: "She is holding __ cat.", a: "a", choices: ["a", "an", "the"], explain: "Cat starts with the consonant 'c', so we use 'a'. We use 'a' before consonant sounds." },
-    { q: "Dad cracked __ egg for breakfast.", a: "an", choices: ["an", "a", "the"], explain: "Egg starts with the vowel sound 'e', so we use 'an'. We use 'an' before vowel sounds (a, e, i, o, u)." },
-    { q: "Tom kicked __ ball into the goal.", a: "a", choices: ["a", "an", "the"], explain: "Ball starts with the consonant 'b', so we use 'a'. We use 'a' before consonant sounds." },
-    { q: "We saw __ elephant at the zoo.", a: "an", choices: ["an", "a", "the"], explain: "Elephant starts with the vowel sound 'e', so we use 'an'. We use 'an' before vowel sounds (a, e, i, o, u)." },
-    { q: "They built __ house on the hill.", a: "a", choices: ["a", "an", "the"], explain: "House starts with the consonant 'h' sound, so we use 'a'. We use 'a' before consonant sounds." },
-    { q: "__ sun gives us light and warmth.", a: "the", choices: ["the", "a", "an"], explain: "There is only one sun in our sky. When there is only one of something that everyone knows, we use 'the'." },
-    { q: "I got a new book. __ book has many pictures.", a: "the", choices: ["the", "a", "an"], explain: "We already said 'a new book', so now we know exactly which book. When we know which one, we use 'the'." },
-    { q: "Please close __ door when you leave.", a: "the", choices: ["the", "a", "an"], explain: "Both you and the teacher know exactly which door is meant. When both people know which one, we use 'the'." },
-    { q: "__ moon looks beautiful tonight.", a: "the", choices: ["the", "a", "an"], explain: "There is only one moon in our sky. When there is only one of something that everyone knows, we use 'the'." },
+    { q: "He found __ apple on his desk.", a: "an", choices: ["an", "a", "the"], explain: "Try saying 'a apple' out loud — it sounds bumpy! 'An apple' flows smoothly. We use 'an' before words that start with a, e, i, o or u." },
+    { q: "She is holding __ cat.", a: "a", choices: ["a", "an", "the"], explain: "Try saying 'an cat' — it sounds wrong! 'A cat' flows smoothly. We use 'a' before words that do not start with a, e, i, o or u." },
+    { q: "Dad cracked __ egg for breakfast.", a: "an", choices: ["an", "a", "the"], explain: "Try saying 'a egg' — it sounds bumpy! 'An egg' flows smoothly. We use 'an' before words that start with a, e, i, o or u." },
+    { q: "Tom kicked __ ball into the goal.", a: "a", choices: ["a", "an", "the"], explain: "Try saying 'an ball' — it sounds wrong! 'A ball' flows smoothly. We use 'a' before words that do not start with a, e, i, o or u." },
+    { q: "We saw __ elephant at the zoo.", a: "an", choices: ["an", "a", "the"], explain: "Try saying 'a elephant' — it sounds bumpy! 'An elephant' flows smoothly. We use 'an' before words that start with a, e, i, o or u." },
+    { q: "They built __ house on the hill.", a: "a", choices: ["a", "an", "the"], explain: "Try saying 'an house' — it sounds wrong! 'A house' flows smoothly. We use 'a' before words that do not start with a, e, i, o or u." },
+    { q: "__ sun gives us light and warmth.", a: "the", choices: ["the", "a", "an"], explain: "There is only one sun — we all know exactly which one we mean. So we say 'the sun'. Saying 'a sun' would sound very strange!" },
+    { q: "I got a new book. __ book has many pictures.", a: "the", choices: ["the", "a", "an"], explain: "We said 'a new book' first, so now we know which book we mean. When we already know which one, we say 'the book', not 'a book'." },
+    { q: "Please close __ door when you leave.", a: "the", choices: ["the", "a", "an"], explain: "There is one door in the room and everyone can see it. When we all know which thing we mean, we say 'the door', not 'a door'." },
+    { q: "__ moon looks beautiful tonight.", a: "the", choices: ["the", "a", "an"], explain: "There is only one moon — we all know exactly which one we mean. So we say 'the moon'. Saying 'a moon' would sound very strange!" },
   ]).map((item) => ({
     question: item.q,
     answer: item.a,
