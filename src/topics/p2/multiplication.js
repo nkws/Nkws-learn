@@ -33,15 +33,15 @@ export const P2_MULTIPLICATION_INTRO = {
 
 function buildMul1() {
   return shuffle([
-    { q: "What does the x sign mean?", a: "Groups of", choices: ["Groups of", "Take away", "Share"] },
-    { q: "3 groups of 2 is?", a: "6", choices: ["5", "6", "8"] },
-    { q: "2 groups of 4 is?", a: "8", choices: ["6", "8", "10"] },
-    { q: "4 groups of 3 is?", a: "12", choices: ["10", "12", "14"] },
-    { q: "5 groups of 2 is?", a: "10", choices: ["8", "10", "12"] },
-    { q: "2 groups of 5 is?", a: "10", choices: ["7", "10", "12"] },
-    { q: "3 groups of 3 is?", a: "9", choices: ["6", "9", "12"] },
-    { q: "Multiplication is a fast way of...?", a: "Adding", choices: ["Adding", "Subtracting", "Sharing"] },
-  ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]) }));
+    { q: "What does the x sign mean?", a: "Groups of", choices: ["Groups of", "Take away", "Share"], explain: "Multiplication counts equal groups. The x sign means 'groups of', so 3 x 2 means 3 groups of 2." },
+    { q: "3 groups of 2 is?", a: "6", choices: ["5", "6", "8"], explain: "Multiplication is fast repeated adding. 3 groups of 2 means 2 + 2 + 2 = 6, so 3 x 2 = 6." },
+    { q: "2 groups of 4 is?", a: "8", choices: ["6", "8", "10"], explain: "Multiplication is repeated adding. 2 groups of 4 means 4 + 4 = 8, so 2 x 4 = 8." },
+    { q: "4 groups of 3 is?", a: "12", choices: ["10", "12", "14"], explain: "Multiplication adds equal groups quickly. 4 groups of 3 means 3 + 3 + 3 + 3 = 12, so 4 x 3 = 12." },
+    { q: "5 groups of 2 is?", a: "10", choices: ["8", "10", "12"], explain: "Multiplication is repeated adding. 5 groups of 2 means 2 + 2 + 2 + 2 + 2 = 10, so 5 x 2 = 10." },
+    { q: "2 groups of 5 is?", a: "10", choices: ["7", "10", "12"], explain: "Multiplication joins equal groups. 2 groups of 5 means 5 + 5 = 10, so 2 x 5 = 10." },
+    { q: "3 groups of 3 is?", a: "9", choices: ["6", "9", "12"], explain: "Multiplication is fast repeated adding. 3 groups of 3 means 3 + 3 + 3 = 9, so 3 x 3 = 9." },
+    { q: "Multiplication is a fast way of...?", a: "Adding", choices: ["Adding", "Subtracting", "Sharing"], explain: "Multiplication is a quick way of adding the same number many times, so it speeds up counting equal groups." },
+  ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]), explain: item.explain }));
 }
 
 function buildMul2() {
@@ -56,6 +56,7 @@ function buildMul2() {
       question: `${t} x ${i} = ?`,
       answer: String(answer),
       choices: shuffle([String(answer), String(wrongs[0]), String(wrongs[1])]),
+      explain: `Multiplication is fast repeated adding: count ${i} groups of ${t}, which adds up to ${answer}, so ${t} x ${i} = ${answer}.`,
     });
   }
   // Add 2 extras to reach 12 — must not repeat a pair from the loop above
@@ -70,6 +71,7 @@ function buildMul2() {
       question: `${e.a} x ${e.b} = ?`,
       answer: String(answer),
       choices: shuffle([String(answer), String(wrongs[0]), String(wrongs[1])]),
+      explain: `Multiplication is fast repeated adding: ${e.b} added ${e.a} times makes ${answer}, so ${e.a} x ${e.b} = ${answer}.`,
     });
   }
   return shuffle(questions);
@@ -86,6 +88,7 @@ function buildMul3() {
       question: `${t} x ${i} = ?`,
       answer: String(answer),
       choices: shuffle([String(answer), String(wrongs[0]), String(wrongs[1])]),
+      explain: `Multiplication is fast repeated adding: ${i} groups of ${t} add up to ${answer}, so ${t} x ${i} = ${answer}.`,
     });
   }
   // Add 2 extras to reach 12 — must not repeat a pair from the loop above
@@ -100,6 +103,7 @@ function buildMul3() {
       question: `${e.a} x ${e.b} = ?`,
       answer: String(answer),
       choices: shuffle([String(answer), String(wrongs[0]), String(wrongs[1])]),
+      explain: `Multiplication means equal groups: ${e.a} groups of ${e.b} is ${e.b} added ${e.a} times, which makes ${answer}.`,
     });
   }
   return shuffle(questions);
@@ -121,6 +125,7 @@ function buildMul4() {
       question: `${a} x ${b} = ?`,
       answer: String(answer),
       choices: shuffle([String(answer), String(wrongs[0]), String(wrongs[1])]),
+      explain: `Multiplication is fast repeated adding: ${a} groups of ${b} means ${b} added ${a} times, which makes ${answer}.`,
     });
   }
   return shuffle(questions);

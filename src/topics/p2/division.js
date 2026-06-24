@@ -33,15 +33,15 @@ export const P2_DIVISION_INTRO = {
 
 function buildDiv1() {
   return shuffle([
-    { q: "What does the ÷ sign mean?", a: "Share equally", choices: ["Share equally", "Add", "Multiply"] },
-    { q: "6 shared equally among 2 is?", a: "3", choices: ["2", "3", "4"] },
-    { q: "8 shared equally among 2 is?", a: "4", choices: ["3", "4", "5"] },
-    { q: "10 shared equally among 5 is?", a: "2", choices: ["2", "3", "5"] },
-    { q: "9 shared equally among 3 is?", a: "3", choices: ["2", "3", "4"] },
-    { q: "12 shared equally among 4 is?", a: "3", choices: ["2", "3", "4"] },
-    { q: "4 shared equally among 2 is?", a: "2", choices: ["1", "2", "3"] },
-    { q: "Division means...?", a: "Sharing equally", choices: ["Sharing equally", "Adding more", "Taking away"] },
-  ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]) }));
+    { q: "What does the ÷ sign mean?", a: "Share equally", choices: ["Share equally", "Add", "Multiply"], explain: "Division shares a total into equal groups. The ÷ sign tells you to split fairly so every group gets the same amount." },
+    { q: "6 shared equally among 2 is?", a: "3", choices: ["2", "3", "4"], explain: "Division shares into equal groups. Hand out 6 things one at a time to 2 friends and each ends up with 3, so 6 ÷ 2 = 3." },
+    { q: "8 shared equally among 2 is?", a: "4", choices: ["3", "4", "5"], explain: "Division splits a total into equal groups. Share 8 fairly between 2 and each side gets 4, so 8 ÷ 2 = 4." },
+    { q: "10 shared equally among 5 is?", a: "2", choices: ["2", "3", "5"], explain: "Division makes equal groups. Split 10 into 5 equal shares and each share is 2, so 10 ÷ 5 = 2." },
+    { q: "9 shared equally among 3 is?", a: "3", choices: ["2", "3", "4"], explain: "Division shares a total equally. Put 9 into 3 equal groups and each group holds 3, so 9 ÷ 3 = 3." },
+    { q: "12 shared equally among 4 is?", a: "3", choices: ["2", "3", "4"], explain: "Division splits fairly. Share 12 between 4 groups and each group gets 3, so 12 ÷ 4 = 3." },
+    { q: "4 shared equally among 2 is?", a: "2", choices: ["1", "2", "3"], explain: "Division means equal sharing. Split 4 into 2 equal groups and each one has 2, so 4 ÷ 2 = 2." },
+    { q: "Division means...?", a: "Sharing equally", choices: ["Sharing equally", "Adding more", "Taking away"], explain: "Division is sharing a whole into equal groups. It is the opposite of multiplying, which joins equal groups together." },
+  ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]), explain: item.explain }));
 }
 
 function buildDiv2() {
@@ -54,6 +54,7 @@ function buildDiv2() {
       question: `${n} ÷ 2 = ?`,
       answer: String(answer),
       choices: shuffle([String(answer), String(wrongs[0]), String(wrongs[1])]),
+      explain: `Division shares into equal groups: split ${n} into 2 equal halves and each half has ${answer}, so ${n} ÷ 2 = ${answer}.`,
     };
   }));
 }
@@ -72,6 +73,7 @@ function buildDiv3() {
       question: `${n} ÷ ${d} = ?`,
       answer: String(answer),
       choices: shuffle([String(answer), String(wrongs[0]), String(wrongs[1])]),
+      explain: `Division shares into equal groups: put ${n} into ${d} equal groups and each group gets ${answer}, so ${n} ÷ ${d} = ${answer}.`,
     };
   }));
 }
@@ -92,6 +94,7 @@ function buildDiv4() {
       question: `${n} ÷ ${d} = ?`,
       answer: String(answer),
       choices: shuffle([String(answer), String(wrongs[0]), String(wrongs[1])]),
+      explain: `Division shares a total into equal groups: share ${n} among ${d} groups and each gets ${answer}. You can check it by multiplying back: ${d} × ${answer} = ${n}.`,
     };
   }));
 }
