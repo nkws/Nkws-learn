@@ -53,16 +53,16 @@ function buildGr1() {
 
 function buildGr2() {
   return shuffle([
-    { q: "Fill in: __ apple", a: "an", choices: ["an", "a", "the"], explain: "We use 'an' before words that start with a vowel sound (a, e, i, o, u). Apple starts with 'a', so we say 'an apple'." },
-    { q: "Fill in: __ cat", a: "a", choices: ["a", "an", "the"], explain: "We use 'a' before words that start with a consonant sound. Cat starts with 'c', so we say 'a cat'." },
-    { q: "Fill in: __ egg", a: "an", choices: ["an", "a", "the"], explain: "We use 'an' before words that start with a vowel sound (a, e, i, o, u). Egg starts with 'e', so we say 'an egg'." },
-    { q: "Fill in: __ dog", a: "a", choices: ["a", "an", "the"], explain: "We use 'a' before words that start with a consonant sound. Dog starts with 'd', so we say 'a dog'." },
-    { q: "Fill in: __ umbrella", a: "an", choices: ["an", "a", "the"], explain: "We use 'an' before words that start with a vowel sound (a, e, i, o, u). Umbrella starts with 'u', so we say 'an umbrella'." },
-    { q: "Fill in: __ ball", a: "a", choices: ["a", "an", "the"], explain: "We use 'a' before words that start with a consonant sound. Ball starts with 'b', so we say 'a ball'." },
-    { q: "Fill in: __ orange", a: "an", choices: ["an", "a", "the"], explain: "We use 'an' before words that start with a vowel sound (a, e, i, o, u). Orange starts with 'o', so we say 'an orange'." },
-    { q: "Fill in: __ ice cream", a: "an", choices: ["an", "a", "the"], explain: "We use 'an' before words that start with a vowel sound (a, e, i, o, u). Ice starts with 'i', so we say 'an ice cream'." },
-    { q: "Fill in: __ house", a: "a", choices: ["a", "an", "the"], explain: "We use 'a' before words that start with a consonant sound. House starts with the 'h' sound, so we say 'a house'." },
-    { q: "Fill in: __ elephant", a: "an", choices: ["an", "a", "the"], explain: "We use 'an' before words that start with a vowel sound (a, e, i, o, u). Elephant starts with 'e', so we say 'an elephant'." },
+    { q: "He found __ apple on his desk.", a: "an", choices: ["an", "a", "the"], explain: "Apple starts with the vowel sound 'a', so we use 'an'. We use 'an' before vowel sounds (a, e, i, o, u)." },
+    { q: "She is holding __ cat.", a: "a", choices: ["a", "an", "the"], explain: "Cat starts with the consonant 'c', so we use 'a'. We use 'a' before consonant sounds." },
+    { q: "Dad cracked __ egg for breakfast.", a: "an", choices: ["an", "a", "the"], explain: "Egg starts with the vowel sound 'e', so we use 'an'. We use 'an' before vowel sounds (a, e, i, o, u)." },
+    { q: "The puppy saw __ dog in the park.", a: "a", choices: ["a", "an", "the"], explain: "Dog starts with the consonant 'd', so we use 'a'. We use 'a' before consonant sounds." },
+    { q: "She opened __ umbrella in the rain.", a: "an", choices: ["an", "a", "the"], explain: "Umbrella starts with the vowel sound 'u', so we use 'an'. We use 'an' before vowel sounds (a, e, i, o, u)." },
+    { q: "Tom kicked __ ball into the goal.", a: "a", choices: ["a", "an", "the"], explain: "Ball starts with the consonant 'b', so we use 'a'. We use 'a' before consonant sounds." },
+    { q: "Mum peeled __ orange for me.", a: "an", choices: ["an", "a", "the"], explain: "Orange starts with the vowel sound 'o', so we use 'an'. We use 'an' before vowel sounds (a, e, i, o, u)." },
+    { q: "He licked __ ice cream at the shop.", a: "an", choices: ["an", "a", "the"], explain: "Ice starts with the vowel sound 'i', so we use 'an'. We use 'an' before vowel sounds (a, e, i, o, u)." },
+    { q: "They built __ house on the hill.", a: "a", choices: ["a", "an", "the"], explain: "House starts with the consonant 'h' sound, so we use 'a'. We use 'a' before consonant sounds." },
+    { q: "We saw __ elephant at the zoo.", a: "an", choices: ["an", "a", "the"], explain: "Elephant starts with the vowel sound 'e', so we use 'an'. We use 'an' before vowel sounds (a, e, i, o, u)." },
   ]).map((item) => ({
     question: item.q,
     answer: item.a,
