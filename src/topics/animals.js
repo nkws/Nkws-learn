@@ -36,13 +36,13 @@ function buildAn1() {
 function buildAn2() {
   return shuffle([
     { q: "Where do fish live?", a: "Water", choices: ["Land", "Water", "Air"], explain: "Fish breathe through gills, so they need to stay in water to live. That is their home." },
-    { q: "Where do eagles fly?", a: "Air", choices: ["Land", "Water", "Air"], explain: "An eagle has big wings to fly high, so the sky and the air is where it soars." },
+    { q: "Where does an eagle live?", a: "Air", choices: ["Land", "Water", "Air"], explain: "An eagle is a bird with big wings that soars high above the ground, so its habitat is the air." },
     { q: "Where do lions live?", a: "Land", choices: ["Land", "Water", "Air"], explain: "A lion has strong legs for running and walking, so its home is on the dry land." },
     { q: "Where do dolphins live?", a: "Water", choices: ["Land", "Water", "Air"], explain: "A dolphin swims with fins and its body is made for swimming, so its home is in the water." },
     { q: "Where do worms live?", a: "Land", choices: ["Land", "Water", "Air"], explain: "A worm wriggles through soil in the ground, so its home is on the land, not the water or sky." },
     { q: "Where do sharks live?", a: "Water", choices: ["Land", "Water", "Air"], explain: "A shark is a fish that swims and breathes underwater, so the sea is its home in the water." },
-    { q: "A parrot flies through the ___.", a: "Air", choices: ["Land", "Water", "Air"], explain: "A parrot has wings to fly, so it moves through the air up in the sky." },
-    { q: "A frog can live on land and in ___.", a: "Water", choices: ["Air", "Water", "Fire"], explain: "A frog can hop on land but also swims and keeps its skin wet, so it also lives in the water." },
+    { q: "What is a parrot's habitat?", a: "Air", choices: ["Land", "Water", "Air"], explain: "A parrot is a bird with wings for flying, so it belongs to the air group of habitats." },
+    { q: "Where does a frog live besides on land?", a: "Water", choices: ["Air", "Water", "Underground"], explain: "A frog has wet skin that must stay moist, and it lays its eggs in ponds, so it also lives in the water." },
   ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]), explain: item.explain }));
 }
 
@@ -53,9 +53,9 @@ function buildAn3() {
     { q: "A bear eats berries and fish. It eats ___.", a: "Both", choices: ["Plants", "Meat", "Both"], explain: "Berries are plants and fish is meat, so an animal that eats both kinds of food eats both." },
     { q: "A rabbit eats carrots and leaves. It eats ___.", a: "Plants", choices: ["Plants", "Meat", "Both"], explain: "Carrots and leaves are parts of plants, so a rabbit that eats them is a plant eater." },
     { q: "A shark eats fish. It eats ___.", a: "Meat", choices: ["Plants", "Meat", "Both"], explain: "Fish are animals, so eating them means eating meat, which makes a shark a meat eater." },
-    { q: "An animal that eats only plants eats ___.", a: "Plants", choices: ["Plants", "Meat", "Both"], explain: "If an animal eats only growing things and never other animals, then its whole food is plants." },
-    { q: "An animal that eats only meat eats ___.", a: "Meat", choices: ["Plants", "Meat", "Both"], explain: "If an animal eats only other animals and never plants, then all of its food is meat." },
-    { q: "An animal that eats plants and meat eats ___.", a: "Both", choices: ["Plants", "Meat", "Both"], explain: "When an animal enjoys plants and also eats other animals, it eats both kinds of food." },
+    { q: "A horse eats only hay and grass. What does a horse eat?", a: "Plants", choices: ["Plants", "Meat", "Both"], explain: "Hay and grass are plants, so an animal that eats only these things eats only plants." },
+    { q: "A crocodile hunts and eats only fish and animals. What does a crocodile eat?", a: "Meat", choices: ["Plants", "Meat", "Both"], explain: "Fish and animals are meat, so an animal that hunts and eats only them is a meat eater." },
+    { q: "A crow eats seeds and also pecks at worms. What type of eater is a crow?", a: "Both", choices: ["Plants", "Meat", "Both"], explain: "Seeds are plants and worms are animals (meat), so a crow that eats both kinds of food eats both." },
   ]).map((item) => ({ question: item.q, answer: item.a, choices: shuffle([...item.choices]), explain: item.explain }));
 }
 
