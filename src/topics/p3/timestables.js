@@ -27,6 +27,7 @@ function buildTT1() {
       question: `${t} x ${i} = ?`,
       answer: String(answer),
       choices: shuffle([String(answer), String(wrongs[0]), String(wrongs[1])]),
+      explain: `Times tables are equal groups added fast. ${t} x ${i} means ${i} groups of ${t}, so add ${t} a total of ${i} times to get ${answer}.`,
     });
   }
   // Extras must not repeat a pair from the loop above (7x9 comes from i=9).
@@ -38,6 +39,7 @@ function buildTT1() {
       question: `${e.a} x ${e.b} = ?`,
       answer: String(answer),
       choices: shuffle([String(answer), String(wrongs[0]), String(wrongs[1])]),
+      explain: `Multiplying is repeated adding of equal groups. ${e.a} x ${e.b} is ${e.a} added ${e.b} times, which builds up to ${answer}.`,
     });
   }
   return shuffle(questions);
@@ -54,6 +56,7 @@ function buildTT2() {
       question: `${t} x ${i} = ?`,
       answer: String(answer),
       choices: shuffle([String(answer), String(wrongs[0]), String(wrongs[1])]),
+      explain: `Times tables are equal groups added fast. ${t} x ${i} means ${i} groups of ${t}, so add ${t} a total of ${i} times to get ${answer}.`,
     });
   }
   // Extras must not repeat a pair from the loop above (9x6 comes from i=6).
@@ -65,6 +68,7 @@ function buildTT2() {
       question: `${e.a} x ${e.b} = ?`,
       answer: String(answer),
       choices: shuffle([String(answer), String(wrongs[0]), String(wrongs[1])]),
+      explain: `Multiplying is repeated adding of equal groups. ${e.a} x ${e.b} is ${e.a} added ${e.b} times, which builds up to ${answer}.`,
     });
   }
   return shuffle(questions);
@@ -86,6 +90,7 @@ function buildTT3() {
       question: `${a} x ${b} = ?`,
       answer: String(answer),
       choices: shuffle([String(answer), String(wrongs[0]), String(wrongs[1])]),
+      explain: `Times tables are equal groups added fast. ${a} x ${b} means ${b} groups of ${a}, so adding ${a} a total of ${b} times makes ${answer}.`,
     });
   }
   return shuffle(questions);
@@ -107,6 +112,7 @@ function buildTT4() {
       question: `${dividend} \u00f7 ${divisor} = ?`,
       answer: String(quotient),
       choices: shuffle([String(quotient), String(wrongs[0]), String(wrongs[1])]),
+      explain: `Dividing shares a number into equal groups, the opposite of times tables. Sharing ${dividend} into ${divisor} equal groups puts ${quotient} in each, because ${divisor} x ${quotient} = ${dividend}.`,
     });
   }
   return shuffle(questions);
