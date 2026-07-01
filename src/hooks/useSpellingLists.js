@@ -5,49 +5,21 @@ import {
   upsertCloudSpellingList,
   deleteCloudSpellingList,
   subscribeToSpellingLists,
-  cloudSpellingListToLocal,
 } from "../utils/cloudSync";
+import { mergeSpellingLists } from "../utils/spellingMerge";
 
-// Merge cloud rows into the local store. Last-write-wins per list, keyed on
-// updatedAt: a cloud row only overwrites local when it is strictly newer, so a
-// just-made local edit (whose cloud write may still be in flight) is never
-// clobbered by a stale cloud copy. Soft-deleted cloud rows are removed locally.
-// Local lists absent from the cloud (e.g. created offline) are pushed up.
-// Returns the merged lists array, or null if nothing changed.
+// Merge cloud rows into the local store using the pure merge logic, then apply
+// the side effects: push local-only lists to the cloud and persist the result.
+// Returns the merged store, or null if nothing changed.
 function mergeCloudIntoLocal(cloudRows, userId) {
   const current = loadSpellingLists();
-  const localById = Object.fromEntries(current.lists.map((l) => [l.id, l]));
-  const cloudById = Object.fromEntries(cloudRows.map((r) => [r.id, r]));
-
-  let merged = [...current.lists];
-  let changed = false;
-
-  for (const row of cloudRows) {
-    if (row.deleted) {
-      if (localById[row.id]) {
-        merged = merged.filter((l) => l.id !== row.id);
-        changed = true;
-      }
-      continue;
-    }
-    const local = localById[row.id];
-    const cloudUpdated = new Date(row.updated_at).getTime();
-    if (!local) {
-      merged = [...merged, cloudSpellingListToLocal(row)];
-      changed = true;
-    } else if (cloudUpdated > local.updatedAt) {
-      merged = merged.map((l) => (l.id === row.id ? cloudSpellingListToLocal(row) : l));
-      changed = true;
-    }
-  }
+  const { lists, changed, toPush } = mergeSpellingLists(current.lists, cloudRows);
 
   // Push local-only lists (created offline / before login) up to the cloud.
-  for (const local of current.lists) {
-    if (!cloudById[local.id]) upsertCloudSpellingList(userId, local);
-  }
+  for (const local of toPush) upsertCloudSpellingList(userId, local);
 
   if (!changed) return null;
-  const next = { ...current, lists: merged };
+  const next = { ...current, lists };
   saveSpellingLists(next);
   return next;
 }

@@ -213,19 +213,6 @@ export function subscribeToSpellingLists(userId, onChange) {
   return () => { supabase.removeChannel(channel); };
 }
 
-// Convert a Supabase spelling_lists row to the local storage shape.
-export function cloudSpellingListToLocal(row) {
-  return {
-    id: row.id,
-    title: row.title,
-    lang: row.lang,
-    childId: row.child_id || null,
-    words: row.words || [],
-    createdAt: new Date(row.created_at).getTime(),
-    updatedAt: new Date(row.updated_at).getTime(),
-  };
-}
-
 // ============ SUBSCRIPTIONS ============
 
 export async function fetchSubscriptionStatus(userId) {
