@@ -8,20 +8,21 @@ import {
 } from "../utils/cloudSync";
 import { mergeSpellingLists } from "../utils/spellingMerge";
 
-// Merge cloud rows into the local store using the pure merge logic, then apply
-// the side effects: push local-only lists to the cloud and persist the result.
-// Returns the merged store, or null if nothing changed.
-function mergeCloudIntoLocal(cloudRows, userId) {
+// Sync status surfaced to the UI:
+//   "off"     — not logged in / Supabase not configured: local-only, not a fault
+//   "syncing" — a cloud pull is in flight
+//   "synced"  — last cloud op succeeded
+//   "error"   — a configured cloud op failed (table missing, RLS, network…)
+export const SYNC = { OFF: "off", SYNCING: "syncing", SYNCED: "synced", ERROR: "error" };
+
+// Apply the pure merge to the local store and persist. Returns the merged store
+// (or null if unchanged) plus the local-only lists that still need pushing up.
+function applyMerge(cloudRows) {
   const current = loadSpellingLists();
   const { lists, changed, toPush } = mergeSpellingLists(current.lists, cloudRows);
-
-  // Push local-only lists (created offline / before login) up to the cloud.
-  for (const local of toPush) upsertCloudSpellingList(userId, local);
-
-  if (!changed) return null;
-  const next = { ...current, lists };
-  saveSpellingLists(next);
-  return next;
+  const next = changed ? { ...current, lists } : null;
+  if (next) saveSpellingLists(next);
+  return { next, toPush };
 }
 
 // Lists are scoped to a child. Lists with childId === null are "shared on
@@ -38,18 +39,33 @@ function mergeCloudIntoLocal(cloudRows, userId) {
 //             appear on the others without a manual reload.
 export function useSpellingLists(activeChild, userId) {
   const [state, setState] = useState(() => loadSpellingLists());
+  const [syncStatus, setSyncStatus] = useState(userId ? SYNC.SYNCING : SYNC.OFF);
   const childId = activeChild?.id || null;
   // Guards a refetch already in flight so overlapping triggers don't stack.
   const pullingRef = useRef(false);
 
-  // Pull from cloud and merge. Safe to call repeatedly (idempotent merge).
+  // Pull from cloud, merge, and push any local-only lists up. Safe to call
+  // repeatedly (idempotent merge). Updates syncStatus so the UI can show when
+  // the cloud is unreachable instead of silently staying local.
   const syncFromCloud = useCallback(async () => {
     if (!userId || pullingRef.current) return;
     pullingRef.current = true;
+    setSyncStatus(SYNC.SYNCING);
     try {
-      const cloudRows = await fetchCloudSpellingLists(userId);
-      const merged = mergeCloudIntoLocal(cloudRows, userId);
-      if (merged) setState(merged);
+      const { data, error } = await fetchCloudSpellingLists(userId);
+      if (error) { setSyncStatus(SYNC.ERROR); return; }
+
+      const { next, toPush } = applyMerge(data);
+      if (next) setState(next);
+
+      // Send lists that exist on this device but not yet in the cloud (created
+      // offline, before login, or while a previous push failed) up to the cloud.
+      let pushError = false;
+      for (const local of toPush) {
+        const res = await upsertCloudSpellingList(userId, local);
+        if (res.error) pushError = true;
+      }
+      setSyncStatus(pushError ? SYNC.ERROR : SYNC.SYNCED);
     } finally {
       pullingRef.current = false;
     }
@@ -57,7 +73,7 @@ export function useSpellingLists(activeChild, userId) {
 
   // Initial sync + live subscription + focus/visibility refetch.
   useEffect(() => {
-    if (!userId) return;
+    if (!userId) { setSyncStatus(SYNC.OFF); return; }
     syncFromCloud();
 
     const unsubscribe = subscribeToSpellingLists(userId, () => { syncFromCloud(); });
@@ -82,6 +98,13 @@ export function useSpellingLists(activeChild, userId) {
     );
   }, [state.lists, childId]);
 
+  // Flip syncStatus based on the outcome of a write-through cloud call, so a
+  // failed create/edit/delete shows "sync unavailable" and a later success
+  // clears it.
+  const trackWrite = useCallback((promise) => {
+    promise.then((res) => setSyncStatus(res?.error ? SYNC.ERROR : SYNC.SYNCED));
+  }, []);
+
   // ── Mutations (local + cloud write-through) ────────────────────────────────
   const createList = useCallback((title, lang = "en") => {
     const now = Date.now();
@@ -98,9 +121,9 @@ export function useSpellingLists(activeChild, userId) {
     const next = { ...current, lists: [list, ...current.lists] };
     saveSpellingLists(next);
     setState(next);
-    if (userId) upsertCloudSpellingList(userId, list);
+    if (userId) trackWrite(upsertCloudSpellingList(userId, list));
     return list.id;
-  }, [childId, userId]);
+  }, [childId, userId, trackWrite]);
 
   const updateList = useCallback((id, updates) => {
     const current = loadSpellingLists();
@@ -115,17 +138,17 @@ export function useSpellingLists(activeChild, userId) {
     setState(next);
     if (userId) {
       const updated = next.lists.find((l) => l.id === id);
-      if (updated) upsertCloudSpellingList(userId, updated);
+      if (updated) trackWrite(upsertCloudSpellingList(userId, updated));
     }
-  }, [userId]);
+  }, [userId, trackWrite]);
 
   const deleteList = useCallback((id) => {
     const current = loadSpellingLists();
     const next = { ...current, lists: current.lists.filter((l) => l.id !== id) };
     saveSpellingLists(next);
     setState(next);
-    if (userId) deleteCloudSpellingList(id);
-  }, [userId]);
+    if (userId) trackWrite(deleteCloudSpellingList(id));
+  }, [userId, trackWrite]);
 
   const getList = useCallback(
     (id) => state.lists.find((l) => l.id === id) || null,
@@ -152,15 +175,18 @@ export function useSpellingLists(activeChild, userId) {
     saveSpellingLists(next);
     setState(next);
     if (userId) {
-      for (const l of next.lists) {
-        if (claimedIds.includes(l.id)) upsertCloudSpellingList(userId, l);
-      }
+      const claimed = next.lists.filter((l) => claimedIds.includes(l.id));
+      Promise.all(claimed.map((l) => upsertCloudSpellingList(userId, l)))
+        .then((results) =>
+          setSyncStatus(results.some((r) => r.error) ? SYNC.ERROR : SYNC.SYNCED)
+        );
     }
   }, [childId, userId]);
 
   return {
     lists,
     allLists: state.lists,
+    syncStatus,
     createList,
     updateList,
     deleteList,

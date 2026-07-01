@@ -157,19 +157,24 @@ export async function fetchWeeklyStats(childId, weeks = 4) {
 
 // ============ SPELLING LISTS ============
 
+// Each of these returns { error } (or { data, error } for the fetch) so the
+// caller can surface a "sync unavailable" state instead of failing silently.
+// When Supabase isn't configured, error is null (local-only mode is not a
+// failure). error is a real object only when a configured cloud call fails.
+
 export async function fetchCloudSpellingLists(userId) {
-  if (!isSupabaseConfigured()) return [];
+  if (!isSupabaseConfigured()) return { data: [], error: null };
   const { data, error } = await supabase
     .from("spelling_lists")
     .select("*")
     .eq("user_id", userId)
     .order("updated_at", { ascending: false });
-  if (error) { console.error("fetchCloudSpellingLists:", error); return []; }
-  return data || [];
+  if (error) console.error("fetchCloudSpellingLists:", error);
+  return { data: data || [], error: error || null };
 }
 
 export async function upsertCloudSpellingList(userId, list) {
-  if (!isSupabaseConfigured()) return;
+  if (!isSupabaseConfigured()) return { error: null };
   const { error } = await supabase
     .from("spelling_lists")
     .upsert({
@@ -184,15 +189,17 @@ export async function upsertCloudSpellingList(userId, list) {
       deleted: false,
     });
   if (error) console.error("upsertCloudSpellingList:", error);
+  return { error: error || null };
 }
 
 export async function deleteCloudSpellingList(listId) {
-  if (!isSupabaseConfigured()) return;
+  if (!isSupabaseConfigured()) return { error: null };
   const { error } = await supabase
     .from("spelling_lists")
     .update({ deleted: true, updated_at: new Date().toISOString() })
     .eq("id", listId);
   if (error) console.error("deleteCloudSpellingList:", error);
+  return { error: error || null };
 }
 
 // Subscribe to live changes on this user's spelling_lists rows. Returns an

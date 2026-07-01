@@ -23,7 +23,7 @@ function relativeTime(ts, isZh) {
 }
 
 export default function SpellingListsScreen({ lang = "en", activeChild, user, onBack, onOpenList }) {
-  const { lists, allLists, createList, deleteList, claimSharedLists } = useSpellingLists(activeChild, user?.id);
+  const { lists, allLists, syncStatus, createList, deleteList, claimSharedLists } = useSpellingLists(activeChild, user?.id);
   const [creating, setCreating] = useState(false);
   const [titleInput, setTitleInput] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(null);
@@ -97,17 +97,30 @@ export default function SpellingListsScreen({ lang = "en", activeChild, user, on
             ? "把这周要听写的词加进来——Koko 会带孩子练习。"
             : "Add this week's spelling words — Koko will help your child practise."}
         </p>
-        {user ? (
-          <p className="spelling-device-note">
-            {isZh
-              ? "☁️ 词语表已同步到你的账号，所有设备都可以用。"
-              : "☁️ Lists sync across all your devices automatically."}
-          </p>
-        ) : (
+        {!user && (
           <p className="spelling-device-note">
             {isZh
               ? "📱 词语表只保存在这台设备上。登录后可同步到其他设备。"
               : "📱 Lists are saved on this device only. Sign in to sync across devices."}
+          </p>
+        )}
+        {user && syncStatus === "error" && (
+          <p className="spelling-device-note spelling-device-note-error">
+            {isZh
+              ? "⚠️ 无法同步到云端。词语表已存在这台设备上，但暂时没有同步到其他设备。请检查网络后重试。"
+              : "⚠️ Can't sync to the cloud right now. Lists are saved on this device but aren't syncing. Check your connection and try again."}
+          </p>
+        )}
+        {user && syncStatus === "syncing" && (
+          <p className="spelling-device-note">
+            {isZh ? "☁️ 正在同步…" : "☁️ Syncing…"}
+          </p>
+        )}
+        {user && (syncStatus === "synced" || syncStatus === "off") && (
+          <p className="spelling-device-note">
+            {isZh
+              ? "☁️ 词语表已同步到你的账号，所有设备都可以用。"
+              : "☁️ Lists sync across all your devices automatically."}
           </p>
         )}
       </div>

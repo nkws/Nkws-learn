@@ -25,7 +25,7 @@ function relativeAttemptDate(ts, isZh) {
 }
 
 export default function SpellingListEditorScreen({ listId, activeChild, user, onBack, onStartTest }) {
-  const { getList, updateList } = useSpellingLists(activeChild, user?.id);
+  const { getList, updateList, syncStatus } = useSpellingLists(activeChild, user?.id);
   const list = getList(listId);
   const { speak } = useTTS(list?.lang === "zh" ? "zh" : "en");
 
@@ -166,6 +166,14 @@ export default function SpellingListEditorScreen({ listId, activeChild, user, on
         <button className="back-btn" onClick={onBack}>←</button>
         <span className="topbar-topic">Spelling List</span>
       </div>
+
+      {user && syncStatus === "error" && (
+        <p className="spelling-device-note spelling-device-note-error">
+          {isZh
+            ? "⚠️ 无法同步到云端。改动已存在这台设备上，但暂时没有同步。请检查网络后重试。"
+            : "⚠️ Can't sync to the cloud right now. Your changes are saved on this device but aren't syncing. Check your connection and try again."}
+        </p>
+      )}
 
       <div className="spelling-editor-header">
         {titleEditing ? (

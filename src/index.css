@@ -1761,6 +1761,13 @@ button:focus-visible {
   max-width: 420px;
 }
 
+.spelling-device-note-error {
+  color: #8a1c1c;
+  background: rgba(224, 49, 49, 0.1);
+  border: 1px solid rgba(224, 49, 49, 0.35);
+  font-weight: 600;
+}
+
 .spelling-new-btn {
   align-self: center;
   margin: 16px auto;
