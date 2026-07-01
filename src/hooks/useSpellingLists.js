@@ -4,8 +4,53 @@ import {
   fetchCloudSpellingLists,
   upsertCloudSpellingList,
   deleteCloudSpellingList,
+  subscribeToSpellingLists,
   cloudSpellingListToLocal,
 } from "../utils/cloudSync";
+
+// Merge cloud rows into the local store. Last-write-wins per list, keyed on
+// updatedAt: a cloud row only overwrites local when it is strictly newer, so a
+// just-made local edit (whose cloud write may still be in flight) is never
+// clobbered by a stale cloud copy. Soft-deleted cloud rows are removed locally.
+// Local lists absent from the cloud (e.g. created offline) are pushed up.
+// Returns the merged lists array, or null if nothing changed.
+function mergeCloudIntoLocal(cloudRows, userId) {
+  const current = loadSpellingLists();
+  const localById = Object.fromEntries(current.lists.map((l) => [l.id, l]));
+  const cloudById = Object.fromEntries(cloudRows.map((r) => [r.id, r]));
+
+  let merged = [...current.lists];
+  let changed = false;
+
+  for (const row of cloudRows) {
+    if (row.deleted) {
+      if (localById[row.id]) {
+        merged = merged.filter((l) => l.id !== row.id);
+        changed = true;
+      }
+      continue;
+    }
+    const local = localById[row.id];
+    const cloudUpdated = new Date(row.updated_at).getTime();
+    if (!local) {
+      merged = [...merged, cloudSpellingListToLocal(row)];
+      changed = true;
+    } else if (cloudUpdated > local.updatedAt) {
+      merged = merged.map((l) => (l.id === row.id ? cloudSpellingListToLocal(row) : l));
+      changed = true;
+    }
+  }
+
+  // Push local-only lists (created offline / before login) up to the cloud.
+  for (const local of current.lists) {
+    if (!cloudById[local.id]) upsertCloudSpellingList(userId, local);
+  }
+
+  if (!changed) return null;
+  const next = { ...current, lists: merged };
+  saveSpellingLists(next);
+  return next;
+}
 
 // Lists are scoped to a child. Lists with childId === null are "shared on
 // this device" — used for skipped-login (no active child) and for legacy
@@ -13,65 +58,49 @@ import {
 // migration prompt). The returned `lists` array filters to the active
 // child's lists plus shared lists. All mutations still hit the global store.
 //
-// When `userId` is provided (parent is logged in), the hook syncs with the
-// cloud spelling_lists table on mount and writes through on every mutation.
+// When `userId` is provided (parent is logged in), the hook keeps the local
+// store in sync with the cloud spelling_lists table:
+//   • PUSH  — every mutation (create/update/delete/claim) write-throughs.
+//   • PULL  — on mount, on a Supabase realtime change event, and whenever the
+//             tab regains focus/visibility. So word edits made on one device
+//             appear on the others without a manual reload.
 export function useSpellingLists(activeChild, userId) {
   const [state, setState] = useState(() => loadSpellingLists());
   const childId = activeChild?.id || null;
-  // Tracks whether the initial cloud fetch for this userId has completed.
-  const syncedRef = useRef(null);
+  // Guards a refetch already in flight so overlapping triggers don't stack.
+  const pullingRef = useRef(false);
 
-  // ── Cloud sync on login ────────────────────────────────────────────────────
+  // Pull from cloud and merge. Safe to call repeatedly (idempotent merge).
+  const syncFromCloud = useCallback(async () => {
+    if (!userId || pullingRef.current) return;
+    pullingRef.current = true;
+    try {
+      const cloudRows = await fetchCloudSpellingLists(userId);
+      const merged = mergeCloudIntoLocal(cloudRows, userId);
+      if (merged) setState(merged);
+    } finally {
+      pullingRef.current = false;
+    }
+  }, [userId]);
+
+  // Initial sync + live subscription + focus/visibility refetch.
   useEffect(() => {
     if (!userId) return;
-    if (syncedRef.current === userId) return; // already synced this session
-    let cancelled = false;
+    syncFromCloud();
 
-    (async () => {
-      const cloudRows = await fetchCloudSpellingLists(userId);
-      if (cancelled) return;
+    const unsubscribe = subscribeToSpellingLists(userId, () => { syncFromCloud(); });
 
-      const current = loadSpellingLists();
-      const localById = Object.fromEntries(current.lists.map((l) => [l.id, l]));
-      const cloudById = Object.fromEntries(cloudRows.map((r) => [r.id, r]));
+    const onFocus = () => { syncFromCloud(); };
+    const onVisible = () => { if (document.visibilityState === "visible") syncFromCloud(); };
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", onVisible);
 
-      // Build merged list: cloud wins when its updatedAt is newer.
-      let merged = [...current.lists];
-
-      for (const row of cloudRows) {
-        if (row.deleted) {
-          // Propagate cloud deletion to local.
-          merged = merged.filter((l) => l.id !== row.id);
-          continue;
-        }
-        const local = localById[row.id];
-        const cloudUpdated = new Date(row.updated_at).getTime();
-        if (!local || cloudUpdated > local.updatedAt) {
-          const converted = cloudSpellingListToLocal(row);
-          if (local) {
-            merged = merged.map((l) => (l.id === row.id ? converted : l));
-          } else {
-            merged = [...merged, converted];
-          }
-        }
-      }
-
-      // Push any local lists that aren't in the cloud yet (created offline).
-      for (const local of current.lists) {
-        if (!cloudById[local.id]) {
-          upsertCloudSpellingList(userId, local); // fire-and-forget
-        }
-      }
-
-      if (cancelled) return;
-      const next = { ...current, lists: merged };
-      saveSpellingLists(next);
-      setState(next);
-      syncedRef.current = userId;
-    })();
-
-    return () => { cancelled = true; };
-  }, [userId]);
+    return () => {
+      unsubscribe();
+      window.removeEventListener("focus", onFocus);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, [userId, syncFromCloud]);
 
   // ── Filtered view ─────────────────────────────────────────────────────────
   const lists = useMemo(() => {
@@ -137,17 +166,22 @@ export function useSpellingLists(activeChild, userId) {
     if (!childId) return;
     const updatedAt = Date.now();
     const current = loadSpellingLists();
+    const claimedIds = [];
     const next = {
       ...current,
-      lists: current.lists.map((l) =>
-        l.childId == null ? { ...l, childId, updatedAt } : l
-      ),
+      lists: current.lists.map((l) => {
+        if (l.childId == null) {
+          claimedIds.push(l.id);
+          return { ...l, childId, updatedAt };
+        }
+        return l;
+      }),
     };
     saveSpellingLists(next);
     setState(next);
     if (userId) {
-      for (const l of next.lists.filter((l) => l.childId === childId && l.updatedAt === updatedAt)) {
-        upsertCloudSpellingList(userId, l);
+      for (const l of next.lists) {
+        if (claimedIds.includes(l.id)) upsertCloudSpellingList(userId, l);
       }
     }
   }, [childId, userId]);

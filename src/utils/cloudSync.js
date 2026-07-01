@@ -195,6 +195,24 @@ export async function deleteCloudSpellingList(listId) {
   if (error) console.error("deleteCloudSpellingList:", error);
 }
 
+// Subscribe to live changes on this user's spelling_lists rows. Returns an
+// unsubscribe function. `onChange` fires on any insert/update/delete so the
+// caller can re-pull and merge. Requires the table to be in the
+// `supabase_realtime` publication (see docs/supabase-rls.sql); if it isn't,
+// the channel simply never fires and the focus-refetch fallback covers it.
+export function subscribeToSpellingLists(userId, onChange) {
+  if (!isSupabaseConfigured() || !userId) return () => {};
+  const channel = supabase
+    .channel(`spelling_lists:${userId}`)
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "spelling_lists", filter: `user_id=eq.${userId}` },
+      () => { onChange(); }
+    )
+    .subscribe();
+  return () => { supabase.removeChannel(channel); };
+}
+
 // Convert a Supabase spelling_lists row to the local storage shape.
 export function cloudSpellingListToLocal(row) {
   return {

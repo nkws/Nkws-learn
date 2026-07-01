@@ -94,6 +94,22 @@ create policy "Owner can manage their spelling lists"
   using  (user_id = auth.uid())
   with check (user_id = auth.uid());
 
+-- Enable live cross-device sync: add the table to the realtime publication so
+-- the app's Supabase realtime subscription receives insert/update/delete
+-- events. Without this the app still syncs, but only on tab focus / reopen
+-- (the focus-refetch fallback), not live. Idempotent-guarded.
+do $$
+begin
+  if not exists (
+    select 1 from pg_publication_tables
+    where pubname = 'supabase_realtime'
+      and schemaname = 'public'
+      and tablename = 'spelling_lists'
+  ) then
+    alter publication supabase_realtime add table public.spelling_lists;
+  end if;
+end $$;
+
 -- VERIFY (optional): every app table should report rowsecurity = true.
 --   select tablename, rowsecurity
 --   from pg_tables
