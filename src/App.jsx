@@ -292,6 +292,7 @@ export default function App() {
       <SpellingListEditorScreen
         listId={activeSpellingListId}
         activeChild={activeChild}
+        user={user}
         onStartTest={(id, mode) => {
           setActiveSpellingListId(id);
           setActiveTestMode(mode);
@@ -310,6 +311,7 @@ export default function App() {
       <SpellingListsScreen
         lang={activeSpellingLang}
         activeChild={activeChild}
+        user={user}
         onOpenList={(id) => {
           setActiveSpellingListId(id);
           setScreen("spelling-editor");

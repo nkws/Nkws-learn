@@ -22,8 +22,8 @@ function relativeTime(ts, isZh) {
   return isZh ? `${Math.floor(days / 30)} 月前` : `${Math.floor(days / 30)} mo ago`;
 }
 
-export default function SpellingListsScreen({ lang = "en", activeChild, onBack, onOpenList }) {
-  const { lists, allLists, createList, deleteList, claimSharedLists } = useSpellingLists(activeChild);
+export default function SpellingListsScreen({ lang = "en", activeChild, user, onBack, onOpenList }) {
+  const { lists, allLists, createList, deleteList, claimSharedLists } = useSpellingLists(activeChild, user?.id);
   const [creating, setCreating] = useState(false);
   const [titleInput, setTitleInput] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(null);
@@ -97,11 +97,19 @@ export default function SpellingListsScreen({ lang = "en", activeChild, onBack, 
             ? "把这周要听写的词加进来——Koko 会带孩子练习。"
             : "Add this week's spelling words — Koko will help your child practise."}
         </p>
-        <p className="spelling-device-note">
-          {isZh
-            ? "📱 词语表只保存在这台设备上，暂时不会同步到其他设备。"
-            : "📱 Lists are saved on this device only — they won't sync to your other devices yet."}
-        </p>
+        {user ? (
+          <p className="spelling-device-note">
+            {isZh
+              ? "☁️ 词语表已同步到你的账号，所有设备都可以用。"
+              : "☁️ Lists sync across all your devices automatically."}
+          </p>
+        ) : (
+          <p className="spelling-device-note">
+            {isZh
+              ? "📱 词语表只保存在这台设备上。登录后可同步到其他设备。"
+              : "📱 Lists are saved on this device only. Sign in to sync across devices."}
+          </p>
+        )}
       </div>
 
       {!creating && (

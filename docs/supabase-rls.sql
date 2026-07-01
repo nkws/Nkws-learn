@@ -69,11 +69,36 @@ create policy "Owner can read their subscription"
   using (user_id = auth.uid());
 
 -- ============================================================================
+-- 5) spelling_lists: parent-created word lists for English spelling / Chinese 听写.
+--    Lists are owned by the user (parent) and optionally scoped to a child.
+--    `deleted` is a soft-delete flag so cloud deletions propagate to other devices
+--    on their next sync without needing a separate tombstone table.
+--
+-- HOW TO CREATE THE TABLE (run once in SQL Editor):
+--   create table if not exists public.spelling_lists (
+--     id          text         primary key,
+--     user_id     uuid         not null references auth.users on delete cascade,
+--     child_id    uuid         references public.children(id) on delete set null,
+--     title       text         not null,
+--     lang        text         not null default 'en',
+--     words       jsonb        not null default '[]',
+--     created_at  timestamptz  not null default now(),
+--     updated_at  timestamptz  not null default now(),
+--     deleted     boolean      not null default false
+--   );
+alter table public.spelling_lists enable row level security;
+drop policy if exists "Owner can manage their spelling lists" on public.spelling_lists;
+create policy "Owner can manage their spelling lists"
+  on public.spelling_lists
+  for all
+  using  (user_id = auth.uid())
+  with check (user_id = auth.uid());
+
 -- VERIFY (optional): every app table should report rowsecurity = true.
 --   select tablename, rowsecurity
 --   from pg_tables
 --   where schemaname = 'public'
---     and tablename in ('children','child_progress','quiz_attempts','user_subscriptions');
+--     and tablename in ('children','child_progress','quiz_attempts','user_subscriptions','spelling_lists');
 -- If the Supabase advisor lists any OTHER public table, enable RLS on it too —
 -- a table with RLS off and no policies is open to the anon key.
 -- ============================================================================

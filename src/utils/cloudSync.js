@@ -155,6 +155,59 @@ export async function fetchWeeklyStats(childId, weeks = 4) {
   return data;
 }
 
+// ============ SPELLING LISTS ============
+
+export async function fetchCloudSpellingLists(userId) {
+  if (!isSupabaseConfigured()) return [];
+  const { data, error } = await supabase
+    .from("spelling_lists")
+    .select("*")
+    .eq("user_id", userId)
+    .order("updated_at", { ascending: false });
+  if (error) { console.error("fetchCloudSpellingLists:", error); return []; }
+  return data || [];
+}
+
+export async function upsertCloudSpellingList(userId, list) {
+  if (!isSupabaseConfigured()) return;
+  const { error } = await supabase
+    .from("spelling_lists")
+    .upsert({
+      id: list.id,
+      user_id: userId,
+      child_id: list.childId || null,
+      title: list.title,
+      lang: list.lang || "en",
+      words: list.words || [],
+      created_at: new Date(list.createdAt).toISOString(),
+      updated_at: new Date(list.updatedAt).toISOString(),
+      deleted: false,
+    });
+  if (error) console.error("upsertCloudSpellingList:", error);
+}
+
+export async function deleteCloudSpellingList(listId) {
+  if (!isSupabaseConfigured()) return;
+  const { error } = await supabase
+    .from("spelling_lists")
+    .update({ deleted: true, updated_at: new Date().toISOString() })
+    .eq("id", listId);
+  if (error) console.error("deleteCloudSpellingList:", error);
+}
+
+// Convert a Supabase spelling_lists row to the local storage shape.
+export function cloudSpellingListToLocal(row) {
+  return {
+    id: row.id,
+    title: row.title,
+    lang: row.lang,
+    childId: row.child_id || null,
+    words: row.words || [],
+    createdAt: new Date(row.created_at).getTime(),
+    updatedAt: new Date(row.updated_at).getTime(),
+  };
+}
+
 // ============ SUBSCRIPTIONS ============
 
 export async function fetchSubscriptionStatus(userId) {

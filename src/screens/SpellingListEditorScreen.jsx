@@ -24,8 +24,8 @@ function relativeAttemptDate(ts, isZh) {
   return `${d.getMonth() + 1}/${d.getDate()}`;
 }
 
-export default function SpellingListEditorScreen({ listId, activeChild, onBack, onStartTest }) {
-  const { getList, updateList } = useSpellingLists(activeChild);
+export default function SpellingListEditorScreen({ listId, activeChild, user, onBack, onStartTest }) {
+  const { getList, updateList } = useSpellingLists(activeChild, user?.id);
   const list = getList(listId);
   const { speak } = useTTS(list?.lang === "zh" ? "zh" : "en");
 
