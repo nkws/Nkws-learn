@@ -83,13 +83,15 @@ create policy "Owner can read their subscription"
 --     lang        text         not null default 'en',
 --     kind        text,        -- 'spelling' | 'tingxie' | 'pinyin' (null = derive from lang)
 --     words       jsonb        not null default '[]',
+--     sort_order  bigint,      -- parent's manual arrangement (null = by created_at)
 --     created_at  timestamptz  not null default now(),
 --     updated_at  timestamptz  not null default now(),
 --     deleted     boolean      not null default false
 --   );
 --
--- If the table already exists from an earlier version, add the column:
+-- If the table already exists from an earlier version, add the columns:
 --   alter table public.spelling_lists add column if not exists kind text;
+--   alter table public.spelling_lists add column if not exists sort_order bigint;
 alter table public.spelling_lists enable row level security;
 drop policy if exists "Owner can manage their spelling lists" on public.spelling_lists;
 create policy "Owner can manage their spelling lists"

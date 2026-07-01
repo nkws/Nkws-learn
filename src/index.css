@@ -1879,13 +1879,42 @@ button:focus-visible {
   overflow: hidden;
 }
 
+.spelling-list-reorder {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  padding-left: 6px;
+}
+
+.spelling-reorder-btn {
+  background: none;
+  border: none;
+  color: #b0b0b0;
+  font-size: 13px;
+  line-height: 1;
+  padding: 5px 6px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.spelling-reorder-btn:active:not(:disabled) {
+  color: var(--teal);
+  transform: scale(0.9);
+}
+
+.spelling-reorder-btn:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
 .spelling-list-main {
   flex: 1;
   display: flex;
   align-items: center;
   gap: 14px;
   background: none;
-  padding: 18px 4px 18px 16px;
+  padding: 18px 4px 18px 10px;
   text-align: left;
   min-height: 56px;
 }

@@ -184,6 +184,7 @@ export async function upsertCloudSpellingList(userId, list) {
       title: list.title,
       lang: list.lang || "en",
       kind: list.kind || null,
+      sort_order: typeof list.order === "number" ? list.order : null,
       words: list.words || [],
       created_at: new Date(list.createdAt).toISOString(),
       updated_at: new Date(list.updatedAt).toISOString(),

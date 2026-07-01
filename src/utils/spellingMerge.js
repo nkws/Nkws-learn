@@ -10,6 +10,7 @@ export function cloudRowToLocal(row) {
     title: row.title,
     lang: row.lang,
     kind: row.kind || (row.lang === "en" ? "spelling" : "tingxie"),
+    order: row.sort_order != null ? Number(row.sort_order) : undefined,
     childId: row.child_id || null,
     words: row.words || [],
     createdAt: new Date(row.created_at).getTime(),

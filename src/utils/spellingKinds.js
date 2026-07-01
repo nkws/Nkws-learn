@@ -28,3 +28,17 @@ export function listKind(list) {
   if (list?.kind) return list.kind;
   return list?.lang === "en" ? KIND.SPELLING : KIND.TINGXIE;
 }
+
+// Sort value for arranging list cards. A user-set `order` wins; lists without
+// one fall back to createdAt, so they keep their newest-first default until the
+// parent arranges them. Both live in the same (timestamp) numeric space, and
+// reorder writes values ≥ now, so an arranged list always sorts above unarranged
+// ones as intended.
+function orderValue(list) {
+  return typeof list?.order === "number" ? list.order : (list?.createdAt || 0);
+}
+
+// Return a new array of lists sorted for display: highest order first (top).
+export function sortListsByOrder(lists) {
+  return [...lists].sort((a, b) => orderValue(b) - orderValue(a));
+}

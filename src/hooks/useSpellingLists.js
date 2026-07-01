@@ -115,6 +115,7 @@ export function useSpellingLists(activeChild, userId) {
       kind,
       childId,
       words: [],
+      order: now, // newest sorts to the top until manually arranged
       createdAt: now,
       updatedAt: now,
     };
@@ -156,6 +157,38 @@ export function useSpellingLists(activeChild, userId) {
     [state]
   );
 
+  // Persist a new arrangement. `orderedIds` is the visible lists top→bottom;
+  // each gets a fresh `order` (top = highest) so sortListsByOrder reproduces the
+  // arrangement. Values are ≥ now, keeping arranged lists above unarranged ones.
+  // Bumps updatedAt so the change syncs through the normal write-through path.
+  const reorderLists = useCallback((orderedIds) => {
+    const base = Date.now();
+    const n = orderedIds.length;
+    const orderById = {};
+    orderedIds.forEach((id, i) => { orderById[id] = base + (n - i); });
+
+    const current = loadSpellingLists();
+    const changed = [];
+    const nextLists = current.lists.map((l) => {
+      if (l.id in orderById) {
+        const updated = { ...l, order: orderById[l.id], updatedAt: base };
+        changed.push(updated);
+        return updated;
+      }
+      return l;
+    });
+    const next = { ...current, lists: nextLists };
+    saveSpellingLists(next);
+    setState(next);
+
+    if (userId && changed.length) {
+      Promise.all(changed.map((l) => upsertCloudSpellingList(userId, l)))
+        .then((results) =>
+          setSyncStatus(results.some((r) => r.error) ? SYNC.ERROR : SYNC.SYNCED)
+        );
+    }
+  }, [userId]);
+
   // Bulk-assign all shared (null-childId) lists to the active child. Used by
   // the migration prompt on first launch under per-child mode.
   const claimSharedLists = useCallback(() => {
@@ -192,6 +225,7 @@ export function useSpellingLists(activeChild, userId) {
     updateList,
     deleteList,
     getList,
+    reorderLists,
     claimSharedLists,
   };
 }

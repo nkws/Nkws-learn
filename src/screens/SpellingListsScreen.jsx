@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useSpellingLists } from "../hooks/useSpellingLists";
 import { getLastSpellingAttempt } from "../utils/spellingStorage";
-import { listKind } from "../utils/spellingKinds";
+import { listKind, sortListsByOrder } from "../utils/spellingKinds";
 
 const SCOPE_DECIDED_KEY = "koko-spelling-childscope-decided";
 
@@ -24,7 +24,7 @@ function relativeTime(ts, isZh) {
 }
 
 export default function SpellingListsScreen({ lang = "en", kind = "spelling", activeChild, user, onBack, onOpenList }) {
-  const { lists, allLists, syncStatus, createList, deleteList, claimSharedLists } = useSpellingLists(activeChild, user?.id);
+  const { lists, allLists, syncStatus, createList, deleteList, reorderLists, claimSharedLists } = useSpellingLists(activeChild, user?.id);
   const [creating, setCreating] = useState(false);
   const [titleInput, setTitleInput] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(null);
@@ -33,8 +33,19 @@ export default function SpellingListsScreen({ lang = "en", kind = "spelling", ac
   const isZh = lang === "zh";
   const isPinyin = kind === "pinyin";
   // Only show lists of this practice category, so pinyin lists stay independent
-  // from 听写 lists even though both hold Chinese words.
-  const visibleLists = lists.filter((l) => listKind(l) === kind);
+  // from 听写 lists even though both hold Chinese words. Sorted by the parent's
+  // arrangement (top first).
+  const visibleLists = sortListsByOrder(lists.filter((l) => listKind(l) === kind));
+
+  // Swap a card with its neighbour and persist the new order across the visible
+  // set (dir = -1 moves up, +1 moves down).
+  const moveList = (index, dir) => {
+    const target = index + dir;
+    if (target < 0 || target >= visibleLists.length) return;
+    const arranged = [...visibleLists];
+    [arranged[index], arranged[target]] = [arranged[target], arranged[index]];
+    reorderLists(arranged.map((l) => l.id));
+  };
 
   // Migration prompt shows once per device, when an active child opens the
   // spelling tool and lists from before per-child mode still exist. Derived
@@ -176,10 +187,30 @@ export default function SpellingListsScreen({ lang = "en", kind = "spelling", ac
       )}
 
       <div className="topic-list">
-        {visibleLists.map((list) => {
+        {visibleLists.map((list, i) => {
           const last = lastByList[list.id];
           return (
             <div key={list.id} className="topic-card spelling-list-card">
+              {visibleLists.length > 1 && (
+                <div className="spelling-list-reorder">
+                  <button
+                    className="spelling-reorder-btn"
+                    onClick={() => moveList(i, -1)}
+                    disabled={i === 0}
+                    aria-label={isZh ? "上移" : "Move up"}
+                  >
+                    ▲
+                  </button>
+                  <button
+                    className="spelling-reorder-btn"
+                    onClick={() => moveList(i, 1)}
+                    disabled={i === visibleLists.length - 1}
+                    aria-label={isZh ? "下移" : "Move down"}
+                  >
+                    ▼
+                  </button>
+                </div>
+              )}
               <button
                 className="spelling-list-main"
                 onClick={() => onOpenList(list.id)}
