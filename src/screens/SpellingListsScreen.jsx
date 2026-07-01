@@ -34,17 +34,24 @@ export default function SpellingListsScreen({ lang = "en", kind = "spelling", ac
   const isPinyin = kind === "pinyin";
   // Only show lists of this practice category, so pinyin lists stay independent
   // from 听写 lists even though both hold Chinese words. Sorted by the parent's
-  // arrangement (top first).
-  const visibleLists = sortListsByOrder(lists.filter((l) => listKind(l) === kind));
+  // arrangement (top first). Memoized so it's a stable dependency for lastByList.
+  const visibleLists = useMemo(
+    () => sortListsByOrder(lists.filter((l) => listKind(l) === kind)),
+    [lists, kind]
+  );
 
   // Swap a card with its neighbour and persist the new order across the visible
-  // set (dir = -1 moves up, +1 moves down).
+  // set (dir = -1 moves up, +1 moves down). Built immutably so it never appears
+  // to mutate visibleLists (keeps the React Compiler memoization intact).
   const moveList = (index, dir) => {
     const target = index + dir;
     if (target < 0 || target >= visibleLists.length) return;
-    const arranged = [...visibleLists];
-    [arranged[index], arranged[target]] = [arranged[target], arranged[index]];
-    reorderLists(arranged.map((l) => l.id));
+    const ids = visibleLists.map((l, k) => {
+      if (k === index) return visibleLists[target].id;
+      if (k === target) return visibleLists[index].id;
+      return l.id;
+    });
+    reorderLists(ids);
   };
 
   // Migration prompt shows once per device, when an active child opens the
