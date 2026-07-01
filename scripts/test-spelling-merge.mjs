@@ -1,6 +1,7 @@
 // Unit tests for the spelling/听写 sync merge logic. Pure Node, no deps.
 // Run: node scripts/test-spelling-merge.mjs
 import { mergeSpellingLists, cloudRowToLocal } from "../src/utils/spellingMerge.js";
+import { listKind } from "../src/utils/spellingKinds.js";
 
 let passed = 0;
 let failed = 0;
@@ -97,6 +98,28 @@ console.log("Scenario 8: cloudRowToLocal shape conversion");
   check("maps child_id -> childId", l.childId === "child-1");
   check("keeps lang + words", l.lang === "zh" && eq(l.words, ["学校"]));
   check("updatedAt is a number (ms)", typeof l.updatedAt === "number" && l.updatedAt === 1234);
+}
+
+console.log("Scenario 9: list kinds keep pinyin independent from 听写");
+{
+  // Legacy rows carried only lang; they must migrate to a concrete kind.
+  const enRow = cloudRowToLocal(cloudRow("en1", 1, { lang: "en" }));
+  const zhRow = cloudRowToLocal(cloudRow("zh1", 1, { lang: "zh" }));
+  const pyRow = cloudRowToLocal(cloudRow("py1", 1, { lang: "zh", kind: "pinyin" }));
+  check("legacy English row -> spelling", enRow.kind === "spelling");
+  check("legacy Chinese row -> tingxie (听写)", zhRow.kind === "tingxie");
+  check("explicit pinyin kind preserved", pyRow.kind === "pinyin");
+
+  // listKind derives the same way for local lists lacking a kind.
+  check("listKind: en list -> spelling", listKind({ lang: "en" }) === "spelling");
+  check("listKind: zh list -> tingxie", listKind({ lang: "zh" }) === "tingxie");
+  check("listKind: explicit kind wins", listKind({ lang: "zh", kind: "pinyin" }) === "pinyin");
+
+  // A 听写 list and a pinyin list are different collections, never merged.
+  const tingxie = { id: "a", lang: "zh", kind: "tingxie", words: ["猫"] };
+  const pinyin = { id: "b", lang: "zh", kind: "pinyin", words: ["猫"] };
+  check("same word in two kinds are separate lists",
+    listKind(tingxie) !== listKind(pinyin));
 }
 
 console.log(`\n${passed} passed, ${failed} failed`);

@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback } from "react";
 import { useSpellingLists } from "../hooks/useSpellingLists";
 import { useTTS } from "../hooks/useSpeech";
 import { splitWordInput, getSpellingHistory } from "../utils/spellingStorage";
+import { listKind, KIND_MODE } from "../utils/spellingKinds";
 import WordDetail from "../components/WordDetail";
 import PracticeCanvas from "../components/PracticeCanvas";
 
@@ -34,25 +35,16 @@ export default function SpellingListEditorScreen({ listId, activeChild, user, on
   const [bulkInput, setBulkInput] = useState("");
   const [cardIndex, setCardIndex] = useState(0);
   const [showCards, setShowCards] = useState(false);
-  const [showModeChooser, setShowModeChooser] = useState(false);
   const [lookupWord, setLookupWord] = useState(null);
 
   const isZh = list?.lang === "zh";
 
-  const startTest = useCallback((mode) => {
-    if (!list || !onStartTest) return;
-    setShowModeChooser(false);
-    onStartTest(list.id, mode);
-  }, [list, onStartTest]);
-
+  // The list's category fixes its test mode: spelling→write, 听写→character,
+  // pinyin→pinyin. No per-test chooser — pinyin lists are their own category.
   const handleStartTestClick = useCallback(() => {
     if (!list || !onStartTest) return;
-    if (isZh) {
-      setShowModeChooser(true);
-    } else {
-      onStartTest(list.id, "write");
-    }
-  }, [list, onStartTest, isZh]);
+    onStartTest(list.id, KIND_MODE[listKind(list)] || "write");
+  }, [list, onStartTest]);
 
   const words = useMemo(() => list?.words || [], [list]);
 
@@ -312,38 +304,6 @@ export default function SpellingListEditorScreen({ listId, activeChild, user, on
         </div>
       )}
 
-      {showModeChooser && (
-        <div className="reward-overlay" onClick={() => setShowModeChooser(false)}>
-          <div className="reward-modal" onClick={(e) => e.stopPropagation()}>
-            <h2 className="reward-title">选哪种听写？</h2>
-            <p className="reward-subtitle">
-              老师听一听词，你可以写汉字，或者写拼音。
-            </p>
-            <div className="spelling-mode-choice">
-              <button
-                className="btn-primary spelling-mode-btn"
-                onClick={() => startTest("character")}
-              >
-                <span className="spelling-mode-icon">字</span>
-                <span>写汉字</span>
-              </button>
-              <button
-                className="btn-primary spelling-mode-btn"
-                onClick={() => startTest("pinyin")}
-              >
-                <span className="spelling-mode-icon">ā</span>
-                <span>写拼音</span>
-              </button>
-            </div>
-            <button
-              className="confirm-cancel"
-              onClick={() => setShowModeChooser(false)}
-            >
-              取消
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

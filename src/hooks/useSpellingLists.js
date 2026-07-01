@@ -106,12 +106,13 @@ export function useSpellingLists(activeChild, userId) {
   }, []);
 
   // ── Mutations (local + cloud write-through) ────────────────────────────────
-  const createList = useCallback((title, lang = "en") => {
+  const createList = useCallback((title, lang = "en", kind = "spelling") => {
     const now = Date.now();
     const list = {
       id: newListId(),
       title: title?.trim() || "Untitled list",
       lang,
+      kind,
       childId,
       words: [],
       createdAt: now,

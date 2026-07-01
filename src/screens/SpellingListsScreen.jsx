@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { useSpellingLists } from "../hooks/useSpellingLists";
 import { getLastSpellingAttempt } from "../utils/spellingStorage";
+import { listKind } from "../utils/spellingKinds";
 
 const SCOPE_DECIDED_KEY = "koko-spelling-childscope-decided";
 
@@ -22,7 +23,7 @@ function relativeTime(ts, isZh) {
   return isZh ? `${Math.floor(days / 30)} 月前` : `${Math.floor(days / 30)} mo ago`;
 }
 
-export default function SpellingListsScreen({ lang = "en", activeChild, user, onBack, onOpenList }) {
+export default function SpellingListsScreen({ lang = "en", kind = "spelling", activeChild, user, onBack, onOpenList }) {
   const { lists, allLists, syncStatus, createList, deleteList, claimSharedLists } = useSpellingLists(activeChild, user?.id);
   const [creating, setCreating] = useState(false);
   const [titleInput, setTitleInput] = useState("");
@@ -30,7 +31,10 @@ export default function SpellingListsScreen({ lang = "en", activeChild, user, on
   const [promptDismissed, setPromptDismissed] = useState(false);
 
   const isZh = lang === "zh";
-  const visibleLists = lists.filter((l) => (l.lang === "zh") === isZh);
+  const isPinyin = kind === "pinyin";
+  // Only show lists of this practice category, so pinyin lists stay independent
+  // from 听写 lists even though both hold Chinese words.
+  const visibleLists = lists.filter((l) => listKind(l) === kind);
 
   // Migration prompt shows once per device, when an active child opens the
   // spelling tool and lists from before per-child mode still exist. Derived
@@ -59,7 +63,7 @@ export default function SpellingListsScreen({ lang = "en", activeChild, user, on
   const handleCreate = () => {
     const title = titleInput.trim();
     if (!title) return;
-    const id = createList(title, lang);
+    const id = createList(title, lang, kind);
     setCreating(false);
     setTitleInput("");
     onOpenList(id);
@@ -84,16 +88,20 @@ export default function SpellingListsScreen({ lang = "en", activeChild, user, on
     <div className="screen spelling-screen">
       <div className="chat-topbar">
         <button className="back-btn" onClick={onBack}>←</button>
-        <span className="topbar-topic">{isZh ? "中文听写" : "English Spelling"}</span>
+        <span className="topbar-topic">
+          {isPinyin ? "汉语拼音" : isZh ? "中文听写" : "English Spelling"}
+        </span>
       </div>
 
       <div className="hero-section">
-        <span className="hero-mascot">{isZh ? "字" : "✏️"}</span>
+        <span className="hero-mascot">{isPinyin ? "ā" : isZh ? "字" : "✏️"}</span>
         <h1 className="hero-title">
-          {isZh ? "听写词语表" : "Spelling Lists"}
+          {isPinyin ? "拼音词语表" : isZh ? "听写词语表" : "Spelling Lists"}
         </h1>
         <p className="hero-tagline">
-          {isZh
+          {isPinyin
+            ? "把要练拼音的词加进来——Koko 会读出来，孩子写拼音。"
+            : isZh
             ? "把这周要听写的词加进来——Koko 会带孩子练习。"
             : "Add this week's spelling words — Koko will help your child practise."}
         </p>

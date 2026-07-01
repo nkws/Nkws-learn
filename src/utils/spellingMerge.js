@@ -2,12 +2,14 @@
 // from the hook (React) and cloudSync (Supabase) so it can be unit-tested in
 // plain Node and reasoned about in isolation.
 
-// Convert a Supabase spelling_lists row to the local storage shape.
+// Convert a Supabase spelling_lists row to the local storage shape. Derives a
+// kind for rows saved before the column existed (English → spelling, else 听写).
 export function cloudRowToLocal(row) {
   return {
     id: row.id,
     title: row.title,
     lang: row.lang,
+    kind: row.kind || (row.lang === "en" ? "spelling" : "tingxie"),
     childId: row.child_id || null,
     words: row.words || [],
     createdAt: new Date(row.created_at).getTime(),

@@ -49,6 +49,7 @@ export default function App() {
   const [activePaperId, setActivePaperId] = useState(null);
   const [activeSpellingListId, setActiveSpellingListId] = useState(null);
   const [activeSpellingLang, setActiveSpellingLang] = useState("en");
+  const [activeSpellingKind, setActiveSpellingKind] = useState("spelling");
   const [activeTestMode, setActiveTestMode] = useState("write");
   const [progress, setProgress] = useState(() => loadProgress());
   const [moduleVideos, setModuleVideos] = useState(() => loadModuleVideos());
@@ -310,6 +311,7 @@ export default function App() {
     return (
       <SpellingListsScreen
         lang={activeSpellingLang}
+        kind={activeSpellingKind}
         activeChild={activeChild}
         user={user}
         onOpenList={(id) => {
@@ -424,10 +426,17 @@ export default function App() {
       onAbout={() => setScreen("about")}
       onEnglishSpelling={() => {
         setActiveSpellingLang("en");
+        setActiveSpellingKind("spelling");
         setScreen("spelling-lists");
       }}
       onChineseDictation={() => {
         setActiveSpellingLang("zh");
+        setActiveSpellingKind("tingxie");
+        setScreen("spelling-lists");
+      }}
+      onPinyinPractice={() => {
+        setActiveSpellingLang("zh");
+        setActiveSpellingKind("pinyin");
         setScreen("spelling-lists");
       }}
     />

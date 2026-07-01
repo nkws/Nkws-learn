@@ -183,6 +183,7 @@ export async function upsertCloudSpellingList(userId, list) {
       child_id: list.childId || null,
       title: list.title,
       lang: list.lang || "en",
+      kind: list.kind || null,
       words: list.words || [],
       created_at: new Date(list.createdAt).toISOString(),
       updated_at: new Date(list.updatedAt).toISOString(),

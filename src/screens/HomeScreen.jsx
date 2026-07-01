@@ -15,7 +15,7 @@ const LEVELS = [
 
 const SUBJECTS_PREVIEW = ["Math", "English", "Science", "Chinese"];
 
-export default function HomeScreen({ progress, activeChild, user, isPlus, onSelectLevel, onDashboard, onSwitchChild, onManageSubscription, onSignOut, onSignIn, onAbout, onHowTo, onEnglishSpelling, onChineseDictation }) {
+export default function HomeScreen({ progress, activeChild, user, isPlus, onSelectLevel, onDashboard, onSwitchChild, onManageSubscription, onSignOut, onSignIn, onAbout, onHowTo, onEnglishSpelling, onChineseDictation, onPinyinPractice }) {
   const totalStars = getTotalStars(progress.moduleStars || {});
   const streak = loadStreak();
   const [showUpgrade, setShowUpgrade] = useState(false);
@@ -68,7 +68,7 @@ export default function HomeScreen({ progress, activeChild, user, isPlus, onSele
         ))}
       </div>
 
-      {(onEnglishSpelling || onChineseDictation) && (
+      {(onEnglishSpelling || onChineseDictation || onPinyinPractice) && (
         <>
           <p className="home-pick-label">Practice tools</p>
           <div className="topic-list">
@@ -96,7 +96,22 @@ export default function HomeScreen({ progress, activeChild, user, isPlus, onSele
                 <div className="topic-info">
                   <h2 className="topic-title">中文听写</h2>
                   <p className="topic-desc">
-                    听一听，写汉字 或 写拼音。
+                    听一听，写汉字。
+                  </p>
+                </div>
+                <span className="topic-arrow">›</span>
+              </button>
+            )}
+            {onPinyinPractice && (
+              <button
+                className="topic-card spelling-home-tile"
+                onClick={onPinyinPractice}
+              >
+                <span className="topic-icon">ā</span>
+                <div className="topic-info">
+                  <h2 className="topic-title">汉语拼音</h2>
+                  <p className="topic-desc">
+                    听一听，写拼音。
                   </p>
                 </div>
                 <span className="topic-arrow">›</span>
