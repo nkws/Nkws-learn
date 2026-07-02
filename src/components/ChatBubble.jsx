@@ -4,7 +4,7 @@ import JourneyScene from "./JourneyScene";
 import CuboidScene from "./CuboidScene";
 import { parseClockTags } from "../utils/parseClock";
 
-export default function ChatBubble({ message, speakChoices, onSpeak }) {
+export default function ChatBubble({ message, speakChoices, onSpeak, earlyYears = false }) {
   const isKoko = message.role === "assistant";
   const parts = parseClockTags(message.content);
 
@@ -41,11 +41,16 @@ export default function ChatBubble({ message, speakChoices, onSpeak }) {
               </div>
             );
           }
+          if (part.type === "pic") {
+            return (
+              <div key={i} className="bubble-pic">{part.content}</div>
+            );
+          }
           return <span key={i}>{part.content}</span>;
         })}
         {isKoko && onSpeak && (
           <button
-            className="speak-btn"
+            className={`speak-btn${earlyYears ? " speak-btn--big" : ""}`}
             onClick={() => onSpeak(message.content, speakChoices)}
             aria-label="Read aloud"
           >

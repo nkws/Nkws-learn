@@ -2,7 +2,9 @@ const CLOCK_REGEX = /\[CLOCK:(\d{1,2}):(\d{2})\]/g;
 const SCENE_REGEX = /\[SCENE:([a-z0-9-]+)\]/g;
 const JOURNEY_REGEX = /\[JOURNEY:([a-z0-9-]+)\]/g;
 const CUBOID_REGEX = /\[CUBOID:([a-z0-9-]+)\]/g;
-const TAG_REGEX = /\[(CLOCK:\d{1,2}:\d{2}|SCENE:[a-z0-9-]+|JOURNEY:[a-z0-9-]+|CUBOID:[a-z0-9-]+)\]/g;
+// [PIC:🍎🍎🍎] — a big picture prompt (emoji) for early-years questions.
+const PIC_REGEX = /\[PIC:[^\]]+\]/g;
+const TAG_REGEX = /\[(CLOCK:\d{1,2}:\d{2}|SCENE:[a-z0-9-]+|JOURNEY:[a-z0-9-]+|CUBOID:[a-z0-9-]+|PIC:[^\]]+)\]/g;
 
 export function parseClockTags(text) {
   const parts = [];
@@ -24,6 +26,8 @@ export function parseClockTags(text) {
       parts.push({ type: "journey", scene: token.slice(8) });
     } else if (token.startsWith("CUBOID:")) {
       parts.push({ type: "cuboid", scene: token.slice(7) });
+    } else if (token.startsWith("PIC:")) {
+      parts.push({ type: "pic", content: token.slice(4) });
     }
     lastIndex = TAG_REGEX.lastIndex;
   }
@@ -44,6 +48,7 @@ export function cleanForSpeech(text) {
     .replace(SCENE_REGEX, "")
     .replace(JOURNEY_REGEX, "")
     .replace(CUBOID_REGEX, "")
+    .replace(PIC_REGEX, "")
     .replace(EMOJI_REGEX, "")
     .replace(/−/g, " minus ")
     .replace(/×/g, " times ")

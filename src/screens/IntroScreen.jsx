@@ -2,7 +2,7 @@ import { useState } from "react";
 import Clock from "../components/Clock";
 import { useTTS } from "../hooks/useSpeech";
 
-export default function IntroScreen({ intro, lang = "en", onFinish }) {
+export default function IntroScreen({ intro, lang = "en", onFinish, earlyYears = false }) {
   const [pageIndex, setPageIndex] = useState(0);
   const [speechUnlocked, setSpeechUnlocked] = useState(false);
   const page = intro.pages[pageIndex];
@@ -48,7 +48,7 @@ export default function IntroScreen({ intro, lang = "en", onFinish }) {
           {page.text}
           {!speechUnlocked && (
             <button
-              className="speak-btn"
+              className={`speak-btn${earlyYears ? " speak-btn--big" : ""}`}
               onClick={handleFirstSpeak}
               aria-label="Read aloud"
             >
@@ -79,6 +79,9 @@ export default function IntroScreen({ intro, lang = "en", onFinish }) {
           >
             ← Back
           </button>
+        ) : earlyYears ? (
+          // Pre-readers shouldn't skip the narrated teaching step.
+          <span className="intro-back-spacer" />
         ) : (
           <button className="intro-back-btn" onClick={onFinish}>
             Skip

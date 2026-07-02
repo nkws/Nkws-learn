@@ -989,7 +989,83 @@ const P6_EXPLORE_TOPICS = [
     ] },
 ];
 
+// ============ NURSERY (N) & KINDERGARTEN (K) TOPICS ============
+// Picture-first, pre-reader levels. Subject ids match the primary levels
+// ("chinese" drives Mandarin TTS); "discovery" is Discovery of the World.
+const N_NUMERACY_TOPICS = [
+  { id: "n-count", title: "Counting & Colours", icon: "🔢", description: "Count to 5 and name colours.",
+    modules: [
+      { id: "ns-num1", title: "Count to 5", description: "Count the pictures and tap the number.", hasIntro: true },
+      { id: "ns-num2", title: "Colours", description: "Name the colours you see." },
+    ] },
+];
+const N_ENGLISH_TOPICS = [
+  { id: "n-words", title: "First Words", icon: "📖", description: "Name animals and things; big and small.",
+    modules: [
+      { id: "ns-eng1", title: "Name It!", description: "Tap the picture Koko names.", hasIntro: true },
+      { id: "ns-eng2", title: "Big & Small", description: "Which one is big? Which is small?" },
+    ] },
+];
+const N_CHINESE_TOPICS = [
+  { id: "n-cn", title: "认一认", icon: "字", description: "认动物，认颜色。",
+    modules: [
+      { id: "ns-cn1", title: "这是什么？", description: "看图选字。", hasIntro: true },
+      { id: "ns-cn2", title: "颜色", description: "认一认颜色。" },
+    ] },
+];
+const N_DISCOVERY_TOPICS = [
+  { id: "n-world", title: "My World", icon: "🌍", description: "Everyday things and the sky.",
+    modules: [
+      { id: "ns-dw1", title: "Eat or Not?", description: "What can we eat, drink, wear?", hasIntro: true },
+      { id: "ns-dw2", title: "Day & Night", description: "Sun, moon, rain and snow." },
+    ] },
+];
+const K_NUMERACY_TOPICS = [
+  { id: "k-num", title: "Numbers & Shapes", icon: "🔢", description: "Count to 10 and know your shapes.",
+    modules: [
+      { id: "kg-num1", title: "Counting to 10", description: "Count the pictures and tap the number.", hasIntro: true },
+      { id: "kg-num2", title: "Shapes", description: "Circle, triangle, square and more." },
+    ] },
+];
+const K_ENGLISH_TOPICS = [
+  { id: "k-eng", title: "Letters & Sounds", icon: "📖", description: "Beginning sounds and rhyming words.",
+    modules: [
+      { id: "kg-eng1", title: "Beginning Sounds", description: "Which word starts with the sound?", hasIntro: true },
+      { id: "kg-eng2", title: "Rhyming", description: "Which words sound the same at the end?" },
+    ] },
+];
+const K_CHINESE_TOPICS = [
+  { id: "k-cn", title: "基础识字", icon: "字", description: "认字，数一数。",
+    modules: [
+      { id: "kg-cn1", title: "认一认", description: "看图选字。", hasIntro: true },
+      { id: "kg-cn2", title: "数一数", description: "数一数，选数字。" },
+    ] },
+];
+const K_DISCOVERY_TOPICS = [
+  { id: "k-dw", title: "Explore", icon: "🌍", description: "Animals and weather.",
+    modules: [
+      { id: "kg-dw1", title: "Animal Sounds", description: "Which animal makes the sound?", hasIntro: true },
+      { id: "kg-dw2", title: "Weather", description: "Sunny, rainy, snowy and more." },
+    ] },
+];
+
+// Levels whose UI switches to the pre-reader medium (picture choices, auto
+// read-aloud, non-skippable narrated intros, bigger controls).
+export const EARLY_LEVELS = new Set(["n", "k"]);
+
 export const LEVELS = {
+  n: [
+    { id: "math", title: "Numbers", icon: "🔢", description: "Count to 5 and colours!", topics: N_NUMERACY_TOPICS },
+    { id: "english", title: "English", icon: "📖", description: "First words, big and small!", topics: N_ENGLISH_TOPICS },
+    { id: "chinese", title: "华文", icon: "字", description: "认动物，认颜色！", topics: N_CHINESE_TOPICS },
+    { id: "discovery", title: "My World", icon: "🌍", description: "Things around us and the sky!", topics: N_DISCOVERY_TOPICS },
+  ],
+  k: [
+    { id: "math", title: "Numbers", icon: "🔢", description: "Count to 10 and shapes!", topics: K_NUMERACY_TOPICS },
+    { id: "english", title: "English", icon: "📖", description: "Sounds and rhyming!", topics: K_ENGLISH_TOPICS },
+    { id: "chinese", title: "华文", icon: "字", description: "认字，数一数！", topics: K_CHINESE_TOPICS },
+    { id: "discovery", title: "My World", icon: "🌍", description: "Animals and weather!", topics: K_DISCOVERY_TOPICS },
+  ],
   p1: [
     { id: "math", title: "Mathematics", icon: "🔢", description: "Numbers, shapes, time, and more!", topics: MATH_TOPICS },
     { id: "english", title: "English", icon: "📖", description: "Words, grammar, reading, and phonics!", topics: ENGLISH_TOPICS },
@@ -1035,7 +1111,7 @@ export const LEVELS = {
 };
 
 // Flat list of all subjects across all levels (for star counting)
-const ALL_SUBJECTS = [...LEVELS.p1, ...LEVELS.p2, ...LEVELS.p3, ...LEVELS.p4, ...LEVELS.p5, ...LEVELS.p6];
+const ALL_SUBJECTS = [...LEVELS.n, ...LEVELS.k, ...LEVELS.p1, ...LEVELS.p2, ...LEVELS.p3, ...LEVELS.p4, ...LEVELS.p5, ...LEVELS.p6];
 
 // ============ HELPERS ============
 export function getSubjectsForLevel(level) {

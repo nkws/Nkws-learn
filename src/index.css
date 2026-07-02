@@ -1010,6 +1010,72 @@ button {
   opacity: 0.7;
 }
 
+/* ---- Early-years (Nursery / Kindergarten) pre-reader medium ---- */
+
+/* Picture answer choices laid out as a grid of big tappable cards. */
+.choice-buttons-early {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+}
+
+.choice-btn-early {
+  width: auto;
+  flex: 1 1 40%;
+  min-width: 120px;
+  min-height: 96px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-width: 4px;
+}
+
+.choice-icon {
+  font-size: 44px;
+  line-height: 1.1;
+}
+
+.choice-word {
+  font-size: 16px;
+}
+
+.choice-word-solo {
+  font-size: 40px;
+}
+
+/* Keep the big picture layout in landscape too (do not shrink for young kids). */
+@media (orientation: landscape) {
+  .choice-buttons-early .choice-btn-early {
+    min-height: 88px;
+    font-size: 18px;
+  }
+  .choice-buttons-early .choice-icon { font-size: 40px; }
+}
+
+/* Big emoji picture prompt inside a question bubble. */
+.bubble-pic {
+  font-size: 52px;
+  line-height: 1.25;
+  text-align: center;
+  margin: 4px 0 8px;
+  word-break: break-word;
+}
+
+/* Large, obvious read-aloud button for pre-readers. */
+.speak-btn--big {
+  font-size: 30px;
+  opacity: 1;
+  padding: 6px 10px;
+}
+
+.intro-back-spacer {
+  display: inline-block;
+  min-width: 60px;
+}
+
 .choice-label {
   display: inline-block;
   background: var(--orange);

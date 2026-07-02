@@ -3,7 +3,7 @@ import ChatBubble from "../components/ChatBubble";
 import ChoiceButtons from "../components/ChoiceButtons";
 import RewardModal from "../components/RewardModal";
 import { useTTS } from "../hooks/useSpeech";
-import { getModule, getTopic, getTotalStars } from "../utils/constants";
+import { getModule, getTopic, getTotalStars, EARLY_LEVELS } from "../utils/constants";
 import { loadProgress, saveProgress, updateStreak, loadAutoRead, saveAutoRead } from "../utils/progress";
 import { buildModuleQuestions, getPraise, getHint, getIntro } from "../utils/kokoEngine";
 import { recordQuizAttempt } from "../utils/cloudSync";
@@ -26,8 +26,11 @@ export default function ChatScreen({
   const topicVideoId = topicVideos[topicId] || null;
   const intro = getIntro(moduleId);
   const ttsLang = subjectId === "chinese" ? "zh" : "en";
+  const earlyYears = EARLY_LEVELS.has(level);
   const { speak } = useTTS(ttsLang);
-  const [autoRead, setAutoRead] = useState(() => loadAutoRead());
+  // Pre-readers can't read the questions, so start with read-aloud ON for the
+  // early-years levels (the parent can still toggle it off).
+  const [autoRead, setAutoRead] = useState(() => (earlyYears ? true : loadAutoRead()));
   const autoSpeak = useCallback((text, choices, opts) => {
     if (!autoRead) return;
     speak(text, choices, opts);
@@ -261,7 +264,7 @@ export default function ChatScreen({
 
   // Show intro if module has one and we haven't started yet
   if (showIntro && intro) {
-    return <IntroScreen intro={intro} lang={ttsLang} onFinish={startQuiz} />;
+    return <IntroScreen intro={intro} lang={ttsLang} onFinish={startQuiz} earlyYears={earlyYears} />;
   }
 
   return (
@@ -300,6 +303,7 @@ export default function ChatScreen({
             message={msg}
             speakChoices={i === 0 ? questions[0]?.choices : null}
             onSpeak={speak}
+            earlyYears={earlyYears}
           />
         ))}
         <div ref={chatEndRef} />
@@ -316,6 +320,8 @@ export default function ChatScreen({
           key={`${isRetryRound ? "r" : "q"}-${questionIndex}`}
           choices={currentQ.choices}
           correctAnswer={currentQ.answer}
+          choiceIcons={currentQ.choiceIcons}
+          earlyYears={earlyYears}
           onSelect={handleChoice}
           disabled={answering}
         />

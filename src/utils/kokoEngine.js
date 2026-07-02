@@ -132,6 +132,15 @@ import { buildP3WellbeingQuestions, P3_WELLBEING_QUESTION_COUNTS, P3_WELLBEING_I
 import { buildP4ExploreQuestions, P4_EXPLORE_QUESTION_COUNTS, P4_EXPLORE_INTRO } from "../topics/p4/explore";
 import { buildP5ExploreQuestions, P5_EXPLORE_QUESTION_COUNTS, P5_EXPLORE_INTRO } from "../topics/p5/explore";
 import { buildP6ExploreQuestions, P6_EXPLORE_QUESTION_COUNTS, P6_EXPLORE_INTRO } from "../topics/p6/explore";
+// Nursery (N) and Kindergarten (K) — early-childhood, picture-first
+import { buildNsNumeracyQuestions, N_NUMERACY_QUESTION_COUNTS, N_NUMERACY_INTRO } from "../topics/n/numeracy";
+import { buildNsEnglishQuestions, N_ENGLISH_QUESTION_COUNTS, N_ENGLISH_INTRO } from "../topics/n/english";
+import { buildNsChineseQuestions, N_CHINESE_QUESTION_COUNTS, N_CHINESE_INTRO } from "../topics/n/chinese";
+import { buildNsDiscoveryQuestions, N_DISCOVERY_QUESTION_COUNTS, N_DISCOVERY_INTRO } from "../topics/n/discovery";
+import { buildKgNumeracyQuestions, K_NUMERACY_QUESTION_COUNTS, K_NUMERACY_INTRO } from "../topics/k/numeracy";
+import { buildKgEnglishQuestions, K_ENGLISH_QUESTION_COUNTS, K_ENGLISH_INTRO } from "../topics/k/english";
+import { buildKgChineseQuestions, K_CHINESE_QUESTION_COUNTS, K_CHINESE_INTRO } from "../topics/k/chinese";
+import { buildKgDiscoveryQuestions, K_DISCOVERY_QUESTION_COUNTS, K_DISCOVERY_INTRO } from "../topics/k/discovery";
 
 const BUILDERS = {
   // P1
@@ -221,6 +230,11 @@ const BUILDERS = {
   "p4ex-": buildP4ExploreQuestions,
   "p5ex-": buildP5ExploreQuestions,
   "p6ex-": buildP6ExploreQuestions,
+  // Nursery (ns-) and Kindergarten (kg-) — early childhood
+  "ns-num": buildNsNumeracyQuestions, "ns-eng": buildNsEnglishQuestions,
+  "ns-cn": buildNsChineseQuestions, "ns-dw": buildNsDiscoveryQuestions,
+  "kg-num": buildKgNumeracyQuestions, "kg-eng": buildKgEnglishQuestions,
+  "kg-cn": buildKgChineseQuestions, "kg-dw": buildKgDiscoveryQuestions,
 };
 
 export function buildModuleQuestions(moduleId) {
@@ -283,6 +297,9 @@ export const MODULE_QUESTION_COUNTS = {
   // Wellbeing & Explore
   ...P1_WELLBEING_QUESTION_COUNTS, ...P2_WELLBEING_QUESTION_COUNTS, ...P3_WELLBEING_QUESTION_COUNTS,
   ...P4_EXPLORE_QUESTION_COUNTS, ...P5_EXPLORE_QUESTION_COUNTS, ...P6_EXPLORE_QUESTION_COUNTS,
+  // Nursery & Kindergarten
+  ...N_NUMERACY_QUESTION_COUNTS, ...N_ENGLISH_QUESTION_COUNTS, ...N_CHINESE_QUESTION_COUNTS, ...N_DISCOVERY_QUESTION_COUNTS,
+  ...K_NUMERACY_QUESTION_COUNTS, ...K_ENGLISH_QUESTION_COUNTS, ...K_CHINESE_QUESTION_COUNTS, ...K_DISCOVERY_QUESTION_COUNTS,
 };
 
 const ALL_INTROS = {
@@ -331,6 +348,9 @@ const ALL_INTROS = {
   // Wellbeing & Explore
   ...P1_WELLBEING_INTRO, ...P2_WELLBEING_INTRO, ...P3_WELLBEING_INTRO,
   ...P4_EXPLORE_INTRO, ...P5_EXPLORE_INTRO, ...P6_EXPLORE_INTRO,
+  // Nursery & Kindergarten
+  ...N_NUMERACY_INTRO, ...N_ENGLISH_INTRO, ...N_CHINESE_INTRO, ...N_DISCOVERY_INTRO,
+  ...K_NUMERACY_INTRO, ...K_ENGLISH_INTRO, ...K_CHINESE_INTRO, ...K_DISCOVERY_INTRO,
 };
 
 export function getIntro(moduleId) {

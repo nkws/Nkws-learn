@@ -5,6 +5,8 @@ import { createCheckoutSession } from "../utils/cloudSync";
 import SupportLink from "../components/AdSlot";
 
 const LEVELS = [
+  { id: "n", title: "Nursery", subtitle: "Age 3-4", icon: "N" },
+  { id: "k", title: "Kindergarten", subtitle: "Age 5-6", icon: "K" },
   { id: "p1", title: "Primary 1", subtitle: "Age 6-7", icon: "1" },
   { id: "p2", title: "Primary 2", subtitle: "Age 7-8", icon: "2" },
   { id: "p3", title: "Primary 3", subtitle: "Age 8-9", icon: "3" },
