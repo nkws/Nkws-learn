@@ -2146,25 +2146,6 @@ button:focus-visible {
   border-radius: 8px;
 }
 
-.spelling-word-lookup {
-  background: none;
-  font-size: 18px;
-  color: #aaa;
-  width: 36px;
-  height: 36px;
-  min-height: 36px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.spelling-word-lookup:active {
-  color: var(--teal);
-  transform: scale(0.95);
-}
-
 .spelling-word-remove {
   background: none;
   font-size: 18px;
@@ -2262,17 +2243,6 @@ button:focus-visible {
   letter-spacing: 0.05em;
   text-transform: uppercase;
   margin: 0;
-}
-
-.word-detail-meaning-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.word-detail-meaning-head .word-detail-speak {
-  font-size: 18px;
 }
 
 .word-detail-meaning {

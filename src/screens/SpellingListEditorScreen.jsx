@@ -35,7 +35,6 @@ export default function SpellingListEditorScreen({ listId, activeChild, user, on
   const [bulkInput, setBulkInput] = useState("");
   const [cardIndex, setCardIndex] = useState(0);
   const [showCards, setShowCards] = useState(false);
-  const [lookupWord, setLookupWord] = useState(null);
 
   const isZh = list?.lang === "zh";
 
@@ -269,14 +268,6 @@ export default function SpellingListEditorScreen({ listId, activeChild, user, on
                 onChange={(e) => editWord(i, e.target.value)}
               />
               <button
-                className="spelling-word-lookup"
-                onClick={() => setLookupWord(word)}
-                aria-label={isZh ? `查 ${word}` : `Look up ${word}`}
-                title={isZh ? "查释义" : "Look up meaning"}
-              >
-                📖
-              </button>
-              <button
                 className="spelling-word-remove"
                 onClick={() => removeWord(i)}
                 aria-label={isZh ? `删除 ${word}` : `Remove ${word}`}
@@ -289,20 +280,6 @@ export default function SpellingListEditorScreen({ listId, activeChild, user, on
       )}
 
       <RecentTestsPanel listId={list.id} isZh={isZh} />
-
-      {lookupWord && (
-        <div className="reward-overlay" onClick={() => setLookupWord(null)}>
-          <div className="reward-modal word-detail-modal" onClick={(e) => e.stopPropagation()}>
-            <WordDetail
-              word={lookupWord}
-              lang={isZh ? "zh" : "en"}
-              />
-            <button className="confirm-cancel" onClick={() => setLookupWord(null)}>
-              {isZh ? "关闭" : "Close"}
-            </button>
-          </div>
-        </div>
-      )}
 
     </div>
   );

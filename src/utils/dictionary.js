@@ -1,16 +1,15 @@
-// Dictionary lookup for spelling-list words.
-//   - English: api.dictionaryapi.dev (Free Dictionary API)
-//   - Chinese: pinyin only, derived locally via pinyin-pro. We don't fetch
-//     Chinese definitions — no reliable free source produced acceptable
-//     quality. The Learn card just shows the word + pinyin + TTS.
+// Pinyin lookup for Chinese spelling-list words, derived locally via pinyin-pro.
+// There is no network dictionary: spelling lists are for practising spelling,
+// not vocabulary, so English words need no lookup at all, and no free source
+// gave acceptable Chinese definitions. The Learn card shows word + pinyin + TTS.
 //
-// Results are cached forever in localStorage — definitions don't change and
-// network can be slow. Cache key is `koko-dictionary-cache`; value is a map
-// of "<lang>:<word>" → entry.
+// Cached forever in localStorage (`koko-dictionary-cache`) — pinyin doesn't
+// change. Value is a map of "zh:<word>" → { lang, word, pinyin }.
 
 const CACHE_KEY = "koko-dictionary-cache";
-// Bump this when the entry shape changes so old cached payloads get re-fetched.
-const CACHE_VERSION = 5;
+// Bump when the entry shape changes so old cached payloads are dropped.
+// v6: removed English dictionary entries (definitions/phonetic) entirely.
+const CACHE_VERSION = 6;
 
 function loadCache() {
   try {
@@ -29,70 +28,30 @@ function saveCache(cache) {
   try { localStorage.setItem(CACHE_KEY, JSON.stringify(cache)); } catch { /* ignore */ }
 }
 
-function cacheGet(lang, word) {
+function cacheGet(word) {
   const cache = loadCache();
-  return cache[`${lang}:${word}`] || null;
+  return cache[`zh:${word}`] || null;
 }
 
-function cachePut(lang, word, entry) {
+function cachePut(word, entry) {
   const cache = loadCache();
-  cache[`${lang}:${word}`] = entry;
+  cache[`zh:${word}`] = entry;
   saveCache(cache);
 }
 
-async function fetchEnglish(word) {
-  const url = `https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`;
-  const res = await fetch(url);
-  if (!res.ok) return null;
-  const data = await res.json();
-  if (!Array.isArray(data) || data.length === 0) return null;
-
-  // Pick the first entry; flatten meanings into a simple shape.
-  const first = data[0];
-  const phonetic =
-    first.phonetic ||
-    (first.phonetics || []).find((p) => p?.text)?.text ||
-    null;
-  const meanings = (first.meanings || []).map((m) => ({
-    partOfSpeech: m.partOfSpeech || "",
-    definitions: (m.definitions || []).slice(0, 2).map((d) => ({
-      definition: d.definition || "",
-      example: d.example || "",
-    })),
-  })).filter((m) => m.definitions.length > 0);
-
-  return { phonetic, meanings };
-}
-
+// Returns { lang: "zh", word, pinyin } for Chinese words, or null otherwise
+// (English words need no lookup).
 export async function lookupWord(word, lang) {
-  if (!word) return null;
-  const cached = cacheGet(lang, word);
+  if (!word || lang !== "zh") return null;
+  const cached = cacheGet(word);
   if (cached) return cached;
 
-  if (lang === "zh") {
-    // Chinese: pinyin only. We deliberately don't fetch a definition — no
-    // free source produced acceptable quality for primary-school 词语.
-    let pinyinStr = null;
-    try {
-      const { pinyin } = await import("pinyin-pro");
-      pinyinStr = pinyin(word, { toneType: "symbol", type: "string" });
-    } catch { /* ignore */ }
-    const entry = { lang: "zh", word, pinyin: pinyinStr };
-    cachePut("zh", word, entry);
-    return entry;
-  }
-
-  // English
-  let result = null;
+  let pinyinStr = null;
   try {
-    result = await fetchEnglish(word);
+    const { pinyin } = await import("pinyin-pro");
+    pinyinStr = pinyin(word, { toneType: "symbol", type: "string" });
   } catch { /* ignore */ }
-  const entry = {
-    lang: "en",
-    word,
-    phonetic: result?.phonetic || null,
-    meanings: result?.meanings || [],
-  };
-  cachePut("en", word, entry);
+  const entry = { lang: "zh", word, pinyin: pinyinStr };
+  cachePut(word, entry);
   return entry;
 }

@@ -2,55 +2,34 @@ import { useCallback, useEffect, useState } from "react";
 import { lookupWord } from "../utils/dictionary";
 import { useTTS } from "../hooks/useSpeech";
 
-// Shared content panel for both the per-word modal and the Learn-mode card.
-// For English lists it shows the dictionary entry (phonetic, meanings,
-// examples) from api.dictionaryapi.dev. For Chinese lists it shows the
-// pinyin only — no definition lookup, since no free source gave acceptable
-// quality for primary-school 词语.
+// Learn-mode word card. Shows the word and a speaker that reads ONLY the word
+// (for spelling practice), plus the pinyin for Chinese words. No dictionary
+// definitions — spelling lists are for practising spelling, not vocabulary.
 export default function WordDetail({ word, lang, compact = false }) {
   const ttsZh = useTTS("zh");
   const ttsEn = useTTS("en");
-  const [loadedFor, setLoadedFor] = useState(null);
-  const [entry, setEntry] = useState(null);
+  const [pinyinFor, setPinyinFor] = useState(null);
 
+  const isZh = lang === "zh";
+
+  // Chinese words show pinyin, derived locally via pinyin-pro. English words
+  // show nothing extra — no definition fetch.
   useEffect(() => {
-    if (!word) return;
+    if (!word || lang !== "zh") return;
     let cancelled = false;
-    lookupWord(word, lang).then((e) => {
-      if (cancelled) return;
-      setEntry(e);
-      setLoadedFor(`${lang}:${word}`);
+    lookupWord(word, "zh").then((e) => {
+      if (!cancelled) setPinyinFor({ word, pinyin: e?.pinyin || null });
     });
     return () => { cancelled = true; };
   }, [word, lang]);
 
-  const key = `${lang}:${word}`;
-  const loading = loadedFor !== key;
-  const safeEntry = loadedFor === key ? entry : null;
+  // Only show pinyin once it's resolved for the current word (guards a stale
+  // value while a new word loads, and stays null for English).
+  const pinyin = isZh && pinyinFor?.word === word ? pinyinFor.pinyin : null;
 
-  const isZh = lang === "zh";
-
-  // Read ONLY the word — never the meaning. Used by the speaker next to the
-  // word so it stays useful for spelling practice (hear the word to spell it).
   const speakWord = useCallback(() => {
     (lang === "zh" ? ttsZh : ttsEn).speak(word);
   }, [lang, word, ttsZh, ttsEn]);
-
-  // Read the explanation only: up to two definitions and their example
-  // sentences. English lists only (Chinese cards have no definition). The
-  // first utterance cancels any in-flight speech; the rest queue after it.
-  const speakExplanation = useCallback(() => {
-    if (lang === "zh" || !safeEntry?.meanings) return;
-    let first = true;
-    for (const m of safeEntry.meanings.slice(0, 2)) {
-      for (const d of m.definitions.slice(0, 2)) {
-        if (d.definition) { ttsEn.speak(d.definition, null, { cancel: first }); first = false; }
-        if (d.example) { ttsEn.speak(d.example, null, { cancel: false }); }
-      }
-    }
-  }, [lang, safeEntry, ttsEn]);
-
-  const hasExplanation = !isZh && safeEntry?.meanings && safeEntry.meanings.length > 0;
 
   return (
     <div className={`word-detail${compact ? " compact" : ""}`}>
@@ -59,57 +38,15 @@ export default function WordDetail({ word, lang, compact = false }) {
         <button
           className="spelling-word-speak word-detail-speak"
           onClick={speakWord}
-          aria-label={isZh ? "听一听（只读词语）" : "Read the word"}
-          title={isZh ? "听一听（只读词语）" : "Read the word"}
+          aria-label={isZh ? "听一听" : "Read the word"}
+          title={isZh ? "听一听" : "Read the word"}
         >
           🔊
         </button>
       </div>
 
-      {safeEntry?.pinyin && (
-        <p className="word-detail-pinyin">{safeEntry.pinyin}</p>
-      )}
-      {safeEntry?.phonetic && (
-        <p className="word-detail-pinyin">{safeEntry.phonetic}</p>
-      )}
-
-      {loading && !isZh && (
-        <p className="word-detail-loading">Looking up…</p>
-      )}
-
-      {hasExplanation && (
-        <div className="word-detail-section">
-          <div className="word-detail-meaning-head">
-            <p className="word-detail-section-label">Meaning</p>
-            <button
-              className="spelling-word-speak word-detail-speak"
-              onClick={speakExplanation}
-              aria-label="Read the meaning"
-              title="Read the meaning"
-            >
-              🔊
-            </button>
-          </div>
-          {safeEntry.meanings.slice(0, 3).map((m, i) => (
-            <div key={i} className="word-detail-meaning">
-              {m.partOfSpeech && (
-                <p className="word-detail-section-label">{m.partOfSpeech}</p>
-              )}
-              {m.definitions.map((d, j) => (
-                <div key={j} className="word-detail-defn">
-                  <p className="word-detail-text">{d.definition}</p>
-                  {d.example && (
-                    <p className="word-detail-example">“{d.example}”</p>
-                  )}
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {!loading && !isZh && (!safeEntry?.meanings || safeEntry.meanings.length === 0) && (
-        <p className="word-detail-empty">No dictionary entry found for this word.</p>
+      {isZh && pinyin && (
+        <p className="word-detail-pinyin">{pinyin}</p>
       )}
     </div>
   );
