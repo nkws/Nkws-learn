@@ -2264,6 +2264,17 @@ button:focus-visible {
   margin: 0;
 }
 
+.word-detail-meaning-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.word-detail-meaning-head .word-detail-speak {
+  font-size: 18px;
+}
+
 .word-detail-meaning {
   display: flex;
   flex-direction: column;

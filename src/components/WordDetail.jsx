@@ -30,24 +30,27 @@ export default function WordDetail({ word, lang, compact = false }) {
 
   const isZh = lang === "zh";
 
-  // Read aloud. First utterance cancels in-flight speech; subsequent queue.
-  // Chinese cards just read the word — no definition to chain. English cards
-  // read the word then up to two definitions and their example sentences.
-  const readAll = useCallback(() => {
-    if (lang === "zh") {
-      ttsZh.speak(word);
-      return;
-    }
-    ttsEn.speak(word);
-    if (safeEntry?.meanings) {
-      for (const m of safeEntry.meanings.slice(0, 2)) {
-        for (const d of m.definitions.slice(0, 2)) {
-          if (d.definition) ttsEn.speak(d.definition, null, { cancel: false });
-          if (d.example) ttsEn.speak(d.example, null, { cancel: false });
-        }
+  // Read ONLY the word — never the meaning. Used by the speaker next to the
+  // word so it stays useful for spelling practice (hear the word to spell it).
+  const speakWord = useCallback(() => {
+    (lang === "zh" ? ttsZh : ttsEn).speak(word);
+  }, [lang, word, ttsZh, ttsEn]);
+
+  // Read the explanation only: up to two definitions and their example
+  // sentences. English lists only (Chinese cards have no definition). The
+  // first utterance cancels any in-flight speech; the rest queue after it.
+  const speakExplanation = useCallback(() => {
+    if (lang === "zh" || !safeEntry?.meanings) return;
+    let first = true;
+    for (const m of safeEntry.meanings.slice(0, 2)) {
+      for (const d of m.definitions.slice(0, 2)) {
+        if (d.definition) { ttsEn.speak(d.definition, null, { cancel: first }); first = false; }
+        if (d.example) { ttsEn.speak(d.example, null, { cancel: false }); }
       }
     }
-  }, [lang, word, safeEntry, ttsZh, ttsEn]);
+  }, [lang, safeEntry, ttsEn]);
+
+  const hasExplanation = !isZh && safeEntry?.meanings && safeEntry.meanings.length > 0;
 
   return (
     <div className={`word-detail${compact ? " compact" : ""}`}>
@@ -55,9 +58,9 @@ export default function WordDetail({ word, lang, compact = false }) {
         <h2 className="word-detail-word">{word}</h2>
         <button
           className="spelling-word-speak word-detail-speak"
-          onClick={readAll}
-          aria-label={isZh ? "听一听" : "Read aloud"}
-          title={isZh ? "听一听" : "Read aloud"}
+          onClick={speakWord}
+          aria-label={isZh ? "听一听（只读词语）" : "Read the word"}
+          title={isZh ? "听一听（只读词语）" : "Read the word"}
         >
           🔊
         </button>
@@ -74,8 +77,19 @@ export default function WordDetail({ word, lang, compact = false }) {
         <p className="word-detail-loading">Looking up…</p>
       )}
 
-      {!loading && !isZh && safeEntry?.meanings && safeEntry.meanings.length > 0 && (
+      {hasExplanation && (
         <div className="word-detail-section">
+          <div className="word-detail-meaning-head">
+            <p className="word-detail-section-label">Meaning</p>
+            <button
+              className="spelling-word-speak word-detail-speak"
+              onClick={speakExplanation}
+              aria-label="Read the meaning"
+              title="Read the meaning"
+            >
+              🔊
+            </button>
+          </div>
           {safeEntry.meanings.slice(0, 3).map((m, i) => (
             <div key={i} className="word-detail-meaning">
               {m.partOfSpeech && (
