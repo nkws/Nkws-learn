@@ -17,7 +17,7 @@ const LEVELS = [
 
 const SUBJECTS_PREVIEW = ["Math", "English", "Science", "Chinese"];
 
-export default function HomeScreen({ progress, activeChild, user, isPlus, onSelectLevel, onDashboard, onSwitchChild, onManageSubscription, onSignOut, onSignIn, onAbout, onHowTo, onEnglishSpelling, onChineseDictation, onPinyinPractice }) {
+export default function HomeScreen({ progress, activeChild, user, isPlus, onSelectLevel, onDashboard, onSwitchChild, onManageSubscription, onSignOut, onSignIn, onAbout, onHowTo, onRewardVideos, onEnglishSpelling, onChineseDictation, onPinyinPractice }) {
   const totalStars = getTotalStars(progress.moduleStars || {});
   const streak = loadStreak();
   const [showUpgrade, setShowUpgrade] = useState(false);
@@ -148,6 +148,14 @@ export default function HomeScreen({ progress, activeChild, user, isPlus, onSele
           <>
             <button className="about-link" onClick={() => setShowUpgrade(true)}>
               Upgrade to Koko Plus
+            </button>
+            <span className="home-link-dot">·</span>
+          </>
+        )}
+        {onRewardVideos && (
+          <>
+            <button className="about-link" onClick={onRewardVideos}>
+              Reward Videos
             </button>
             <span className="home-link-dot">·</span>
           </>

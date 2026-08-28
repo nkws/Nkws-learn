@@ -213,10 +213,9 @@ export default function ChatScreen({
           } else if (topicDone && topicVideoId) {
             setTimeout(() => setRewardVideoId(topicVideoId), 3000);
           } else if (!videoId) {
-            // No parent-set module video: give a random age-appropriate
-            // fallback (if any are verified for this level's age band), never
-            // repeating the last one shown.
-            const fallback = pickRewardVideo(level, loadLastRewardVideo());
+            // No parent-set module video: give a random video from this child's
+            // parent-curated reward list (if any), never repeating the last one.
+            const fallback = pickRewardVideo(activeChild?.id, loadLastRewardVideo());
             if (fallback) {
               saveLastRewardVideo(fallback);
               setTimeout(() => setRewardVideoId(fallback), 3000);

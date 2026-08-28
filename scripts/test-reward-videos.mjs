@@ -1,6 +1,6 @@
-// Unit tests for the fallback reward-video selection. Pure Node, no deps.
+// Unit tests for the parent reward-video list logic. Pure Node, no deps.
 // Run: node scripts/test-reward-videos.mjs
-import { levelBand, pickRewardVideo, REWARD_VIDEO_POOL } from "../src/utils/rewardVideos.js";
+import { addToPool, removeFromPool, pickFromPool } from "../src/utils/rewardVideos.js";
 
 let passed = 0;
 let failed = 0;
@@ -9,37 +9,42 @@ function check(name, cond) {
   else { failed++; console.log(`  ✗ ${name}`); }
 }
 
-console.log("Age-band mapping");
-check("n → early", levelBand("n") === "early");
-check("k → early", levelBand("k") === "early");
-check("p1 → lower", levelBand("p1") === "lower");
-check("p2 → lower", levelBand("p2") === "lower");
-check("p3 → middle", levelBand("p3") === "middle");
-check("p4 → middle", levelBand("p4") === "middle");
-check("p5 → upper", levelBand("p5") === "upper");
-check("p6 → upper", levelBand("p6") === "upper");
+console.log("Adding links");
+{
+  let list = [];
+  let r = addToPool(list, "https://www.youtube.com/watch?v=abcdefghijk");
+  check("parses watch?v= link", r.error === null && r.list.length === 1 && r.list[0].id === "abcdefghijk");
+  list = r.list;
 
-console.log("Nothing plays until an entry is verified");
-check("seed pool returns null (all verified:false)", pickRewardVideo("p1") === null);
-check("early band also null before verification", pickRewardVideo("n") === null);
+  r = addToPool(list, "https://youtu.be/ABCDEFGHIJK");
+  check("parses youtu.be link", r.error === null && r.list.length === 2 && r.list[1].id === "ABCDEFGHIJK");
+  list = r.list;
 
-console.log("Selection once entries are verified");
-// Activate two entries in the 'lower' (p1/p2) band for the test.
-REWARD_VIDEO_POOL.lower.push(
-  { id: "AAAAAAAAAAA", verified: true, title: "test-a" },
-  { id: "BBBBBBBBBBB", verified: true, title: "test-b" },
-);
-const got = pickRewardVideo("p1");
-check("returns a verified id", got === "AAAAAAAAAAA" || got === "BBBBBBBBBBB");
-check("unverified entries with empty id are never returned", got.length === 11);
+  r = addToPool(list, "not a link");
+  check("rejects invalid input", r.error === "invalid" && r.list.length === 2);
 
-console.log("Never repeats the previous reward when an alternative exists");
-let repeated = false;
-for (let i = 0; i < 50; i++) {
-  if (pickRewardVideo("p1", "AAAAAAAAAAA") === "AAAAAAAAAAA") repeated = true;
+  r = addToPool(list, "https://youtu.be/abcdefghijk");
+  check("rejects duplicate id", r.error === "duplicate" && r.list.length === 2);
 }
-check("excludeId is avoided across 50 draws", repeated === false);
-check("excluded draw returns the other verified id", pickRewardVideo("p1", "AAAAAAAAAAA") === "BBBBBBBBBBB");
+
+console.log("Removing");
+{
+  const list = [{ id: "aaaaaaaaaaa" }, { id: "bbbbbbbbbbb" }];
+  const next = removeFromPool(list, "aaaaaaaaaaa");
+  check("removes by id", next.length === 1 && next[0].id === "bbbbbbbbbbb");
+}
+
+console.log("Picking");
+{
+  check("empty list -> null", pickFromPool([]) === null);
+  check("single item -> that item", pickFromPool([{ id: "solo000solo" }]) === "solo000solo");
+
+  const list = [{ id: "aaaaaaaaaaa" }, { id: "bbbbbbbbbbb" }];
+  let repeated = false;
+  for (let i = 0; i < 50; i++) if (pickFromPool(list, "aaaaaaaaaaa") === "aaaaaaaaaaa") repeated = true;
+  check("avoids the previous video when an alternative exists", repeated === false);
+  check("single-item list still returns even if it equals excludeId", pickFromPool([{ id: "only0000000" }], "only0000000") === "only0000000");
+}
 
 console.log(`\n${passed} passed, ${failed} failed`);
 if (failed > 0) process.exit(1);

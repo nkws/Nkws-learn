@@ -14,6 +14,7 @@ import MockPaperScreen from "./screens/MockPaperScreen";
 import SpellingListsScreen from "./screens/SpellingListsScreen";
 import SpellingListEditorScreen from "./screens/SpellingListEditorScreen";
 import SpellingTestScreen from "./screens/SpellingTestScreen";
+import RewardVideosScreen from "./screens/RewardVideosScreen";
 import { getPaper } from "./topics/mockpapers";
 import { useAuth } from "./contexts/AuthContext";
 import { getSubjectsForLevel, getTotalStars } from "./utils/constants";
@@ -277,6 +278,10 @@ export default function App() {
     return <AboutScreen onBack={() => setScreen("home")} />;
   }
 
+  if (screen === "reward-videos") {
+    return <RewardVideosScreen activeChild={activeChild} onBack={() => setScreen("home")} />;
+  }
+
   if (screen === "spelling-test" && activeSpellingListId) {
     return (
       <SpellingTestScreen
@@ -424,6 +429,7 @@ export default function App() {
       onSignIn={() => setSkippedLogin(false)}
       onHowTo={() => setScreen("howto")}
       onAbout={() => setScreen("about")}
+      onRewardVideos={() => setScreen("reward-videos")}
       onEnglishSpelling={() => {
         setActiveSpellingLang("en");
         setActiveSpellingKind("spelling");
