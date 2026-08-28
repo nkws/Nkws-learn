@@ -7,6 +7,7 @@ import { getModule, getTopic, getTotalStars, EARLY_LEVELS } from "../utils/const
 import { loadProgress, saveProgress, updateStreak, loadAutoRead, saveAutoRead } from "../utils/progress";
 import { buildModuleQuestions, getPraise, getHint, getIntro } from "../utils/kokoEngine";
 import { recordQuizAttempt } from "../utils/cloudSync";
+import { pickRewardVideo, loadLastRewardVideo, saveLastRewardVideo } from "../utils/rewardVideos";
 import IntroScreen from "./IntroScreen";
 
 
@@ -211,6 +212,15 @@ export default function ChatScreen({
             setTimeout(() => setRewardVideoId(videoId), 3000);
           } else if (topicDone && topicVideoId) {
             setTimeout(() => setRewardVideoId(topicVideoId), 3000);
+          } else if (!videoId) {
+            // No parent-set module video: give a random age-appropriate
+            // fallback (if any are verified for this level's age band), never
+            // repeating the last one shown.
+            const fallback = pickRewardVideo(level, loadLastRewardVideo());
+            if (fallback) {
+              saveLastRewardVideo(fallback);
+              setTimeout(() => setRewardVideoId(fallback), 3000);
+            }
           }
         } else {
           const retryIntro = ttsLang === "zh"
