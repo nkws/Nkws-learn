@@ -101,6 +101,25 @@ export function cloudToTopicVideos(cloud) {
   return cloud?.topic_videos || {};
 }
 
+// Reward-video pool (per child). Returns an array, or null when the column is
+// absent (e.g. the migration hasn't been run) so callers keep the local list
+// rather than wiping it.
+export function cloudToRewardPool(cloud) {
+  return Array.isArray(cloud?.reward_pool) ? cloud.reward_pool : null;
+}
+
+// Write a child's reward-video list to their progress row. Failure-tolerant:
+// if the reward_pool column doesn't exist yet, the error is logged and ignored
+// so nothing else breaks.
+export async function saveCloudRewardPool(childId, pool) {
+  if (!isSupabaseConfigured() || !childId) return;
+  const { error } = await supabase
+    .from("child_progress")
+    .update({ reward_pool: pool || [] })
+    .eq("child_id", childId);
+  if (error) console.error("saveCloudRewardPool:", error);
+}
+
 // ============ QUIZ ATTEMPTS ============
 
 export async function recordQuizAttempt(childId, moduleId, score, total, wrongAnswers) {

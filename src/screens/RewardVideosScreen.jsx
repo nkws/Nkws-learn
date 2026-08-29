@@ -4,7 +4,7 @@ import { loadRewardPool, saveRewardPool, addToPool, removeFromPool } from "../ut
 // Parent screen: paste YouTube links to build the reward-video list for a child.
 // When that child finishes a module with no video set for it, one of these
 // plays at random as a surprise reward.
-export default function RewardVideosScreen({ activeChild, onBack }) {
+export default function RewardVideosScreen({ activeChild, onBack, onSync }) {
   const childId = activeChild?.id || null;
   const [list, setList] = useState(() => loadRewardPool(childId));
   const [input, setInput] = useState("");
@@ -13,6 +13,7 @@ export default function RewardVideosScreen({ activeChild, onBack }) {
   const persist = (next) => {
     setList(next);
     saveRewardPool(childId, next);
+    onSync?.(next); // push to the cloud so the list follows the parent's account
   };
 
   const handleAdd = () => {

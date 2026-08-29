@@ -27,9 +27,11 @@ import {
   fetchChildren, createChild, updateChild, deleteChild,
   fetchProgress, saveCloudProgress,
   cloudProgressToLocal, cloudToModuleVideos, cloudToTopicVideos,
+  cloudToRewardPool, saveCloudRewardPool,
   fetchSubscriptionStatus,
   createPortalSession,
 } from "./utils/cloudSync";
+import { saveRewardPool } from "./utils/rewardVideos";
 
 export default function App() {
   const { user, loading, signOut, isConfigured } = useAuth();
@@ -99,6 +101,10 @@ export default function App() {
       }
       if (modVids) { setModuleVideos(modVids); saveModuleVideos(modVids); }
       if (topVids) { setTopicVideos(topVids); saveTopicVideos(topVids); }
+      // Reward-video list: cloud is authoritative for this child (null when the
+      // reward_pool column isn't there yet, in which case we keep local).
+      const rewardPool = cloudToRewardPool(cloudData);
+      if (rewardPool) saveRewardPool(child.id, rewardPool);
     } else {
       // No cloud data — start fresh
       const fresh = { stars: 0, moduleStars: {}, completedModules: [], completedTopics: [], lastSession: null };
@@ -279,7 +285,13 @@ export default function App() {
   }
 
   if (screen === "reward-videos") {
-    return <RewardVideosScreen activeChild={activeChild} onBack={() => setScreen("home")} />;
+    return (
+      <RewardVideosScreen
+        activeChild={activeChild}
+        onSync={(pool) => { if (user && activeChild) saveCloudRewardPool(activeChild.id, pool); }}
+        onBack={() => setScreen("home")}
+      />
+    );
   }
 
   if (screen === "spelling-test" && activeSpellingListId) {

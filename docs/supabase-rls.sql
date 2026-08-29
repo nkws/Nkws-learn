@@ -29,6 +29,11 @@ create policy "Owner can manage their children"
   with check (user_id = auth.uid());
 
 -- 2) child_progress: rows for a child the signed-in parent owns.
+-- Reward-video list (parent-curated YouTube links, played on topic completion)
+-- rides this per-child row. Run this once to enable cross-device sync of it;
+-- until then the list stays local to each device and nothing else breaks:
+--   alter table public.child_progress
+--     add column if not exists reward_pool jsonb not null default '[]'::jsonb;
 alter table public.child_progress enable row level security;
 drop policy if exists "Owner can manage their child progress" on public.child_progress;
 create policy "Owner can manage their child progress"
