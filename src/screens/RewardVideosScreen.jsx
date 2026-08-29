@@ -44,11 +44,11 @@ export default function RewardVideosScreen({ activeChild, onBack }) {
           {activeChild ? `${activeChild.avatar || "🎬"} ${activeChild.name}'s reward videos` : "Reward videos"}
         </h1>
         <p className="reward-videos-intro">
-          Paste YouTube links your child loves. When they finish a module and you
-          haven't set a video for that module, one of these plays as a surprise
-          reward — a different one each time. Please keep them <strong>short
-          (under 5 minutes)</strong> and age-appropriate; whatever you add here is
-          what your child sees.
+          Paste YouTube links your child loves. When they finish a whole topic
+          (a full set of modules) and you haven't set a video for that topic, one
+          of these plays as a surprise reward — a different one each time. Please
+          keep them <strong>short (under 5 minutes)</strong> and age-appropriate;
+          whatever you add here is what your child sees.
         </p>
 
         <div className="reward-add-row">

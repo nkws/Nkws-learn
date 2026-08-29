@@ -193,13 +193,13 @@ export default function ChatScreen({
             recordQuizAttempt(activeChild.id, moduleId, newCorrectCount, totalQ, allWrongRef.current);
           }
           let topicDone = false;
-          if (topicVideoId) {
+          {
             const topic = getTopic(subjectId, topicId, level);
             if (topic) {
               // saveModuleScore persists via a setProgress updater that runs
               // after this handler, so loadProgress() does not yet include the
-              // module just finished. Add it explicitly, otherwise the topic
-              // reward never fires on completing the final module of the topic.
+              // module just finished. Add it explicitly, otherwise topic
+              // completion never registers on the final module of the topic.
               const latest = loadProgress();
               const completed = new Set([...(latest.completedModules || []), moduleId]);
               topicDone = topic.modules.every((m) => completed.has(m.id));
@@ -212,9 +212,10 @@ export default function ChatScreen({
             setTimeout(() => setRewardVideoId(videoId), 3000);
           } else if (topicDone && topicVideoId) {
             setTimeout(() => setRewardVideoId(topicVideoId), 3000);
-          } else if (!videoId) {
-            // No parent-set module video: give a random video from this child's
-            // parent-curated reward list (if any), never repeating the last one.
+          } else if (topicDone && !topicVideoId) {
+            // Whole topic finished and no parent-set topic video: play a random
+            // video from this child's reward list (if any), never repeating the
+            // last one. This is a topic-completion treat, not a per-module one.
             const fallback = pickRewardVideo(activeChild?.id, loadLastRewardVideo());
             if (fallback) {
               saveLastRewardVideo(fallback);
