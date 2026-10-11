@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "validate": "node scripts/validate-questions.mjs",
-    "test": "node scripts/test-spelling-merge.mjs && node scripts/test-reward-videos.mjs",
+    "test": "node scripts/test-spelling-merge.mjs && node scripts/test-reward-videos.mjs && node scripts/test-writing-schedule.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -17,6 +17,7 @@
     "@supabase/supabase-js": "^2.103.0",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
+    "hanzi-writer": "^3.7.3",
     "pinyin-pro": "^3.28.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",

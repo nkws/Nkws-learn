@@ -1,0 +1,19 @@
+Koko's Classroom — third-party notices
+=======================================
+
+This product includes the following third-party software:
+
+Hanzi Writer (https://hanziwriter.org)
+  Licence: MIT
+  Used for Chinese character stroke-order animation and handwriting practice
+  (the "Character Writing" drill).
+
+Make Me a Hanzi (https://github.com/skishore/makemeahanzi)
+  Licence: Arphic Public License (ARPHICPL)
+  Source of the Chinese character stroke data that Hanzi Writer renders.
+  The stroke data is derived from the Arphic "AR PL UMing" and "AR PL UKai"
+  fonts, distributed under the Arphic Public License.
+
+pinyin-pro (https://github.com/zh-lx/pinyin-pro)
+  Licence: MIT
+  Used to derive Hanyu Pinyin for Chinese words.

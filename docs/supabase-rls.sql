@@ -129,3 +129,10 @@ end $$;
 -- If the Supabase advisor lists any OTHER public table, enable RLS on it too —
 -- a table with RLS off and no policies is open to the anon key.
 -- ============================================================================
+
+-- ============================================================================
+-- 6) Character Writing (写字) drill — writing_cards + writing_reviews.
+--    Owner-scoped per child, same shape as child_progress/quiz_attempts.
+--    Full SQL lives in: supabase/migrations/20261011000000_character_writing.sql
+--    Run that file once in the SQL Editor to create the tables + RLS.
+-- ============================================================================

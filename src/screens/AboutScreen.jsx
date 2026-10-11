@@ -92,6 +92,22 @@ export default function AboutScreen({ onBack }) {
           </p>
         </section>
 
+        <section className="about-section">
+          <h2>Credits</h2>
+          <p>
+            Chinese character stroke animations and handwriting practice are
+            powered by{" "}
+            <a href="https://hanziwriter.org" target="_blank" rel="noopener noreferrer">
+              Hanzi Writer
+            </a>{" "}
+            (MIT licence), with stroke data from{" "}
+            <a href="https://github.com/skishore/makemeahanzi" target="_blank" rel="noopener noreferrer">
+              Make Me a Hanzi
+            </a>{" "}
+            (Arphic Public Licence).
+          </p>
+        </section>
+
         <div className="about-footer">
           <span className="about-mascot">🦊</span>
           <p>Made with ❤️ in Singapore</p>

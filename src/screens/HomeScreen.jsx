@@ -17,7 +17,7 @@ const LEVELS = [
 
 const SUBJECTS_PREVIEW = ["Math", "English", "Science", "Chinese"];
 
-export default function HomeScreen({ progress, activeChild, user, isPlus, onSelectLevel, onDashboard, onSwitchChild, onManageSubscription, onSignOut, onSignIn, onAbout, onHowTo, onRewardVideos, onEnglishSpelling, onChineseDictation, onPinyinPractice }) {
+export default function HomeScreen({ progress, activeChild, user, isPlus, onSelectLevel, onDashboard, onSwitchChild, onManageSubscription, onSignOut, onSignIn, onAbout, onHowTo, onRewardVideos, onCharacterWriting, onEnglishSpelling, onChineseDictation, onPinyinPractice }) {
   const totalStars = getTotalStars(progress.moduleStars || {});
   const streak = loadStreak();
   const [showUpgrade, setShowUpgrade] = useState(false);
@@ -70,7 +70,7 @@ export default function HomeScreen({ progress, activeChild, user, isPlus, onSele
         ))}
       </div>
 
-      {(onEnglishSpelling || onChineseDictation || onPinyinPractice) && (
+      {(onEnglishSpelling || onChineseDictation || onPinyinPractice || onCharacterWriting) && (
         <>
           <p className="home-pick-label">Practice tools</p>
           <div className="topic-list">
@@ -99,6 +99,21 @@ export default function HomeScreen({ progress, activeChild, user, isPlus, onSele
                   <h2 className="topic-title">中文听写</h2>
                   <p className="topic-desc">
                     听一听，写汉字。
+                  </p>
+                </div>
+                <span className="topic-arrow">›</span>
+              </button>
+            )}
+            {onCharacterWriting && (
+              <button
+                className="topic-card spelling-home-tile"
+                onClick={onCharacterWriting}
+              >
+                <span className="topic-icon">✍️</span>
+                <div className="topic-info">
+                  <h2 className="topic-title">写字 Character Writing</h2>
+                  <p className="topic-desc">
+                    看拼音，一笔一笔写汉字。
                   </p>
                 </div>
                 <span className="topic-arrow">›</span>

@@ -2696,3 +2696,118 @@ button:focus-visible {
   text-align: center;
   margin-top: 12px;
 }
+
+/* ---- Character Writing (写字) drill ---- */
+.writing-screen {
+  display: flex;
+  flex-direction: column;
+  overscroll-behavior: contain;
+}
+
+.writing-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 16px calc(20px + var(--safe-bottom));
+  gap: 12px;
+}
+
+.writing-centered {
+  justify-content: center;
+  text-align: center;
+  gap: 14px;
+}
+
+.writing-note { font-size: 20px; color: var(--text); }
+.writing-note-en { font-size: 15px; color: #777; }
+
+.writing-prompt {
+  width: 100%;
+  max-width: 460px;
+  text-align: center;
+}
+
+.writing-pinyin-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.writing-pinyin {
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--teal, #0E7C7B);
+  letter-spacing: 1px;
+}
+
+.writing-sentence {
+  font-size: 24px;
+  line-height: 1.7;
+  color: var(--text);
+  margin: 8px 0 2px;
+}
+
+.hw-blank {
+  color: var(--orange, #FF8A3D);
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+
+.hw-reveal-word {
+  color: var(--teal, #0E7C7B);
+  font-weight: 700;
+  padding: 0 2px;
+  border-bottom: 3px solid var(--orange, #FF8A3D);
+}
+
+.writing-progress-label { font-size: 14px; color: #999; margin-top: 2px; }
+
+/* The writing square — the one place touch must NOT scroll the page. */
+.hw-quiz {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.hw-progress { font-size: 16px; color: #666; margin: 0; }
+
+.hw-square-wrap {
+  touch-action: none;           /* pen/finger draws, never scrolls */
+  -webkit-user-select: none;
+  user-select: none;
+  background: #FFFFFF;
+  border: 3px solid #FFE0B2;
+  border-radius: 18px;
+  padding: 6px;
+  box-shadow: inset 0 0 0 1px #FFF3E0;
+}
+
+.hw-square { touch-action: none; }
+.hw-square svg { display: block; touch-action: none; }
+
+.hw-hint-btn { min-width: 180px; }
+
+.hw-error { text-align: center; color: #c0392b; }
+
+.writing-reveal-grade { font-size: 44px; letter-spacing: 6px; }
+.writing-reveal-word {
+  font-size: 96px;
+  line-height: 1.1;
+  color: var(--text);
+  font-weight: 700;
+}
+.writing-sentence-reveal { max-width: 460px; }
+.writing-grade-text { font-size: 20px; color: var(--text); }
+.writing-grade-en { color: #888; font-size: 16px; }
+
+.writing-done-emoji { font-size: 64px; }
+.writing-done-stats { font-size: 18px; color: #555; }
+
+@media (orientation: landscape) and (max-height: 560px) {
+  /* Keep the square visible without page scroll on short landscape screens. */
+  .writing-sentence { font-size: 20px; }
+  .writing-pinyin { font-size: 26px; }
+}
