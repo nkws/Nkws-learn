@@ -44,7 +44,15 @@ const WORDS = [
 
 const supabase = createClient(url, key, { auth: { persistSession: false } });
 
-const rows = WORDS.map((w) => ({ child_id: childId, lesson_tag: LESSON_TAG, ...w }));
+// Stagger created_at in lesson order (1s apart) so the "new cards" queue, which
+// orders by created_at, presents the words in the lesson's order (香 first).
+const base = Date.now();
+const rows = WORDS.map((w, i) => ({
+  child_id: childId,
+  lesson_tag: LESSON_TAG,
+  created_at: new Date(base - (WORDS.length - i) * 1000).toISOString(),
+  ...w,
+}));
 const { data, error } = await supabase
   .from("writing_cards")
   .upsert(rows, { onConflict: "child_id,word,lesson_tag" })
