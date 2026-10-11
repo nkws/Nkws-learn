@@ -2852,3 +2852,13 @@ button:focus-visible {
   font-weight: 700;
   color: var(--text);
 }
+
+/* ---- Character Writing: syllabus chooser (Slice 2.1) ---- */
+.wl-stream { margin-bottom: 14px; }
+.wl-stream-title {
+  font-size: 18px;
+  color: var(--teal, #0E7C7B);
+  margin: 10px 2px 8px;
+  font-weight: 700;
+}
+.wl-landing-title { text-align: center; margin: 6px 0 10px; }
