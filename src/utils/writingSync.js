@@ -1,37 +1,25 @@
-// Supabase I/O for the Character Writing drill. Mirrors cloudSync.js style:
-// every call guards on isSupabaseConfigured() and logs errors rather than
-// throwing. Rows are owner-scoped by RLS (children.user_id = auth.uid()).
+// Supabase I/O + pure queue/list builders for the Character Writing drill.
+// Mirrors cloudSync.js style: every call guards on isSupabaseConfigured() and
+// logs errors rather than throwing. Rows are owner-scoped by RLS.
 import { supabase, isSupabaseConfigured } from "./supabase";
 
-// Today's queue for a learner: up to `maxDue` cards that are due now (soonest
-// first), then up to `maxNew` brand-new cards (never reviewed), new cards last.
-export async function fetchWritingQueue(childId, { maxDue = 10, maxNew = 5 } = {}) {
+// Fetch all of a learner's cards once (small — one lesson set), ordered by
+// syllabus position. The screen builds the lesson list and the daily queue from
+// this in memory, so there's one round-trip per session.
+export async function fetchAllCards(childId) {
   if (!isSupabaseConfigured() || !childId) return [];
-  const nowIso = new Date().toISOString();
-  const [dueRes, newRes] = await Promise.all([
-    supabase
-      .from("writing_cards")
-      .select("*")
-      .eq("child_id", childId)
-      .not("due_at", "is", null)
-      .lte("due_at", nowIso)
-      .order("due_at", { ascending: true })
-      .limit(maxDue),
-    supabase
-      .from("writing_cards")
-      .select("*")
-      .eq("child_id", childId)
-      .is("due_at", null)
-      .order("created_at", { ascending: true })
-      .limit(maxNew),
-  ]);
-  if (dueRes.error) console.error("fetchWritingQueue (due):", dueRes.error);
-  if (newRes.error) console.error("fetchWritingQueue (new):", newRes.error);
-  return [...(dueRes.data || []), ...(newRes.data || [])];
+  const { data, error } = await supabase
+    .from("writing_cards")
+    .select("*")
+    .eq("child_id", childId)
+    .order("lesson_seq", { ascending: true, nullsFirst: false })
+    .order("word_seq", { ascending: true, nullsFirst: false });
+  if (error) { console.error("fetchAllCards:", error); return []; }
+  return data || [];
 }
 
 // Log one attempt and advance the card's schedule. `review` carries the already
-// computed grade/interval/dueAt (from writingSchedule.js) so this stays pure I/O.
+// computed grade/interval/dueAt (from writingSchedule.js).
 export async function recordWritingReview(childId, cardId, review) {
   if (!isSupabaseConfigured() || !childId || !cardId) return { error: "not-configured" };
   const { grade, totalMistakes, hintUsed, firstAttempt, intervalDays, dueAt } = review;

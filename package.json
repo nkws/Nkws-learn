@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "validate": "node scripts/validate-questions.mjs",
-    "test": "node scripts/test-spelling-merge.mjs && node scripts/test-reward-videos.mjs && node scripts/test-writing-schedule.mjs",
+    "test": "node scripts/test-spelling-merge.mjs && node scripts/test-reward-videos.mjs && node scripts/test-writing-schedule.mjs && node scripts/test-writing-queue.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

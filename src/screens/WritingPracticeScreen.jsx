@@ -1,60 +1,77 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import HanziWriterQuiz from "../components/HanziWriterQuiz";
-import { fetchWritingQueue, recordWritingReview } from "../utils/writingSync";
+import StrokeAnimation from "../components/StrokeAnimation";
+import { fetchAllCards, recordWritingReview } from "../utils/writingSync";
+import { buildLessons, buildQueue } from "../utils/writingQueue";
 import { scheduleReview } from "../utils/writingSchedule";
+import { lookupWord } from "../utils/dictionary";
 import { useTTS } from "../hooks/useSpeech";
 
-const PHASE = { LOADING: "loading", CARD: "card", REVEAL: "reveal", DONE: "done" };
-
-// Render the sentence with the target word shown as a blank (writing phase) or
-// highlighted (reveal phase). Full-width ＿ keeps the gap obvious for a child.
-function renderSentence(sentence, word, reveal) {
-  const i = sentence.indexOf(word);
-  if (i === -1) return <span>{sentence}{reveal ? "" : " ＿＿"}</span>;
-  const before = sentence.slice(0, i);
-  const after = sentence.slice(i + word.length);
-  return (
-    <span>
-      {before}
-      {reveal
-        ? <span className="hw-reveal-word">{word}</span>
-        : <span className="hw-blank">{"＿".repeat(Math.max(2, [...word].length))}</span>}
-      {after}
-    </span>
-  );
-}
+const PHASE = { LOADING: "loading", LANDING: "landing", CARD: "card", REVEAL: "reveal", DONE: "done" };
 
 const GRADE_DISPLAY = {
   easy: { stars: "⭐⭐⭐", text: "太棒了！一笔都没错！", en: "Perfect!" },
-  good: { stars: "⭐⭐", text: "做得好！", en: "Well done!" },
-  again: { stars: "", text: "没关系，明天再练一次。", en: "Try again tomorrow." },
+  good: { stars: "⭐⭐", text: "很好！", en: "Good!" },
+  hard: { stars: "⭐", text: "快记住了，再练一练。", en: "Almost — keep practising." },
+  again: { stars: "", text: "没关系，明天再来一次。", en: "Try again tomorrow." },
 };
 
 export default function WritingPracticeScreen({ activeChild, onBack }) {
   const { speak } = useTTS("zh");
   const [phase, setPhase] = useState(PHASE.LOADING);
+  const [allCards, setAllCards] = useState([]);
   const [queue, setQueue] = useState([]);
   const [index, setIndex] = useState(0);
   const [lastGrade, setLastGrade] = useState(null);
   const [stats, setStats] = useState({ done: 0, again: 0 });
   const [saving, setSaving] = useState(false);
+  const [pyFor, setPyFor] = useState(null);
 
+  // Load all of this learner's cards once.
   useEffect(() => {
-    // No child → the render below shows the sign-in note (phase stays LOADING).
     if (!activeChild) return;
     let cancelled = false;
     (async () => {
-      const q = await fetchWritingQueue(activeChild.id);
+      const cards = await fetchAllCards(activeChild.id);
       if (cancelled) return;
-      setQueue(q);
-      setIndex(0);
-      setStats({ done: 0, again: 0 });
-      setPhase(q.length === 0 ? PHASE.DONE : PHASE.CARD);
+      setAllCards(cards);
+      setPhase(PHASE.LANDING);
     })();
     return () => { cancelled = true; };
   }, [activeChild]);
 
+  const lessons = useMemo(() => buildLessons(allCards), [allCards]);
+  const totalDue = useMemo(() => lessons.reduce((n, l) => n + l.due, 0), [lessons]);
+
   const card = queue[index] || null;
+  const isNew = card ? !card.due_at : false;
+
+  // Derive pinyin for the cue when the card doesn't carry it (MOE cards don't).
+  useEffect(() => {
+    if (!card || card.pinyin) return;
+    let cancelled = false;
+    lookupWord(card.word, "zh").then((e) => {
+      if (!cancelled) setPyFor({ word: card.word, pinyin: e?.pinyin || "" });
+    });
+    return () => { cancelled = true; };
+  }, [card]);
+  const pinyin = card ? (card.pinyin || (pyFor?.word === card.word ? pyFor.pinyin : "")) : "";
+
+  // Auto-play the word when a card appears (the dictation cue).
+  useEffect(() => {
+    if (phase !== PHASE.CARD || !card) return;
+    const t = setTimeout(() => speak(card.word), 350);
+    return () => clearTimeout(t);
+  }, [phase, card, speak]);
+
+  const startSession = (opts) => {
+    const q = buildQueue(allCards, opts);
+    setQueue(q);
+    setIndex(0);
+    setStats({ done: 0, again: 0 });
+    setLastGrade(null);
+    setPhase(q.length === 0 ? PHASE.DONE : PHASE.CARD);
+  };
 
   const handleComplete = useCallback(async ({ totalMistakes, hintUsed }) => {
     if (!card || saving) return;
@@ -62,20 +79,16 @@ export default function WritingPracticeScreen({ activeChild, onBack }) {
     const charCount = [...card.word].length;
     const sched = scheduleReview({
       prevIntervalDays: card.interval_days || 0,
-      totalMistakes,
-      charCount,
-      hintUsed,
-      now: Date.now(),
+      totalMistakes, charCount, hintUsed, now: Date.now(),
     });
     const firstAttempt = !card.due_at;
     await recordWritingReview(activeChild.id, card.id, {
-      grade: sched.grade,
-      totalMistakes,
-      hintUsed,
-      firstAttempt,
-      intervalDays: sched.intervalDays,
-      dueAt: sched.dueAt,
+      grade: sched.grade, totalMistakes, hintUsed, firstAttempt,
+      intervalDays: sched.intervalDays, dueAt: sched.dueAt,
     });
+    // Reflect the new schedule locally so the landing counts stay correct.
+    setAllCards((prev) => prev.map((c) =>
+      c.id === card.id ? { ...c, interval_days: sched.intervalDays, due_at: sched.dueAt.toISOString() } : c));
     setLastGrade(sched.grade);
     setStats((s) => ({ done: s.done + 1, again: s.again + (sched.grade === "again" ? 1 : 0) }));
     setSaving(false);
@@ -89,64 +102,91 @@ export default function WritingPracticeScreen({ activeChild, onBack }) {
     else { setIndex(index + 1); setPhase(PHASE.CARD); }
   };
 
+  const lessonTitle = (tag) => (tag || "").replace(/^P\d+-/, "").replace(/-/g, " ");
+
   return (
     <div className="screen writing-screen">
       <div className="chat-topbar">
-        <button className="back-btn" onClick={onBack}>←</button>
+        <button className="back-btn" onClick={() => (phase === PHASE.LANDING || phase === PHASE.LOADING ? onBack() : setPhase(PHASE.LANDING))}>←</button>
         <span className="topbar-topic">写字 Character Writing</span>
       </div>
 
       {!activeChild ? (
         <div className="writing-body writing-centered">
           <p className="writing-note">请先登录并选择小朋友。</p>
-          <p className="writing-note-en">Sign in and choose a child to start writing practice.</p>
+          <p className="writing-note-en">Sign in and choose a child to start.</p>
         </div>
       ) : phase === PHASE.LOADING ? (
-        <div className="writing-body writing-centered">
-          <p className="writing-note">正在准备今天的练习…</p>
+        <div className="writing-body writing-centered"><p className="writing-note">正在准备…</p></div>
+      ) : phase === PHASE.LANDING ? (
+        <div className="writing-body">
+          {lessons.length === 0 ? (
+            <div className="writing-centered">
+              <p className="writing-note">还没有字表。</p>
+              <p className="writing-note-en">No lessons loaded yet.</p>
+            </div>
+          ) : (
+            <>
+              {totalDue > 0 && (
+                <button className="btn-primary writing-review-all" onClick={() => startSession({ maxNew: 0, maxDue: 15 })}>
+                  🔁 复习到期的字 Review due ({totalDue})
+                </button>
+              )}
+              <p className="home-pick-label">选一课 Pick a lesson</p>
+              <div className="topic-list">
+                {lessons.map((l) => (
+                  <button key={l.lesson_tag} className="topic-card" onClick={() => startSession({ lessonTag: l.lesson_tag, maxNew: 5, maxDue: 15 })}>
+                    <span className="topic-icon">字</span>
+                    <div className="topic-info">
+                      <h2 className="topic-title">{lessonTitle(l.lesson_tag)}</h2>
+                      <p className="topic-desc">
+                        {l.new > 0 && <span className="wl-new">新 {l.new}</span>}
+                        {l.due > 0 && <span className="wl-due"> 复习 {l.due}</span>}
+                        {l.new === 0 && l.due === 0 && <span className="wl-done">全部学完 ✓</span>}
+                        <span className="wl-total"> · 共 {l.total} 字</span>
+                      </p>
+                    </div>
+                    <span className="topic-arrow">›</span>
+                  </button>
+                ))}
+              </div>
+            </>
+          )}
         </div>
       ) : phase === PHASE.DONE ? (
         <div className="writing-body writing-centered">
           <div className="writing-done-emoji">🎉</div>
-          <h1 className="hero-title">
-            {queue.length === 0 ? "今天没有要练的字！" : "今天练完了！"}
-          </h1>
+          <h1 className="hero-title">{queue.length === 0 ? "没有要练的字！" : "练完了！"}</h1>
           {queue.length > 0 && (
             <p className="writing-done-stats">
-              写了 {stats.done} 个词{stats.again > 0 ? `，有 ${stats.again} 个明天再练` : "，全部过关！🌟"}
+              写了 {stats.done} 个字{stats.again > 0 ? `，有 ${stats.again} 个明天再练` : "，全部过关！🌟"}
             </p>
           )}
-          <button className="btn-primary" onClick={onBack}>回到首页 Back home</button>
+          <button className="btn-primary" onClick={() => setPhase(PHASE.LANDING)}>选另一课 More lessons</button>
+          <button className="btn-secondary" onClick={onBack}>回到首页 Home</button>
         </div>
       ) : phase === PHASE.CARD && card ? (
         <div className="writing-body">
           <div className="writing-prompt">
             <div className="writing-pinyin-row">
-              <span className="writing-pinyin">{card.pinyin}</span>
-              <button
-                className="spelling-word-speak"
-                onClick={() => speak(card.word)}
-                aria-label="听一听"
-                title="听一听"
-              >
-                🔊
-              </button>
+              <span className="writing-pinyin">{pinyin || "…"}</span>
+              <button className="spelling-word-speak" onClick={() => speak(card.word)} aria-label="听一听" title="听一听">🔊</button>
             </div>
-            <p className="writing-sentence">{renderSentence(card.sentence, card.word, false)}</p>
             <p className="writing-progress-label">
-              第 {index + 1} / {queue.length} 个
+              {isNew ? "新字 New" : "复习 Review"} · {index + 1} / {queue.length}
             </p>
           </div>
-          <HanziWriterQuiz key={card.id} word={card.word} onComplete={handleComplete} />
+          <HanziWriterQuiz key={card.id} word={card.word} teachFirst={isNew} onComplete={handleComplete} />
         </div>
       ) : phase === PHASE.REVEAL && card ? (
         <div className="writing-body writing-centered">
           <div className="writing-reveal-grade">{GRADE_DISPLAY[lastGrade]?.stars}</div>
-          <div className="writing-reveal-word">{card.word}</div>
-          <p className="writing-pinyin">{card.pinyin}</p>
-          <p className="writing-sentence writing-sentence-reveal">
-            {renderSentence(card.sentence, card.word, true)}
-          </p>
+          <StrokeAnimation key={`anim-${card.id}`} word={card.word} />
+          <div className="writing-reveal-wordline">
+            <span className="writing-reveal-word-sm">{card.word}</span>
+            <span className="writing-pinyin">{pinyin}</span>
+            <button className="spelling-word-speak" onClick={() => speak(card.word)} aria-label="听一听" title="听一听">🔊</button>
+          </div>
           <p className="writing-grade-text">
             {GRADE_DISPLAY[lastGrade]?.text}
             <span className="writing-grade-en"> {GRADE_DISPLAY[lastGrade]?.en}</span>

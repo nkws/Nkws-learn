@@ -4,11 +4,13 @@ import HanziWriter from "hanzi-writer";
 // Recall-mode handwriting quiz for one word (one or more characters), powered by
 // Hanzi Writer. The child writes each character stroke by stroke with NO outline
 // or character shown; a hint outline appears after 3 misses on a stroke, or when
-// they tap "Show hint". Multi-character words are quizzed in sequence in the same
-// square, and mistakes are summed across characters.
+// they tap "Show hint". Mistakes are summed across characters.
 //
-// Stroke data: Make Me a Hanzi (Arphic Public License), loaded via Hanzi Writer's
-// default CDN for Slice 1. TODO(slice-later): self-host via `charDataLoader`.
+// Skritter-style "learn first": when `teachFirst` is true (a brand-new card),
+// each character's stroke order is animated once before the child writes it.
+//
+// Stroke data: Make Me a Hanzi (Arphic Public License), via Hanzi Writer's
+// default CDN for now. TODO(later): self-host via `charDataLoader`.
 
 function computeSize() {
   if (typeof window === "undefined") return 360;
@@ -16,7 +18,7 @@ function computeSize() {
   return Math.max(300, Math.min(420, Math.floor(base)));
 }
 
-export default function HanziWriterQuiz({ word, onComplete }) {
+export default function HanziWriterQuiz({ word, teachFirst = false, onComplete }) {
   const characters = useMemo(() => [...String(word || "")], [word]);
   const containerRef = useRef(null);
   const writerRef = useRef(null);
@@ -30,14 +32,12 @@ export default function HanziWriterQuiz({ word, onComplete }) {
   const [charIndex, setCharIndex] = useState(0);
   const [loadError, setLoadError] = useState(false);
   const [hinted, setHinted] = useState(false);
+  const [teaching, setTeaching] = useState(teachFirst);
 
   useEffect(() => {
     const el = containerRef.current;
     if (!el || characters.length === 0) return;
 
-    // The parent keys this component by card id, so each word gets a fresh mount
-    // (state/refs start clean). Reset refs anyway to stay correct if `word` ever
-    // changes in place.
     idxRef.current = 0; totalRef.current = 0; hintRef.current = false; doneRef.current = false;
     el.innerHTML = "";
     let cancelled = false;
@@ -54,7 +54,6 @@ export default function HanziWriterQuiz({ word, onComplete }) {
       writer.quiz({
         showHintAfterMisses: 3,
         onMistake(strokeData) {
-          // Reaching the auto-hint threshold counts as a hint being used.
           if (strokeData.mistakesOnStroke >= 3) { hintRef.current = true; setHinted(true); }
         },
         onComplete(summary) {
@@ -63,15 +62,35 @@ export default function HanziWriterQuiz({ word, onComplete }) {
           if (idxRef.current < characters.length) {
             setCharIndex(idxRef.current);
             setHinted(false);
+            if (teachFirst) setTeaching(true);
             writer
               .setCharacter(characters[idxRef.current])
-              .then(() => { if (cancelled) return; try { writer.hideCharacter(); writer.hideOutline(); } catch { /* ignore */ } quizCurrent(); })
+              .then(() => { if (!cancelled) presentCurrent(); })
               .catch(() => { if (!cancelled) setLoadError(true); });
           } else {
             finish();
           }
         },
       });
+    };
+
+    // Teach (animate the stroke order) before quizzing, for new cards.
+    const presentCurrent = () => {
+      const writer = writerRef.current;
+      if (!writer || cancelled) return;
+      if (teachFirst) {
+        try { writer.hideCharacter(); writer.hideOutline(); } catch { /* ignore */ }
+        writer.animateCharacter({
+          onComplete() {
+            if (cancelled) return;
+            try { writer.hideCharacter(); writer.hideOutline(); } catch { /* ignore */ }
+            setTeaching(false);
+            quizCurrent();
+          },
+        });
+      } else {
+        quizCurrent();
+      }
     };
 
     const size = computeSize();
@@ -85,10 +104,12 @@ export default function HanziWriterQuiz({ word, onComplete }) {
       drawingColor: "#2563EB",
       drawingWidth: 22,
       highlightColor: "#FF8A3D",
+      strokeAnimationSpeed: 1.2,
+      delayBetweenStrokes: 180,
       onLoadCharDataError() { if (!cancelled) setLoadError(true); },
     });
     writerRef.current = writer;
-    quizCurrent();
+    presentCurrent();
 
     return () => {
       cancelled = true;
@@ -96,7 +117,7 @@ export default function HanziWriterQuiz({ word, onComplete }) {
       writerRef.current = null;
       if (el) el.innerHTML = "";
     };
-  }, [characters]);
+  }, [characters, teachFirst]);
 
   const showHint = () => {
     const writer = writerRef.current;
@@ -107,7 +128,6 @@ export default function HanziWriterQuiz({ word, onComplete }) {
   };
 
   const skipBroken = () => {
-    // Char data failed to load — count it as a hard miss so it comes back tomorrow.
     if (doneRef.current) return;
     doneRef.current = true;
     onCompleteRef.current?.({ totalMistakes: 99, hintUsed: true });
@@ -118,6 +138,9 @@ export default function HanziWriterQuiz({ word, onComplete }) {
       {characters.length > 1 && (
         <p className="hw-progress">第 {charIndex + 1} 个字 / 共 {characters.length} 个</p>
       )}
+      <p className="hw-instruction">
+        {teaching ? "看一看笔顺 Watch the strokes" : "自己写一写 Write it from memory"}
+      </p>
       <div className="hw-square-wrap">
         <div ref={containerRef} className="hw-square" />
       </div>
@@ -127,7 +150,7 @@ export default function HanziWriterQuiz({ word, onComplete }) {
           <button className="btn-secondary" onClick={skipBroken}>跳过 Skip</button>
         </div>
       ) : (
-        <button className="btn-secondary hw-hint-btn" onClick={showHint} disabled={hinted}>
+        <button className="btn-secondary hw-hint-btn" onClick={showHint} disabled={hinted || teaching}>
           {hinted ? "提示已显示 ✓" : "看提示 Show hint"}
         </button>
       )}

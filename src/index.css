@@ -2811,3 +2811,44 @@ button:focus-visible {
   .writing-sentence { font-size: 20px; }
   .writing-pinyin { font-size: 26px; }
 }
+
+/* ---- Character Writing: Slice 2 (Skritter-style) ---- */
+.hw-instruction {
+  font-size: 16px;
+  color: #777;
+  margin: 0 0 2px;
+}
+
+.writing-review-all {
+  width: 100%;
+  max-width: 460px;
+  margin: 4px auto 10px;
+}
+
+/* lesson list badges */
+.wl-new { color: var(--orange, #FF8A3D); font-weight: 700; }
+.wl-due { color: var(--teal, #0E7C7B); font-weight: 700; }
+.wl-done { color: #4CAF50; font-weight: 700; }
+.wl-total { color: #999; }
+
+/* stroke-order replay (reveal/info panel) */
+.stroke-anim { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.stroke-anim-row { display: flex; gap: 8px; justify-content: center; }
+.stroke-anim-char {
+  background: #fff;
+  border: 2px solid #FFE0B2;
+  border-radius: 12px;
+}
+.stroke-anim-btn { min-width: 170px; }
+
+.writing-reveal-wordline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.writing-reveal-word-sm {
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--text);
+}
