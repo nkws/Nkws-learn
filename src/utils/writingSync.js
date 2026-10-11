@@ -2,6 +2,20 @@
 // Mirrors cloudSync.js style: every call guards on isSupabaseConfigured() and
 // logs errors rather than throwing. Rows are owner-scoped by RLS.
 import { supabase, isSupabaseConfigured } from "./supabase";
+import { buildWritingRows } from "../data/writingSyllabus";
+
+// Load the universal MOE P1 syllabus for a child who has no cards yet. Idempotent
+// (upsert on the unique key), and RLS lets a parent insert their own child's
+// rows, so this runs safely from the client on first open.
+export async function seedWritingSyllabus(childId) {
+  if (!isSupabaseConfigured() || !childId) return { error: "not-configured", count: 0 };
+  const rows = buildWritingRows(childId);
+  const { error } = await supabase
+    .from("writing_cards")
+    .upsert(rows, { onConflict: "child_id,word,lesson_tag" });
+  if (error) { console.error("seedWritingSyllabus:", error); return { error, count: 0 }; }
+  return { error: null, count: rows.length };
+}
 
 // Fetch all of a learner's cards once (small — one lesson set), ordered by
 // syllabus position. The screen builds the lesson list and the daily queue from

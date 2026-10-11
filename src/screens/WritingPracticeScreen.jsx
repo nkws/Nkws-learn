@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import HanziWriterQuiz from "../components/HanziWriterQuiz";
 import StrokeAnimation from "../components/StrokeAnimation";
-import { fetchAllCards, recordWritingReview } from "../utils/writingSync";
+import { fetchAllCards, recordWritingReview, seedWritingSyllabus } from "../utils/writingSync";
 import { buildLessons, buildQueue } from "../utils/writingQueue";
 import { scheduleReview } from "../utils/writingSchedule";
 import { lookupWord } from "../utils/dictionary";
@@ -32,8 +32,15 @@ export default function WritingPracticeScreen({ activeChild, onBack }) {
     if (!activeChild) return;
     let cancelled = false;
     (async () => {
-      const cards = await fetchAllCards(activeChild.id);
+      let cards = await fetchAllCards(activeChild.id);
       if (cancelled) return;
+      // First time for this child: load the universal P1 syllabus, then refetch.
+      if (cards.length === 0) {
+        await seedWritingSyllabus(activeChild.id);
+        if (cancelled) return;
+        cards = await fetchAllCards(activeChild.id);
+        if (cancelled) return;
+      }
       setAllCards(cards);
       setPhase(PHASE.LANDING);
     })();
