@@ -2706,6 +2706,9 @@ button:focus-visible {
 
 .writing-body {
   flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -2714,7 +2717,7 @@ button:focus-visible {
 }
 
 .writing-centered {
-  justify-content: center;
+  justify-content: safe center;
   text-align: center;
   gap: 14px;
 }
