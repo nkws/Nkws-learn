@@ -8,10 +8,13 @@ import { boxSizeFor } from "../utils/writingBox";
 // how neatly they wrote, then taps ✓ to move to the next sentence.
 
 // Free-hand drawing surface for one box. Re-initialising (new clearTick) resets
-// the bitmap, which clears it.
+// the bitmap, which clears it. Each stroke attaches its own move/up listeners
+// to the window so fast strokes — and lifts outside the box — always register
+// (more reliable than pointer capture, which dropped alternate strokes).
 function TraceCanvas({ size, clearTick }) {
   const ref = useRef(null);
-  const draw = useRef({ on: false, ctx: null });
+  const ctxRef = useRef(null);
+
   useEffect(() => {
     const c = ref.current;
     if (!c) return;
@@ -24,44 +27,42 @@ function TraceCanvas({ size, clearTick }) {
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.strokeStyle = "#2563EB";
-    draw.current.ctx = ctx;
+    ctxRef.current = ctx;
   }, [size, clearTick]);
-  const at = (e) => {
-    const r = ref.current.getBoundingClientRect();
-    return { x: e.clientX - r.left, y: e.clientY - r.top };
-  };
-  const down = (e) => {
-    e.preventDefault();
-    try { ref.current.setPointerCapture(e.pointerId); } catch { /* ignore */ }
-    const p = at(e);
-    draw.current.on = true;
-    const ctx = draw.current.ctx;
-    ctx.beginPath();
-    ctx.moveTo(p.x, p.y);
-  };
-  const move = (e) => {
-    if (!draw.current.on) return;
-    e.preventDefault();
-    const p = at(e);
-    const ctx = draw.current.ctx;
-    ctx.lineTo(p.x, p.y);
-    ctx.stroke();
-  };
-  const up = (e) => {
-    draw.current.on = false;
-    try { if (e?.pointerId != null) ref.current.releasePointerCapture(e.pointerId); } catch { /* ignore */ }
-  };
-  return (
-    <canvas
-      ref={ref}
-      className="hw-trace-canvas"
-      style={{ width: size, height: size }}
-      onPointerDown={down}
-      onPointerMove={move}
-      onPointerUp={up}
-      onPointerCancel={up}
-    />
-  );
+
+  useEffect(() => {
+    const c = ref.current;
+    if (!c) return;
+    const at = (e) => { const r = c.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+    const move = (e) => {
+      const ctx = ctxRef.current;
+      if (!ctx) return;
+      e.preventDefault();
+      const p = at(e);
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+    };
+    const up = () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerup", up);
+      window.removeEventListener("pointercancel", up);
+    };
+    const down = (e) => {
+      const ctx = ctxRef.current;
+      if (!ctx) return;
+      e.preventDefault();
+      const p = at(e);
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+      window.addEventListener("pointermove", move, { passive: false });
+      window.addEventListener("pointerup", up);
+      window.addEventListener("pointercancel", up);
+    };
+    c.addEventListener("pointerdown", down, { passive: false });
+    return () => { c.removeEventListener("pointerdown", down); up(); };
+  }, []);
+
+  return <canvas ref={ref} className="hw-trace-canvas" style={{ width: size, height: size }} />;
 }
 
 export default function WritingLine({ tokens, size, label, pinyinMap, onDone }) {
