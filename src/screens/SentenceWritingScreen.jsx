@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import HanziWriterQuiz from "../components/HanziWriterQuiz";
+import HanziWriterLine from "../components/HanziWriterLine";
 import { lookupWord } from "../utils/dictionary";
 import { gradeAttempt } from "../utils/writingSchedule";
 import { useTTS } from "../hooks/useSpeech";
@@ -170,7 +170,7 @@ export default function SentenceWritingScreen({ onBack }) {
             )}
             <p className="writing-progress-label sw-mode-en">{mode.en}</p>
           </div>
-          <HanziWriterQuiz
+          <HanziWriterLine
             key={`${lineIndex}-${modeIndex}-${attempt}`}
             word={writeWord}
             trace={mode.key === "trace"}

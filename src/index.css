@@ -2912,3 +2912,33 @@ button:focus-visible {
 .sw-model-hz { font-size: 34px; color: var(--text); font-weight: 600; }
 .sw-model-memory { gap: 10px; }
 .sw-model-py-line { font-size: 20px; color: #8a8f99; letter-spacing: 1px; }
+
+/* ---- Sentence Writing: whole-line 田字格 boxes ---- */
+.hw-line-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; }
+.hw-line {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+.hw-box {
+  position: relative;
+  border: 2px solid var(--line, #E3E6EC);
+  border-radius: 10px;
+  background: #fff;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+}
+/* 田字格 guide lines behind the strokes */
+.hw-box::before,
+.hw-box::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+.hw-box::before { left: 50%; top: 7%; bottom: 7%; border-left: 1px dashed #DBE0E8; transform: translateX(-0.5px); }
+.hw-box::after { top: 50%; left: 7%; right: 7%; border-top: 1px dashed #DBE0E8; transform: translateY(-0.5px); }
+.hw-box.active { border-color: var(--coral, #FF6B6B); box-shadow: 0 0 0 3px rgba(255,107,107,0.15); }
+.hw-box.done { border-color: var(--teal, #0E7C7B); }
+.hw-line-count { color: #999; font-weight: 600; }
