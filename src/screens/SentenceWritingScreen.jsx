@@ -120,14 +120,7 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
     return () => { cancelled = true; };
   }, [phase, sentences]);
 
-  // Speak the active sentence when it becomes active.
-  useEffect(() => {
-    if (phase !== PHASE.PRACTICE) return;
-    const s = sentences[activeSentence];
-    if (!s) return;
-    const t = setTimeout(() => speak(s.display), 350);
-    return () => clearTimeout(t);
-  }, [phase, sentences, activeSentence, mode, speak]);
+  // No auto-play: the sentence is spoken only when the 🔊 button is pressed.
 
   // ── Library / edit ──────────────────────────────────────────────────────
   const openNew = () => { setEditId(null); setTitleDraft(""); setDraft(""); setPhase(PHASE.EDIT); };
@@ -173,10 +166,9 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
     const s = sentences[si];
     const grade = gradeAttempt({ totalMistakes, charCount: s ? charCountOf(s.tokens) || 1 : 1, hintUsed });
     setResults((r) => ({ ...r, [si]: grade }));
-    if (s) setTimeout(() => speak(s.display), 150);
     setActiveSentence(si + 1);
     setAttempt((a) => a + 1);
-  }, [activeSentence, sentences, speak]);
+  }, [activeSentence, sentences]);
 
   const paraDone = activeSentence >= sentences.length && sentences.length > 0;
   const lastPara = pIndex >= paragraphs.length - 1;
