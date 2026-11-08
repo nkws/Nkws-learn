@@ -4,12 +4,14 @@
 //
 // Fewer characters on the page get roomier squares; a whole paragraph gets
 // smaller ones so several rows fit on one screen.
-// Sizes are ~50% larger than the base, for a lower-primary child's hand. The
-// width cap allows ~3 boxes per row on a phone (fewer, bigger boxes) so the
-// larger size actually shows rather than being clamped down.
+// Boxes must stay large enough for a child to write a character with a FINGER,
+// even when a paragraph is long or the phone is narrow — so the taper for
+// longer paragraphs is gentle and the floor is kept finger-writable (~78px).
+// The width cap allows ~3 bigger boxes per row on a phone; a wider screen
+// (e.g. landscape) simply fits more of them per row rather than shrinking them.
 export function boxSizeFor(count) {
   if (typeof window === "undefined") return 99;
-  const size = count <= 8 ? 99 : count <= 16 ? 87 : count <= 28 ? 75 : 66;
+  const size = count <= 8 ? 99 : count <= 16 ? 92 : count <= 28 ? 84 : 80;
   const maxForWidth = Math.floor((Math.min(window.innerWidth, 480) - 24 - 8 * 2) / 3);
-  return Math.max(60, Math.min(size, maxForWidth));
+  return Math.max(78, Math.min(size, maxForWidth));
 }
