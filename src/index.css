@@ -3053,3 +3053,22 @@ button:focus-visible {
   -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
 }
 .hw-trace-canvas { touch-action: none; }
+
+/* ---- Sentence Writing: single wide handwriting pad + compact references ---- */
+.sw-pad { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; max-width: 460px; }
+.sw-pad-pinyin { font-size: 16px; color: #8a8f99; letter-spacing: 1px; text-align: center; }
+.sw-pad-wrap {
+  position: relative; width: 100%;
+  border: 2px solid var(--line, #E3E6EC); border-radius: 14px; background: #fff; overflow: hidden;
+}
+.sw-pad-wrap::before {
+  content: ""; position: absolute; left: 4%; right: 4%; top: 50%;
+  border-top: 1px dashed #E3E6EC; pointer-events: none;
+}
+.sw-pad-canvas { display: block; width: 100%; touch-action: none; -webkit-user-select: none; user-select: none; }
+.sw-ref { display: flex; align-items: center; gap: 6px; justify-content: center; width: 100%; max-width: 460px; padding: 3px 0; }
+.sw-ref.ahead { opacity: 0.55; }
+.sw-ref-text { font-size: 22px; color: var(--text); }
+.sw-ref.done .sw-ref-text { color: var(--teal, #0E7C7B); }
+.sw-ref.ahead .sw-ref-text { color: #8a8f99; font-size: 16px; letter-spacing: 1px; }
+.sw-ref-check { color: var(--teal, #0E7C7B); font-weight: 800; }

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import WritingLine from "../components/WritingLine";
+import SentenceWritePad from "../components/SentenceWritePad";
 import StrokeDemoLine from "../components/StrokeDemoLine";
 import { boxSizeFor } from "../utils/writingBox";
 import { lookupWord } from "../utils/dictionary";
@@ -41,22 +41,17 @@ const sentencesOf = (para) =>
     .filter((s) => cjkCount(s) > 0)
     .map((display) => ({ display, tokens: tokensOf(display) }));
 
-// A non-active sentence row: pinyin cue above each box; finished rows reveal
-// the correct character in the box (for self-comparison), upcoming rows are
-// empty.
-function StaticLine({ tokens, size, pinyinMap, reveal }) {
+// A non-active sentence as a compact reference line: finished sentences show
+// their characters (for self-comparison, with a ✓); upcoming sentences show
+// the text dimmed (or just pinyin, in memory mode, so they're not spoiled).
+function SentenceRef({ tokens, pinyinMap, done, reveal }) {
+  const text = reveal
+    ? tokens.map((t) => t.ch).join("")
+    : tokens.filter((t) => t.t === "c").map((t) => pinyinMap?.[t.ch] || "·").join(" ");
   return (
-    <div className="hw-line">
-      {tokens.map((tok, i) => (
-        <div key={i} className="hw-cell" style={{ width: size }}>
-          <div className="hw-cell-ref">
-            <span className="hw-cell-py">{tok.t === "c" ? (pinyinMap?.[tok.ch] || "") : ""}</span>
-          </div>
-          <div className={`hw-box ${reveal ? "done" : "upcoming"}${tok.t === "p" ? " hw-punct" : ""}`} style={{ width: size, height: size }}>
-            {reveal && <span className="sw-static-hz" style={{ fontSize: Math.round(size * (tok.t === "p" ? 0.72 : 0.66)) }}>{tok.ch}</span>}
-          </div>
-        </div>
-      ))}
+    <div className={`sw-ref${done ? " done" : " ahead"}`}>
+      {done && <span className="sw-ref-check">✓</span>}
+      <span className="sw-ref-text">{text}</span>
     </div>
   );
 }
@@ -215,19 +210,16 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
                   {!memory && (
                     <StrokeDemoLine key={`demo-${pIndex}-${si}-${attempt}`} tokens={s.tokens} size={boxSize} />
                   )}
-                  <WritingLine
-                    key={`${pIndex}-${si}-${mode}-${attempt}`}
-                    tokens={s.tokens}
-                    pinyinMap={pinyinMap}
-                    size={boxSize}
-                    label={memory ? "默写 Write from memory" : "照着写 Copy it"}
+                  <SentenceWritePad
+                    key={`pad-${pIndex}-${si}-${mode}-${attempt}`}
+                    pinyin={s.tokens.filter((t) => t.t === "c").map((t) => pinyinMap[t.ch] || "").join(" ")}
                     onDone={advanceSentence}
                   />
                 </>
               ) : si < activeSentence ? (
-                <StaticLine tokens={s.tokens} size={boxSize} pinyinMap={pinyinMap} reveal />
+                <SentenceRef tokens={s.tokens} pinyinMap={pinyinMap} done reveal />
               ) : (
-                <StaticLine tokens={s.tokens} size={boxSize} pinyinMap={pinyinMap} reveal={false} />
+                <SentenceRef tokens={s.tokens} pinyinMap={pinyinMap} reveal={!memory} />
               )}
             </div>
           ))}
