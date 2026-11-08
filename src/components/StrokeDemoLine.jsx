@@ -59,9 +59,8 @@ export default function StrokeDemoLine({ tokens, size, pinyinMap, onWidth }) {
 
     return () => {
       cancelled = true;
-      runRef.current++; // stop any in-flight run
       boxes.forEach((el) => { if (el) el.innerHTML = ""; });
-      writersRef.current = [];
+      writersRef.current = []; // replaces the array, so any replay run below stops
     };
   }, [tokens, boxSize]);
 
@@ -72,7 +71,7 @@ export default function StrokeDemoLine({ tokens, size, pinyinMap, onWidth }) {
     const order = tokens.map((t, i) => (t.t === "c" ? i : -1)).filter((i) => i >= 0);
     const myRun = ++runRef.current;
     const playFrom = (k) => {
-      if (myRun !== runRef.current || k >= order.length) return;
+      if (myRun !== runRef.current || writers !== writersRef.current || k >= order.length) return;
       const w = writers[order[k]];
       if (!w) { playFrom(k + 1); return; }
       w.animateCharacter({ onComplete: () => playFrom(k + 1) });
