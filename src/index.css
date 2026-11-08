@@ -2966,3 +2966,39 @@ button:focus-visible {
 }
 .sw-card-edit:active, .sw-card-del:active { background: rgba(0,0,0,0.06); }
 .sw-lesson-name { color: var(--teal, #0E7C7B); font-weight: 700; }
+
+/* ---- Sentence Writing: paragraph practice view ---- */
+.sw-paranav {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; max-width: 460px; gap: 8px;
+}
+.sw-arrow {
+  font-size: 26px; line-height: 1; width: 44px; height: 44px;
+  border-radius: 12px; background: var(--surface-2, #F1F3F7); color: var(--text);
+}
+.sw-arrow:disabled { opacity: 0.3; }
+.sw-paralabel { font-size: 14px; color: #555; font-weight: 700; text-align: center; }
+.sw-modebar { display: flex; gap: 6px; width: 100%; max-width: 460px; }
+.sw-mode-btn {
+  flex: 1; padding: 8px 4px; border-radius: 12px; font-size: 15px; font-weight: 700;
+  background: var(--surface-2, #F1F3F7); color: #666;
+}
+.sw-mode-btn.active { background: var(--coral, #FF6B6B); color: #fff; }
+.sw-srow {
+  width: 100%; display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: 8px 0; border-top: 1px dashed #EEF0F4;
+}
+.sw-srow:first-of-type { border-top: none; }
+.sw-srow.ahead { opacity: 0.55; }
+.sw-done-row { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.sw-row-stars { font-size: 15px; letter-spacing: 1px; }
+.sw-static-hz {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  color: var(--teal, #0E7C7B); font-weight: 600;
+}
+.hw-box.upcoming { background: #FAFBFC; }
+.sw-para-done {
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  width: 100%; max-width: 460px; margin-top: 10px;
+}
+.sw-para-done-msg { font-size: 18px; font-weight: 800; color: var(--teal, #0E7C7B); }

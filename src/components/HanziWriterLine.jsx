@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import HanziWriter from "hanzi-writer";
+import { boxSizeFor } from "../utils/writingBox";
 
 // Writes a whole line at once: one 田字格 box per character, all shown on the
 // same page. The child fills them in order (the active box is highlighted);
@@ -9,18 +10,7 @@ import HanziWriter from "hanzi-writer";
 //   (default)  — write from memory, no outline
 // On finishing the last box, onComplete({ totalMistakes, hintUsed }) fires.
 
-// Box size adapts to how many characters are on the page: a short sentence
-// gets roomier squares, a whole paragraph gets smaller ones so several rows
-// fit on one screen (rather than one big square per character).
-function computeBoxSize(count) {
-  if (typeof window === "undefined") return 66;
-  const size = count <= 8 ? 66 : count <= 16 ? 58 : count <= 28 ? 50 : 44;
-  // Keep at least ~4 across even on a narrow phone.
-  const maxForWidth = Math.floor((Math.min(window.innerWidth, 480) - 24 - 6 * 3) / 4);
-  return Math.max(42, Math.min(size, maxForWidth));
-}
-
-export default function HanziWriterLine({ word, teachFirst = false, trace = false, onComplete }) {
+export default function HanziWriterLine({ word, teachFirst = false, trace = false, size, onComplete }) {
   const characters = useMemo(() => [...String(word || "")], [word]);
   const boxRefs = useRef([]);
   const writersRef = useRef([]);
@@ -28,7 +18,7 @@ export default function HanziWriterLine({ word, teachFirst = false, trace = fals
   const onCompleteRef = useRef(onComplete);
   useEffect(() => { onCompleteRef.current = onComplete; }, [onComplete]);
 
-  const [boxSize] = useState(() => computeBoxSize(characters.length));
+  const boxSize = size || boxSizeFor(characters.length);
   const [activeIndex, setActiveIndex] = useState(0);
   const [hinted, setHinted] = useState(false);
   const [teaching, setTeaching] = useState(teachFirst);
