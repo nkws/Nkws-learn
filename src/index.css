@@ -3047,3 +3047,9 @@ button:focus-visible {
 .sw-demo { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-bottom: 8px; }
 .sw-demo-holder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; }
 .hw-cell-ref { height: 26px; }
+
+/* Sentence Writing: keep finger drawing from becoming a text/box selection */
+.hw-line, .hw-box, .hw-trace-canvas {
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+}
+.hw-trace-canvas { touch-action: none; }

@@ -20,7 +20,7 @@ function TraceCanvas({ size, clearTick }) {
     c.height = size * dpr;
     const ctx = c.getContext("2d");
     ctx.scale(dpr, dpr);
-    ctx.lineWidth = 7;
+    ctx.lineWidth = 4;
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
     ctx.strokeStyle = "#2563EB";
@@ -30,9 +30,27 @@ function TraceCanvas({ size, clearTick }) {
     const r = ref.current.getBoundingClientRect();
     return { x: e.clientX - r.left, y: e.clientY - r.top };
   };
-  const down = (e) => { e.preventDefault(); const p = at(e); draw.current.on = true; const ctx = draw.current.ctx; ctx.beginPath(); ctx.moveTo(p.x, p.y); };
-  const move = (e) => { if (!draw.current.on) return; const p = at(e); const ctx = draw.current.ctx; ctx.lineTo(p.x, p.y); ctx.stroke(); };
-  const up = () => { draw.current.on = false; };
+  const down = (e) => {
+    e.preventDefault();
+    try { ref.current.setPointerCapture(e.pointerId); } catch { /* ignore */ }
+    const p = at(e);
+    draw.current.on = true;
+    const ctx = draw.current.ctx;
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+  };
+  const move = (e) => {
+    if (!draw.current.on) return;
+    e.preventDefault();
+    const p = at(e);
+    const ctx = draw.current.ctx;
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+  };
+  const up = (e) => {
+    draw.current.on = false;
+    try { if (e?.pointerId != null) ref.current.releasePointerCapture(e.pointerId); } catch { /* ignore */ }
+  };
   return (
     <canvas
       ref={ref}
@@ -41,7 +59,7 @@ function TraceCanvas({ size, clearTick }) {
       onPointerDown={down}
       onPointerMove={move}
       onPointerUp={up}
-      onPointerLeave={up}
+      onPointerCancel={up}
     />
   );
 }
