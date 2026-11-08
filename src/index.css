@@ -3036,3 +3036,9 @@ button:focus-visible {
 .hw-cell-ref { height: 60px; }
 .hw-cell-py { font-size: 18px; min-height: 21px; }
 .hw-cell-hz { font-size: 33px; min-height: 36px; }
+
+/* Sentence Writing: per-sentence Clear / Next controls (freehand, no grading) */
+.hw-line-controls {
+  display: flex; gap: 10px; justify-content: center; width: 100%; max-width: 320px; margin: 2px auto 0;
+}
+.hw-line-controls .btn-primary, .hw-line-controls .btn-secondary { flex: 1; }

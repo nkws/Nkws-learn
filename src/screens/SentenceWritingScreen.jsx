@@ -1,8 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
-import HanziWriterLine from "../components/HanziWriterLine";
+import WritingLine from "../components/WritingLine";
 import { boxSizeFor } from "../utils/writingBox";
 import { lookupWord } from "../utils/dictionary";
-import { gradeAttempt } from "../utils/writingSchedule";
 import { useTTS } from "../hooks/useSpeech";
 import { useSpellingLists } from "../hooks/useSpellingLists";
 import { listKind, sortListsByOrder } from "../utils/spellingKinds";
@@ -12,18 +11,16 @@ import { listKind, sortListsByOrder } from "../utils/spellingKinds";
 // "sentence": a title plus the model text split into PARAGRAPHS (stored as
 // `words`, one paragraph per entry). In practice, one paragraph shows per page
 // (whole paragraph visible, split into sentences); the child writes it sentence
-// by sentence, characters stroke-graded and punctuation traced-and-confirmed.
-// ← → arrows move between paragraphs; a mode toggle sets how each sentence is
-// practised: 描红 trace · 照着写 copy (model shown) · 默写 from memory.
+// by sentence in plain 田字格 boxes with a finger (no stroke recognition —
+// self-assessed). Two modes: 照着写 copy (model shown) · 默写 from memory
+// (model hidden). ← → arrows move between paragraphs.
 const KIND = "sentence";
 const PHASE = { LIBRARY: "library", EDIT: "edit", PRACTICE: "practice", DONE: "done" };
 
 const MODES = [
-  { key: "trace", label: "描红", en: "Trace" },
   { key: "copy", label: "照着写", en: "Copy" },
   { key: "memory", label: "默写", en: "Memory" },
 ];
-const GRADE_STARS = { easy: "⭐⭐⭐", good: "⭐⭐", hard: "⭐", again: "·" };
 const SAMPLE = "今天天气很好。我和妈妈去公园。\n我们玩得很开心，妈妈买了雪糕。";
 
 const isCJK = (ch) => /[一-鿿]/.test(ch);
@@ -33,13 +30,9 @@ const tokensOf = (display) =>
   [...String(display)]
     .map((ch) => (isCJK(ch) ? { t: "c", ch } : PUNCT.test(ch) ? { t: "p", ch } : null))
     .filter(Boolean);
-const charCountOf = (tokens) => tokens.filter((t) => t.t === "c").length;
 
-// Text -> paragraphs (separated by line breaks). Each stored as one entry.
 const paragraphsFromText = (text) =>
   String(text || "").split(/\n+/).map((s) => s.trim()).filter((s) => cjkCount(s) > 0);
-// A paragraph -> its sentences (kept with their ending punctuation), each
-// tokenised into characters + punctuation marks.
 const sentencesOf = (para) =>
   String(para || "")
     .split(/(?<=[。！？!?])/)
@@ -47,10 +40,8 @@ const sentencesOf = (para) =>
     .filter((s) => cjkCount(s) > 0)
     .map((display) => ({ display, tokens: tokensOf(display) }));
 
-// A non-active sentence row: same per-character cells (pinyin + model char
-// above the box) so the reference stays aligned with the blanks. `reveal`
-// fills the boxes with the written glyph (finished rows); otherwise they're
-// empty (upcoming rows).
+// A non-active sentence row: same aligned cells, boxes filled with the model
+// character (finished rows, for self-comparison) or empty (upcoming rows).
 function StaticLine({ tokens, size, pinyinMap, showChar, reveal }) {
   return (
     <div className="hw-line">
@@ -84,7 +75,6 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
   const [pIndex, setPIndex] = useState(0);
   const [mode, setMode] = useState("copy");
   const [activeSentence, setActiveSentence] = useState(0);
-  const [results, setResults] = useState({});
   const [attempt, setAttempt] = useState(0);
   const [pinyinMap, setPinyinMap] = useState({});
 
@@ -106,8 +96,6 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
     })();
     return () => { cancelled = true; };
   }, [phase, sentences]);
-
-  // No auto-play: the sentence is spoken only when the 🔊 button is pressed.
 
   // ── Library / edit ──────────────────────────────────────────────────────
   const openNew = () => { setEditId(null); setTitleDraft(""); setDraft(""); setPhase(PHASE.EDIT); };
@@ -134,33 +122,24 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
     setPIndex(0);
     setMode("copy");
     setActiveSentence(0);
-    setResults({});
     setAttempt((a) => a + 1);
     setPhase(PHASE.PRACTICE);
   }, []);
 
   // ── Practice controls ───────────────────────────────────────────────────
-  const restartParagraph = () => { setActiveSentence(0); setResults({}); setAttempt((a) => a + 1); };
+  const restartParagraph = () => { setActiveSentence(0); setAttempt((a) => a + 1); };
   const pickMode = (m) => { setMode(m); restartParagraph(); };
   const goParagraph = (delta) => {
     const next = pIndex + delta;
     if (next < 0 || next >= paragraphs.length) return;
-    setPIndex(next); setActiveSentence(0); setResults({}); setAttempt((a) => a + 1);
+    setPIndex(next); setActiveSentence(0); setAttempt((a) => a + 1);
   };
-
-  const onSentenceComplete = useCallback(({ totalMistakes, hintUsed }) => {
-    const si = activeSentence;
-    const s = sentences[si];
-    const grade = gradeAttempt({ totalMistakes, charCount: s ? charCountOf(s.tokens) || 1 : 1, hintUsed });
-    setResults((r) => ({ ...r, [si]: grade }));
-    setActiveSentence(si + 1);
-    setAttempt((a) => a + 1);
-  }, [activeSentence, sentences]);
+  const advanceSentence = () => { setActiveSentence((si) => si + 1); setAttempt((a) => a + 1); };
 
   const paraDone = activeSentence >= sentences.length && sentences.length > 0;
   const lastPara = pIndex >= paragraphs.length - 1;
 
-  const onTopBack = () => { if (phase === PHASE.LIBRARY) onBack(); else setPhase(phase === PHASE.EDIT ? PHASE.LIBRARY : PHASE.LIBRARY); };
+  const onTopBack = () => { if (phase === PHASE.LIBRARY) onBack(); else setPhase(PHASE.LIBRARY); };
 
   return (
     <div className="screen writing-screen">
@@ -231,20 +210,16 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
                 <button className="sw-srow-speak" onClick={() => speak(s.display)} aria-label="听一听" title="听一听">🔊</button>
               </div>
               {si === activeSentence ? (
-                <HanziWriterLine
+                <WritingLine
                   key={`${pIndex}-${si}-${mode}-${attempt}`}
                   tokens={s.tokens}
                   pinyinMap={pinyinMap}
                   size={boxSize}
-                  trace={mode === "trace"}
-                  teachFirst={mode === "copy"}
-                  onComplete={onSentenceComplete}
+                  showChar={!memory}
+                  onDone={advanceSentence}
                 />
               ) : si < activeSentence ? (
-                <div className="sw-done-row">
-                  <StaticLine tokens={s.tokens} size={boxSize} pinyinMap={pinyinMap} showChar={!memory} reveal />
-                  <span className="sw-row-stars">{GRADE_STARS[results[si]] || ""}</span>
-                </div>
+                <StaticLine tokens={s.tokens} size={boxSize} pinyinMap={pinyinMap} showChar={!memory} reveal />
               ) : (
                 <StaticLine tokens={s.tokens} size={boxSize} pinyinMap={pinyinMap} showChar={!memory} reveal={false} />
               )}
