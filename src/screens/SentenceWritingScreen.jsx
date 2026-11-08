@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import WritingLine from "../components/WritingLine";
+import StrokeDemoLine from "../components/StrokeDemoLine";
 import { boxSizeFor } from "../utils/writingBox";
 import { lookupWord } from "../utils/dictionary";
 import { useTTS } from "../hooks/useSpeech";
@@ -40,16 +41,16 @@ const sentencesOf = (para) =>
     .filter((s) => cjkCount(s) > 0)
     .map((display) => ({ display, tokens: tokensOf(display) }));
 
-// A non-active sentence row: same aligned cells, boxes filled with the model
-// character (finished rows, for self-comparison) or empty (upcoming rows).
-function StaticLine({ tokens, size, pinyinMap, showChar, reveal }) {
+// A non-active sentence row: pinyin cue above each box; finished rows reveal
+// the correct character in the box (for self-comparison), upcoming rows are
+// empty.
+function StaticLine({ tokens, size, pinyinMap, reveal }) {
   return (
     <div className="hw-line">
       {tokens.map((tok, i) => (
         <div key={i} className="hw-cell" style={{ width: size }}>
           <div className="hw-cell-ref">
             <span className="hw-cell-py">{tok.t === "c" ? (pinyinMap?.[tok.ch] || "") : ""}</span>
-            <span className="hw-cell-hz">{showChar ? tok.ch : ""}</span>
           </div>
           <div className={`hw-box ${reveal ? "done" : "upcoming"}${tok.t === "p" ? " hw-punct" : ""}`} style={{ width: size, height: size }}>
             {reveal && <span className="sw-static-hz" style={{ fontSize: Math.round(size * (tok.t === "p" ? 0.72 : 0.66)) }}>{tok.ch}</span>}
@@ -210,18 +211,23 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
                 <button className="sw-srow-speak" onClick={() => speak(s.display)} aria-label="听一听" title="听一听">🔊</button>
               </div>
               {si === activeSentence ? (
-                <WritingLine
-                  key={`${pIndex}-${si}-${mode}-${attempt}`}
-                  tokens={s.tokens}
-                  pinyinMap={pinyinMap}
-                  size={boxSize}
-                  showChar={!memory}
-                  onDone={advanceSentence}
-                />
+                <>
+                  {!memory && (
+                    <StrokeDemoLine key={`demo-${pIndex}-${si}-${attempt}`} tokens={s.tokens} size={boxSize} />
+                  )}
+                  <WritingLine
+                    key={`${pIndex}-${si}-${mode}-${attempt}`}
+                    tokens={s.tokens}
+                    pinyinMap={pinyinMap}
+                    size={boxSize}
+                    label={memory ? "默写 Write from memory" : "照着写 Copy it"}
+                    onDone={advanceSentence}
+                  />
+                </>
               ) : si < activeSentence ? (
-                <StaticLine tokens={s.tokens} size={boxSize} pinyinMap={pinyinMap} showChar={!memory} reveal />
+                <StaticLine tokens={s.tokens} size={boxSize} pinyinMap={pinyinMap} reveal />
               ) : (
-                <StaticLine tokens={s.tokens} size={boxSize} pinyinMap={pinyinMap} showChar={!memory} reveal={false} />
+                <StaticLine tokens={s.tokens} size={boxSize} pinyinMap={pinyinMap} reveal={false} />
               )}
             </div>
           ))}
