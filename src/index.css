@@ -3085,3 +3085,7 @@ button:focus-visible {
     #EDEFF4 calc(var(--rh, 150px) - 1px), #EDEFF4 var(--rh, 150px)
   );
 }
+
+/* Compact demonstration line: normal-sized pinyin under the smaller chars */
+.sw-demo .hw-cell-ref { height: 20px; }
+.sw-demo .hw-cell-py { font-size: 13px; }

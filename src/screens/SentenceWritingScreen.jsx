@@ -73,7 +73,6 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
   const [activeSentence, setActiveSentence] = useState(0);
   const [attempt, setAttempt] = useState(0);
   const [pinyinMap, setPinyinMap] = useState({});
-  const [demoRows, setDemoRows] = useState(1);
 
   const lessons = useMemo(() => sortListsByOrder(lists.filter((l) => listKind(l) === KIND)), [lists]);
 
@@ -82,15 +81,10 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
   const boxSize = useMemo(() => boxSizeFor(paraCells || 1), [paraCells]);
   const memory = mode === "memory";
 
-  // Size the writing pad to match the demonstrated sentence: as many writing
-  // rows as the sentence wraps to, each tall enough to write a character.
+  // The child writes at full (finger) size; the demonstration is just a compact
+  // reference to watch, so it gets a smaller box.
   const rowHeight = Math.round(boxSize * 1.1);
-  const writeRows = useMemo(() => {
-    const n = sentences[activeSentence]?.tokens.length || 0;
-    const w = typeof window !== "undefined" ? Math.min(window.innerWidth, 480) : 400;
-    const perRow = Math.max(1, Math.floor((w - 32 + 8) / (boxSize + 8)));
-    return Math.min(6, Math.max(1, Math.ceil(n / perRow)));
-  }, [sentences, activeSentence, boxSize]);
+  const demoSize = Math.min(60, boxSize);
 
   // Pinyin for every character in the current paragraph.
   useEffect(() => {
@@ -219,12 +213,13 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
               {si === activeSentence ? (
                 <>
                   {!memory && (
-                    <StrokeDemoLine key={`demo-${pIndex}-${si}-${attempt}`} tokens={s.tokens} size={boxSize} pinyinMap={pinyinMap} onRows={setDemoRows} />
+                    <StrokeDemoLine key={`demo-${pIndex}-${si}-${attempt}`} tokens={s.tokens} size={demoSize} pinyinMap={pinyinMap} />
                   )}
                   <SentenceWritePad
                     key={`pad-${pIndex}-${si}-${mode}-${attempt}`}
                     pinyin={memory ? s.tokens.filter((t) => t.t === "c").map((t) => pinyinMap[t.ch] || "").join(" ") : ""}
-                    rows={memory ? writeRows : demoRows}
+                    charCount={s.tokens.length}
+                    charWidth={boxSize}
                     rowHeight={rowHeight}
                     onDone={advanceSentence}
                   />
