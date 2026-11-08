@@ -6,7 +6,7 @@ import { boxSizeFor } from "../utils/writingBox";
 // strokes in order (a presentation, using the stroke data only to show — never
 // to grade or compare the child's writing). Punctuation has no stroke data, so
 // it's shown statically. Column-aligned with the freehand practice line below.
-export default function StrokeDemoLine({ tokens, size }) {
+export default function StrokeDemoLine({ tokens, size, pinyinMap }) {
   const boxSize = size || boxSizeFor(tokens.length);
   const boxRefs = useRef([]);
   const writersRef = useRef([]);
@@ -66,6 +66,9 @@ export default function StrokeDemoLine({ tokens, size }) {
       <div className="hw-line">
         {tokens.map((tok, i) => (
           <div key={i} className="hw-cell" style={{ width: boxSize }}>
+            <div className="hw-cell-ref">
+              <span className="hw-cell-py">{tok.t === "c" ? (pinyinMap?.[tok.ch] || "") : ""}</span>
+            </div>
             <div className={`hw-box sw-demo-box${tok.t === "p" ? " hw-punct" : ""}`} style={{ width: boxSize, height: boxSize }}>
               {tok.t === "c" ? (
                 <div className="sw-demo-holder" ref={(el) => { boxRefs.current[i] = el; }} />

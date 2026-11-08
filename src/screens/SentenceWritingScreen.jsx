@@ -208,11 +208,11 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
               {si === activeSentence ? (
                 <>
                   {!memory && (
-                    <StrokeDemoLine key={`demo-${pIndex}-${si}-${attempt}`} tokens={s.tokens} size={boxSize} />
+                    <StrokeDemoLine key={`demo-${pIndex}-${si}-${attempt}`} tokens={s.tokens} size={boxSize} pinyinMap={pinyinMap} />
                   )}
                   <SentenceWritePad
                     key={`pad-${pIndex}-${si}-${mode}-${attempt}`}
-                    pinyin={s.tokens.filter((t) => t.t === "c").map((t) => pinyinMap[t.ch] || "").join(" ")}
+                    pinyin={memory ? s.tokens.filter((t) => t.t === "c").map((t) => pinyinMap[t.ch] || "").join(" ") : ""}
                     onDone={advanceSentence}
                   />
                 </>
