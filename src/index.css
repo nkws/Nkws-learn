@@ -3002,3 +3002,20 @@ button:focus-visible {
   width: 100%; max-width: 460px; margin-top: 10px;
 }
 .sw-para-done-msg { font-size: 18px; font-weight: 800; color: var(--teal, #0E7C7B); }
+
+/* ---- Sentence Writing: punctuation cells (trace + self-check) ---- */
+.hw-box.hw-punct { position: relative; }
+.hw-punct-target,
+.hw-punct-done {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1; pointer-events: none;
+}
+.hw-punct-target { color: #C9CfD8; z-index: 1; }   /* faint trace guide */
+.hw-punct-done { color: var(--teal, #0E7C7B); z-index: 1; }
+.hw-trace-canvas { position: absolute; inset: 0; z-index: 2; touch-action: none; }
+.sw-model-punct .sw-model-hz { color: #888; }
+.hw-punct-controls {
+  display: flex; gap: 10px; justify-content: center; width: 100%; max-width: 320px;
+}
+.hw-punct-controls .btn-primary, .hw-punct-controls .btn-secondary { flex: 1; }

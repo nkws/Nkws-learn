@@ -12,9 +12,9 @@ import { listKind, sortListsByOrder } from "../utils/spellingKinds";
 // "sentence": a title plus the model text split into PARAGRAPHS (stored as
 // `words`, one paragraph per entry). In practice, one paragraph shows per page
 // (whole paragraph visible, split into sentences); the child writes it sentence
-// by sentence with stroke guidance, and ← → arrows move between paragraphs. A
-// mode toggle sets how each sentence is practised:
-//   描红 trace · 照着写 copy (model shown) · 默写 from memory (model hidden).
+// by sentence, characters stroke-graded and punctuation traced-and-confirmed.
+// ← → arrows move between paragraphs; a mode toggle sets how each sentence is
+// practised: 描红 trace · 照着写 copy (model shown) · 默写 from memory.
 const KIND = "sentence";
 const PHASE = { LIBRARY: "library", EDIT: "edit", PRACTICE: "practice", DONE: "done" };
 
@@ -24,49 +24,57 @@ const MODES = [
   { key: "memory", label: "默写", en: "Memory" },
 ];
 const GRADE_STARS = { easy: "⭐⭐⭐", good: "⭐⭐", hard: "⭐", again: "·" };
-const SAMPLE = "今天天气很好。我和妈妈去公园。\n我们玩得很开心。妈妈买了雪糕。";
+const SAMPLE = "今天天气很好。我和妈妈去公园。\n我们玩得很开心，妈妈买了雪糕。";
 
 const isCJK = (ch) => /[一-鿿]/.test(ch);
+const PUNCT = /[。，、；：！？·…—“”‘’""''（）()《》〈〉【】]/;
 const cjkCount = (s) => [...String(s)].filter(isCJK).length;
+const tokensOf = (display) =>
+  [...String(display)]
+    .map((ch) => (isCJK(ch) ? { t: "c", ch } : PUNCT.test(ch) ? { t: "p", ch } : null))
+    .filter(Boolean);
+const charCountOf = (tokens) => tokens.filter((t) => t.t === "c").length;
 
 // Text -> paragraphs (separated by line breaks). Each stored as one entry.
 const paragraphsFromText = (text) =>
   String(text || "").split(/\n+/).map((s) => s.trim()).filter((s) => cjkCount(s) > 0);
-// A paragraph -> its sentences (split on 。！？), each with the chars to write.
+// A paragraph -> its sentences (kept with their ending punctuation), each
+// tokenised into characters + punctuation marks.
 const sentencesOf = (para) =>
   String(para || "")
-    .split(/[。！？!?]+/)
+    .split(/(?<=[。！？!?])/)
     .map((s) => s.trim())
     .filter((s) => cjkCount(s) > 0)
-    .map((display) => ({ display, chars: [...display].filter(isCJK) }));
+    .map((display) => ({ display, tokens: tokensOf(display) }));
 
-function StaticLine({ chars, size, reveal }) {
+function StaticLine({ tokens, size, reveal }) {
   return (
     <div className="hw-line">
-      {chars.map((c, i) => (
-        <div key={i} className={`hw-box ${reveal ? "done" : "upcoming"}`} style={{ width: size, height: size }}>
-          {reveal && <span className="sw-static-hz" style={{ fontSize: Math.round(size * 0.66) }}>{c}</span>}
+      {tokens.map((tok, i) => (
+        <div key={i} className={`hw-box ${reveal ? "done" : "upcoming"}${tok.t === "p" ? " hw-punct" : ""}`} style={{ width: size, height: size }}>
+          {reveal && <span className="sw-static-hz" style={{ fontSize: Math.round(size * (tok.t === "p" ? 0.72 : 0.66)) }}>{tok.ch}</span>}
         </div>
       ))}
     </div>
   );
 }
 
-function ModelRow({ chars, pinyinMap, memory, onSpeak }) {
+function ModelRow({ tokens, pinyinMap, memory, onSpeak }) {
   if (memory) {
+    const py = tokens.filter((t) => t.t === "c").map((t) => pinyinMap[t.ch] || "·").join(" ");
     return (
       <div className="sw-model sw-model-memory">
-        <span className="sw-model-py-line">{chars.map((c) => pinyinMap[c] || "·").join(" ")}</span>
+        <span className="sw-model-py-line">{py}</span>
         <button className="spelling-word-speak" onClick={onSpeak} aria-label="听一听" title="听一听">🔊</button>
       </div>
     );
   }
   return (
     <div className="sw-model">
-      {chars.map((c, i) => (
-        <span key={i} className="sw-model-char">
-          <span className="sw-model-py">{pinyinMap[c] || ""}</span>
-          <span className="sw-model-hz">{c}</span>
+      {tokens.map((tok, i) => (
+        <span key={i} className={`sw-model-char${tok.t === "p" ? " sw-model-punct" : ""}`}>
+          <span className="sw-model-py">{tok.t === "c" ? (pinyinMap[tok.ch] || "") : ""}</span>
+          <span className="sw-model-hz">{tok.ch}</span>
         </span>
       ))}
       <button className="spelling-word-speak" onClick={onSpeak} aria-label="听一听" title="听一听">🔊</button>
@@ -96,15 +104,15 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
   const lessons = useMemo(() => sortListsByOrder(lists.filter((l) => listKind(l) === KIND)), [lists]);
 
   const sentences = useMemo(() => sentencesOf(paragraphs[pIndex] || ""), [paragraphs, pIndex]);
-  const paraChars = useMemo(() => sentences.reduce((n, s) => n + s.chars.length, 0), [sentences]);
-  const boxSize = useMemo(() => boxSizeFor(paraChars || 1), [paraChars]);
+  const paraCells = useMemo(() => sentences.reduce((n, s) => n + s.tokens.length, 0), [sentences]);
+  const boxSize = useMemo(() => boxSizeFor(paraCells || 1), [paraCells]);
   const memory = mode === "memory";
 
   // Pinyin for every character in the current paragraph.
   useEffect(() => {
     if (phase !== PHASE.PRACTICE || sentences.length === 0) return;
     let cancelled = false;
-    const chars = [...new Set(sentences.flatMap((s) => s.chars))];
+    const chars = [...new Set(sentences.flatMap((s) => s.tokens.filter((t) => t.t === "c").map((t) => t.ch)))];
     (async () => {
       const entries = await Promise.all(chars.map(async (c) => [c, (await lookupWord(c, "zh"))?.pinyin || ""]));
       if (!cancelled) setPinyinMap((m) => ({ ...m, ...Object.fromEntries(entries) }));
@@ -163,7 +171,7 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
   const onSentenceComplete = useCallback(({ totalMistakes, hintUsed }) => {
     const si = activeSentence;
     const s = sentences[si];
-    const grade = gradeAttempt({ totalMistakes, charCount: s ? s.chars.length : 1, hintUsed });
+    const grade = gradeAttempt({ totalMistakes, charCount: s ? charCountOf(s.tokens) || 1 : 1, hintUsed });
     setResults((r) => ({ ...r, [si]: grade }));
     if (s) setTimeout(() => speak(s.display), 150);
     setActiveSentence(si + 1);
@@ -173,7 +181,7 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
   const paraDone = activeSentence >= sentences.length && sentences.length > 0;
   const lastPara = pIndex >= paragraphs.length - 1;
 
-  const onTopBack = () => { if (phase === PHASE.LIBRARY) onBack(); else if (phase === PHASE.EDIT) setPhase(PHASE.LIBRARY); else setPhase(PHASE.LIBRARY); };
+  const onTopBack = () => { if (phase === PHASE.LIBRARY) onBack(); else setPhase(phase === PHASE.EDIT ? PHASE.LIBRARY : PHASE.LIBRARY); };
 
   return (
     <div className="screen writing-screen">
@@ -212,7 +220,7 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
         <div className="writing-body">
           <p className="home-pick-label">练习名称 Title</p>
           <input className="sw-title-input" value={titleDraft} onChange={(e) => setTitleDraft(e.target.value)} placeholder="例如：第一课 造句" />
-          <p className="home-pick-label">范文 Model text（空行分段 blank line = new paragraph）</p>
+          <p className="home-pick-label">范文 Model text（换行分段 line break = new paragraph）</p>
           <textarea className="sw-input" value={draft} onChange={(e) => setDraft(e.target.value)} placeholder="例如：今天天气很好。我和妈妈去公园。" rows={6} />
           <div className="sw-input-actions">
             <button className="btn-secondary" onClick={() => setDraft(SAMPLE)}>用例子 Sample</button>
@@ -225,7 +233,6 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
         </div>
       ) : phase === PHASE.PRACTICE ? (
         <div className="writing-body">
-          {/* Paragraph nav + mode toggle */}
           <div className="sw-paranav">
             <button className="sw-arrow" onClick={() => goParagraph(-1)} disabled={pIndex === 0} aria-label="上一段">‹</button>
             <span className="sw-paralabel">
@@ -235,22 +242,19 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
           </div>
           <div className="sw-modebar">
             {MODES.map((m) => (
-              <button key={m.key} className={`sw-mode-btn${mode === m.key ? " active" : ""}`} onClick={() => pickMode(m.key)}>
-                {m.label}
-              </button>
+              <button key={m.key} className={`sw-mode-btn${mode === m.key ? " active" : ""}`} onClick={() => pickMode(m.key)}>{m.label}</button>
             ))}
           </div>
 
-          {/* The whole paragraph, sentence by sentence */}
           {sentences.map((s, si) => (
             <div key={si} className={`sw-srow${si === activeSentence ? " active" : si > activeSentence ? " ahead" : ""}`}>
-              {(si >= activeSentence) && (
-                <ModelRow chars={s.chars} pinyinMap={pinyinMap} memory={memory} onSpeak={() => speak(s.display)} />
+              {si >= activeSentence && (
+                <ModelRow tokens={s.tokens} pinyinMap={pinyinMap} memory={memory} onSpeak={() => speak(s.display)} />
               )}
               {si === activeSentence ? (
                 <HanziWriterLine
                   key={`${pIndex}-${si}-${mode}-${attempt}`}
-                  word={s.chars.join("")}
+                  tokens={s.tokens}
                   size={boxSize}
                   trace={mode === "trace"}
                   teachFirst={mode === "copy"}
@@ -258,11 +262,11 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
                 />
               ) : si < activeSentence ? (
                 <div className="sw-done-row">
-                  <StaticLine chars={s.chars} size={boxSize} reveal />
+                  <StaticLine tokens={s.tokens} size={boxSize} reveal />
                   <span className="sw-row-stars">{GRADE_STARS[results[si]] || ""}</span>
                 </div>
               ) : (
-                <StaticLine chars={s.chars} size={boxSize} reveal={false} />
+                <StaticLine tokens={s.tokens} size={boxSize} reveal={false} />
               )}
             </div>
           ))}
