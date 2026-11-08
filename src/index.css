@@ -3089,3 +3089,6 @@ button:focus-visible {
 /* Compact demonstration line: normal-sized pinyin under the smaller chars */
 .sw-demo .hw-cell-ref { height: 20px; }
 .sw-demo .hw-cell-py { font-size: 13px; }
+
+/* Demonstration row shrinks to its content so its width can be matched by the pad */
+.sw-demo .hw-line { width: fit-content; max-width: 100%; margin: 0 auto; }

@@ -7,23 +7,23 @@ import { useCallback, useEffect, useRef, useState } from "react";
 // width and gives as many child-height writing rows as the sentence needs,
 // independent of the (compact) demonstration above. Remounting (new key) gives
 // a fresh, empty box.
-export default function SentenceWritePad({ pinyin, onDone, charCount = 1, charWidth = 90, rowHeight = 110 }) {
+export default function SentenceWritePad({ pinyin, onDone, charCount = 1, charWidth = 90, rowHeight = 110, width }) {
   const wrapRef = useRef(null);
   const canvasRef = useRef(null);
   const drawingRef = useRef(false);
   const lastRef = useRef(null);
-  const [width, setWidth] = useState(0);
+  const [measuredW, setMeasuredW] = useState(0);
 
   // Rows needed to write `charCount` child-sized characters across the box.
-  const perRow = Math.max(1, Math.floor(width / (charWidth + 8)) || 1);
+  const perRow = Math.max(1, Math.floor(measuredW / (charWidth + 8)) || 1);
   const rows = Math.min(8, Math.max(1, Math.ceil(charCount / perRow)));
   const height = rows * rowHeight;
 
-  // Track the box's own width.
+  // Track the box's own rendered width (it equals `width` when one is given).
   useEffect(() => {
     const wrap = wrapRef.current;
     if (!wrap) return;
-    const measure = () => setWidth(wrap.clientWidth);
+    const measure = () => setMeasuredW(wrap.clientWidth);
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(wrap);
@@ -45,7 +45,7 @@ export default function SentenceWritePad({ pinyin, onDone, charCount = 1, charWi
     ctx.strokeStyle = "#2563EB";
     ctx.lineWidth = 4;
     ctx.clearRect(0, 0, rect.width, rect.height);
-  }, [width, height]);
+  }, [measuredW, height]);
 
   const clear = useCallback(() => {
     const canvas = canvasRef.current;
@@ -78,7 +78,7 @@ export default function SentenceWritePad({ pinyin, onDone, charCount = 1, charWi
   return (
     <div className="sw-pad">
       {pinyin && <p className="sw-pad-pinyin">{pinyin}</p>}
-      <div className="sw-pad-wrap" ref={wrapRef} style={{ "--rh": `${rowHeight}px` }}>
+      <div className="sw-pad-wrap" ref={wrapRef} style={{ "--rh": `${rowHeight}px`, width: width ? `${width}px` : undefined, maxWidth: "100%" }}>
         <canvas
           ref={canvasRef}
           className="sw-pad-canvas"

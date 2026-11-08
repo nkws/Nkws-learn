@@ -73,6 +73,7 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
   const [activeSentence, setActiveSentence] = useState(0);
   const [attempt, setAttempt] = useState(0);
   const [pinyinMap, setPinyinMap] = useState({});
+  const [demoWidth, setDemoWidth] = useState(0);
 
   const lessons = useMemo(() => sortListsByOrder(lists.filter((l) => listKind(l) === KIND)), [lists]);
 
@@ -213,7 +214,7 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
               {si === activeSentence ? (
                 <>
                   {!memory && (
-                    <StrokeDemoLine key={`demo-${pIndex}-${si}-${attempt}`} tokens={s.tokens} size={demoSize} pinyinMap={pinyinMap} />
+                    <StrokeDemoLine key={`demo-${pIndex}-${si}-${attempt}`} tokens={s.tokens} size={demoSize} pinyinMap={pinyinMap} onWidth={setDemoWidth} />
                   )}
                   <SentenceWritePad
                     key={`pad-${pIndex}-${si}-${mode}-${attempt}`}
@@ -221,6 +222,7 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
                     charCount={s.tokens.length}
                     charWidth={boxSize}
                     rowHeight={rowHeight}
+                    width={!memory && demoWidth > 0 ? demoWidth : undefined}
                     onDone={advanceSentence}
                   />
                 </>

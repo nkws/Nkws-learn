@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import HanziWriter from "hanzi-writer";
 import { boxSizeFor } from "../utils/writingBox";
 
@@ -6,10 +6,23 @@ import { boxSizeFor } from "../utils/writingBox";
 // strokes in order (a presentation, using the stroke data only to show — never
 // to grade or compare the child's writing). Punctuation has no stroke data, so
 // it's shown statically. Column-aligned with the freehand practice line below.
-export default function StrokeDemoLine({ tokens, size, pinyinMap }) {
+export default function StrokeDemoLine({ tokens, size, pinyinMap, onWidth }) {
   const boxSize = size || boxSizeFor(tokens.length);
   const boxRefs = useRef([]);
   const writersRef = useRef([]);
+  const lineRef = useRef(null);
+
+  // Report the demonstration's actual rendered width so the writing pad below
+  // can be made the same left-to-right length.
+  useLayoutEffect(() => {
+    const line = lineRef.current;
+    if (!line || !onWidth) return;
+    const measure = () => onWidth(Math.round(line.getBoundingClientRect().width));
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(line);
+    return () => ro.disconnect();
+  }, [tokens, boxSize, onWidth]);
 
   useEffect(() => {
     const boxes = boxRefs.current;
@@ -63,7 +76,7 @@ export default function StrokeDemoLine({ tokens, size, pinyinMap }) {
 
   return (
     <div className="sw-demo">
-      <div className="hw-line">
+      <div className="hw-line" ref={lineRef}>
         {tokens.map((tok, i) => (
           <div key={i} className="hw-cell" style={{ width: boxSize }}>
             <div className={`hw-box sw-demo-box${tok.t === "p" ? " hw-punct" : ""}`} style={{ width: boxSize, height: boxSize }}>
