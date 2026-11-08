@@ -9,13 +9,15 @@ import HanziWriter from "hanzi-writer";
 //   (default)  — write from memory, no outline
 // On finishing the last box, onComplete({ totalMistakes, hintUsed }) fires.
 
+// Box size adapts to how many characters are on the page: a short sentence
+// gets roomier squares, a whole paragraph gets smaller ones so several rows
+// fit on one screen (rather than one big square per character).
 function computeBoxSize(count) {
-  if (typeof window === "undefined") return 96;
-  const avail = Math.min(window.innerWidth, 460) - 36;
-  const perRow = avail >= 380 ? 4 : 3;
-  const gap = 8;
-  const fit = Math.floor((avail - gap * (perRow - 1)) / perRow);
-  return Math.max(74, Math.min(118, count < perRow ? Math.min(118, fit + 10) : fit));
+  if (typeof window === "undefined") return 66;
+  const size = count <= 8 ? 66 : count <= 16 ? 58 : count <= 28 ? 50 : 44;
+  // Keep at least ~4 across even on a narrow phone.
+  const maxForWidth = Math.floor((Math.min(window.innerWidth, 480) - 24 - 6 * 3) / 4);
+  return Math.max(42, Math.min(size, maxForWidth));
 }
 
 export default function HanziWriterLine({ word, teachFirst = false, trace = false, onComplete }) {
