@@ -18,7 +18,7 @@ function computeSize() {
   return Math.max(300, Math.min(420, Math.floor(base)));
 }
 
-export default function HanziWriterQuiz({ word, teachFirst = false, onComplete }) {
+export default function HanziWriterQuiz({ word, teachFirst = false, trace = false, onComplete }) {
   const characters = useMemo(() => [...String(word || "")], [word]);
   const containerRef = useRef(null);
   const writerRef = useRef(null);
@@ -79,16 +79,18 @@ export default function HanziWriterQuiz({ word, teachFirst = false, onComplete }
       const writer = writerRef.current;
       if (!writer || cancelled) return;
       if (teachFirst) {
-        try { writer.hideCharacter(); writer.hideOutline(); } catch { /* ignore */ }
+        try { writer.hideCharacter(); if (!trace) writer.hideOutline(); } catch { /* ignore */ }
         writer.animateCharacter({
           onComplete() {
             if (cancelled) return;
-            try { writer.hideCharacter(); writer.hideOutline(); } catch { /* ignore */ }
+            try { writer.hideCharacter(); if (trace) writer.showOutline(); else writer.hideOutline(); } catch { /* ignore */ }
             setTeaching(false);
             quizCurrent();
           },
         });
       } else {
+        // Trace mode keeps the grey outline up so the child draws over it.
+        if (trace) { try { writer.showOutline(); } catch { /* ignore */ } }
         quizCurrent();
       }
     };
@@ -99,7 +101,7 @@ export default function HanziWriterQuiz({ word, teachFirst = false, onComplete }
       height: size,
       padding: 6,
       showCharacter: false,
-      showOutline: false,
+      showOutline: trace,
       strokeColor: "#1A237E",
       drawingColor: "#2563EB",
       drawingWidth: 22,
@@ -117,7 +119,7 @@ export default function HanziWriterQuiz({ word, teachFirst = false, onComplete }
       writerRef.current = null;
       if (el) el.innerHTML = "";
     };
-  }, [characters, teachFirst]);
+  }, [characters, teachFirst, trace]);
 
   const showHint = () => {
     const writer = writerRef.current;
@@ -139,7 +141,11 @@ export default function HanziWriterQuiz({ word, teachFirst = false, onComplete }
         <p className="hw-progress">第 {charIndex + 1} 个字 / 共 {characters.length} 个</p>
       )}
       <p className="hw-instruction">
-        {teaching ? "看一看笔顺 Watch the strokes" : "自己写一写 Write it from memory"}
+        {teaching
+          ? "看一看笔顺 Watch the strokes"
+          : trace
+            ? "照着描红 Trace over the outline"
+            : "自己写一写 Write it from memory"}
       </p>
       <div className="hw-square-wrap">
         <div ref={containerRef} className="hw-square" />
@@ -149,7 +155,7 @@ export default function HanziWriterQuiz({ word, teachFirst = false, onComplete }
           <p>这个字暂时打不开。</p>
           <button className="btn-secondary" onClick={skipBroken}>跳过 Skip</button>
         </div>
-      ) : (
+      ) : trace ? null : (
         <button className="btn-secondary hw-hint-btn" onClick={showHint} disabled={hinted || teaching}>
           {hinted ? "提示已显示 ✓" : "看提示 Show hint"}
         </button>

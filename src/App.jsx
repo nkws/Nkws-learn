@@ -16,6 +16,7 @@ import SpellingListEditorScreen from "./screens/SpellingListEditorScreen";
 import SpellingTestScreen from "./screens/SpellingTestScreen";
 import RewardVideosScreen from "./screens/RewardVideosScreen";
 import WritingPracticeScreen from "./screens/WritingPracticeScreen";
+import SentenceWritingScreen from "./screens/SentenceWritingScreen";
 import { getPaper } from "./topics/mockpapers";
 import { useAuth } from "./contexts/AuthContext";
 import { getSubjectsForLevel, getTotalStars } from "./utils/constants";
@@ -299,6 +300,10 @@ export default function App() {
     return <WritingPracticeScreen activeChild={activeChild} onBack={() => setScreen("home")} />;
   }
 
+  if (screen === "sentence-writing") {
+    return <SentenceWritingScreen activeChild={activeChild} onBack={() => setScreen("home")} />;
+  }
+
   if (screen === "spelling-test" && activeSpellingListId) {
     return (
       <SpellingTestScreen
@@ -448,6 +453,7 @@ export default function App() {
       onAbout={() => setScreen("about")}
       onRewardVideos={() => setScreen("reward-videos")}
       onCharacterWriting={() => setScreen("writing")}
+      onSentenceWriting={() => setScreen("sentence-writing")}
       onEnglishSpelling={() => {
         setActiveSpellingLang("en");
         setActiveSpellingKind("spelling");

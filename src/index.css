@@ -2865,3 +2865,50 @@ button:focus-visible {
   font-weight: 700;
 }
 .wl-landing-title { text-align: center; margin: 6px 0 10px; }
+
+/* ---- Sentence Writing (写句子) prototype ---- */
+.sw-input {
+  width: 100%;
+  max-width: 460px;
+  box-sizing: border-box;
+  border: 2px solid var(--line, #E3E6EC);
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-family: inherit;
+  font-size: 20px;
+  line-height: 1.6;
+  color: var(--text);
+  resize: vertical;
+  background: #fff;
+}
+.sw-input:focus { outline: none; border-color: var(--teal, #0E7C7B); }
+.sw-hint { max-width: 460px; text-align: center; }
+.sw-input-actions {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  max-width: 460px;
+  justify-content: space-between;
+  align-items: center;
+}
+.sw-count { font-size: 13px; color: #888; text-align: center; }
+.sw-mode { color: var(--coral, #FF6B6B); font-weight: 800; }
+.sw-mode-en { color: #999; font-size: 12px; }
+.sw-model {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px 8px;
+  margin: 6px 0 2px;
+}
+.sw-model-char {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.1;
+}
+.sw-model-py { font-size: 13px; color: #8a8f99; margin-bottom: 1px; }
+.sw-model-hz { font-size: 34px; color: var(--text); font-weight: 600; }
+.sw-model-memory { gap: 10px; }
+.sw-model-py-line { font-size: 20px; color: #8a8f99; letter-spacing: 1px; }

@@ -17,7 +17,7 @@ const LEVELS = [
 
 const SUBJECTS_PREVIEW = ["Math", "English", "Science", "Chinese"];
 
-export default function HomeScreen({ progress, activeChild, user, isPlus, onSelectLevel, onDashboard, onSwitchChild, onManageSubscription, onSignOut, onSignIn, onAbout, onHowTo, onRewardVideos, onCharacterWriting, onEnglishSpelling, onChineseDictation, onPinyinPractice }) {
+export default function HomeScreen({ progress, activeChild, user, isPlus, onSelectLevel, onDashboard, onSwitchChild, onManageSubscription, onSignOut, onSignIn, onAbout, onHowTo, onRewardVideos, onCharacterWriting, onSentenceWriting, onEnglishSpelling, onChineseDictation, onPinyinPractice }) {
   const totalStars = getTotalStars(progress.moduleStars || {});
   const streak = loadStreak();
   const [showUpgrade, setShowUpgrade] = useState(false);
@@ -70,7 +70,7 @@ export default function HomeScreen({ progress, activeChild, user, isPlus, onSele
         ))}
       </div>
 
-      {(onEnglishSpelling || onChineseDictation || onPinyinPractice || onCharacterWriting) && (
+      {(onEnglishSpelling || onChineseDictation || onPinyinPractice || onCharacterWriting || onSentenceWriting) && (
         <>
           <p className="home-pick-label">Practice tools</p>
           <div className="topic-list">
@@ -114,6 +114,21 @@ export default function HomeScreen({ progress, activeChild, user, isPlus, onSele
                   <h2 className="topic-title">写字 Character Writing</h2>
                   <p className="topic-desc">
                     看拼音，一笔一笔写汉字。
+                  </p>
+                </div>
+                <span className="topic-arrow">›</span>
+              </button>
+            )}
+            {onSentenceWriting && (
+              <button
+                className="topic-card spelling-home-tile"
+                onClick={onSentenceWriting}
+              >
+                <span className="topic-icon">句</span>
+                <div className="topic-info">
+                  <h2 className="topic-title">写句子 Sentence Writing</h2>
+                  <p className="topic-desc">
+                    描红、照着写、默写，一句一句练。
                   </p>
                 </div>
                 <span className="topic-arrow">›</span>
