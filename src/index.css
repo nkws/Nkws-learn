@@ -2942,3 +2942,27 @@ button:focus-visible {
 .hw-box.active { border-color: var(--coral, #FF6B6B); box-shadow: 0 0 0 3px rgba(255,107,107,0.15); }
 .hw-box.done { border-color: var(--teal, #0E7C7B); }
 .hw-line-count { color: #999; font-weight: 600; }
+
+/* ---- Sentence Writing: saved lessons (reuses spelling list store) ---- */
+.sw-new-btn { width: 100%; max-width: 460px; margin-bottom: 4px; }
+.sw-title-input {
+  width: 100%;
+  max-width: 460px;
+  box-sizing: border-box;
+  border: 2px solid var(--line, #E3E6EC);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 18px;
+  color: var(--text);
+  background: #fff;
+}
+.sw-title-input:focus { outline: none; border-color: var(--teal, #0E7C7B); }
+.sw-card-edit, .sw-card-del {
+  font-size: 18px;
+  padding: 4px 6px;
+  border-radius: 8px;
+  line-height: 1;
+}
+.sw-card-edit:active, .sw-card-del:active { background: rgba(0,0,0,0.06); }
+.sw-lesson-name { color: var(--teal, #0E7C7B); font-weight: 700; }

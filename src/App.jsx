@@ -301,7 +301,7 @@ export default function App() {
   }
 
   if (screen === "sentence-writing") {
-    return <SentenceWritingScreen activeChild={activeChild} onBack={() => setScreen("home")} />;
+    return <SentenceWritingScreen activeChild={activeChild} user={user} onBack={() => setScreen("home")} />;
   }
 
   if (screen === "spelling-test" && activeSpellingListId) {
