@@ -3092,3 +3092,6 @@ button:focus-visible {
 
 /* Demonstration row shrinks to its content so its width can be matched by the pad */
 .sw-demo .hw-line { width: fit-content; max-width: 100%; margin: 0 auto; }
+
+/* Let the writing pad grow to the demonstration's width (was capped at 460px) */
+.sw-pad { max-width: 100%; }
