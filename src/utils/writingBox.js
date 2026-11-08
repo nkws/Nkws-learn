@@ -4,10 +4,12 @@
 //
 // Fewer characters on the page get roomier squares; a whole paragraph gets
 // smaller ones so several rows fit on one screen.
-// Sizes are ~20% larger than the base, chosen for a lower-primary child's hand.
+// Sizes are ~50% larger than the base, for a lower-primary child's hand. The
+// width cap allows ~3 boxes per row on a phone (fewer, bigger boxes) so the
+// larger size actually shows rather than being clamped down.
 export function boxSizeFor(count) {
-  if (typeof window === "undefined") return 79;
-  const size = count <= 8 ? 79 : count <= 16 ? 70 : count <= 28 ? 60 : 53;
-  const maxForWidth = Math.floor((Math.min(window.innerWidth, 480) - 24 - 6 * 3) / 4);
-  return Math.max(50, Math.min(size, maxForWidth));
+  if (typeof window === "undefined") return 99;
+  const size = count <= 8 ? 99 : count <= 16 ? 87 : count <= 28 ? 75 : 66;
+  const maxForWidth = Math.floor((Math.min(window.innerWidth, 480) - 24 - 8 * 2) / 3);
+  return Math.max(60, Math.min(size, maxForWidth));
 }

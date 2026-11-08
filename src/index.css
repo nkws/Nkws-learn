@@ -3032,7 +3032,7 @@ button:focus-visible {
 .sw-srow-top { width: 100%; max-width: 460px; display: flex; justify-content: flex-end; }
 .sw-srow-speak { font-size: 18px; padding: 2px 8px; border-radius: 8px; line-height: 1; background: transparent; }
 
-/* P1 sizing: +20% reference text for the sentence-writing practice only */
-.hw-cell-ref { height: 48px; }
-.hw-cell-py { font-size: 14px; min-height: 17px; }
-.hw-cell-hz { font-size: 26px; min-height: 29px; }
+/* P1 sizing: +50% reference text for the sentence-writing practice only */
+.hw-cell-ref { height: 60px; }
+.hw-cell-py { font-size: 18px; min-height: 21px; }
+.hw-cell-hz { font-size: 33px; min-height: 36px; }
