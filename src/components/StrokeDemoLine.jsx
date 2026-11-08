@@ -66,15 +66,15 @@ export default function StrokeDemoLine({ tokens, size, pinyinMap }) {
       <div className="hw-line">
         {tokens.map((tok, i) => (
           <div key={i} className="hw-cell" style={{ width: boxSize }}>
-            <div className="hw-cell-ref">
-              <span className="hw-cell-py">{tok.t === "c" ? (pinyinMap?.[tok.ch] || "") : ""}</span>
-            </div>
             <div className={`hw-box sw-demo-box${tok.t === "p" ? " hw-punct" : ""}`} style={{ width: boxSize, height: boxSize }}>
               {tok.t === "c" ? (
                 <div className="sw-demo-holder" ref={(el) => { boxRefs.current[i] = el; }} />
               ) : (
                 <span className="sw-static-hz" style={{ fontSize: Math.round(boxSize * 0.72) }}>{tok.ch}</span>
               )}
+            </div>
+            <div className="hw-cell-ref sw-ref-below">
+              <span className="hw-cell-py">{tok.t === "c" ? (pinyinMap?.[tok.ch] || "") : ""}</span>
             </div>
           </div>
         ))}

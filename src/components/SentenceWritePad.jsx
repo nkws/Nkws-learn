@@ -4,7 +4,8 @@ import { useCallback, useEffect, useRef } from "react";
 // touch + mouse drawing the spelling drill uses (reliable multi-stroke, no
 // pointer-capture quirks). No recognition: the child writes in their own hand
 // and self-checks. Remounting (new key) gives a fresh, empty box.
-export default function SentenceWritePad({ pinyin, onDone, height = 150 }) {
+export default function SentenceWritePad({ pinyin, onDone, rows = 1, rowHeight = 150 }) {
+  const height = Math.max(1, rows) * rowHeight;
   const canvasRef = useRef(null);
   const drawingRef = useRef(false);
   const lastRef = useRef(null);
@@ -65,7 +66,7 @@ export default function SentenceWritePad({ pinyin, onDone, height = 150 }) {
   return (
     <div className="sw-pad">
       {pinyin && <p className="sw-pad-pinyin">{pinyin}</p>}
-      <div className="sw-pad-wrap">
+      <div className="sw-pad-wrap" style={{ "--rh": `${rowHeight}px` }}>
         <canvas
           ref={canvasRef}
           className="sw-pad-canvas"

@@ -3072,3 +3072,16 @@ button:focus-visible {
 .sw-ref.done .sw-ref-text { color: var(--teal, #0E7C7B); }
 .sw-ref.ahead .sw-ref-text { color: #8a8f99; font-size: 16px; letter-spacing: 1px; }
 .sw-ref-check { color: var(--teal, #0E7C7B); font-weight: 800; }
+
+/* Sentence Writing: pinyin below the demonstrated character */
+.sw-ref-below { margin-top: 2px; margin-bottom: 0; justify-content: flex-start; }
+
+/* Writing pad: guide lines per writing row, sized to --rh */
+.sw-pad-wrap::before { content: none; }
+.sw-pad-wrap {
+  background: repeating-linear-gradient(
+    to bottom,
+    #fff 0, #fff calc(var(--rh, 150px) - 1px),
+    #EDEFF4 calc(var(--rh, 150px) - 1px), #EDEFF4 var(--rh, 150px)
+  );
+}

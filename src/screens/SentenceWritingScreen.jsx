@@ -81,6 +81,16 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
   const boxSize = useMemo(() => boxSizeFor(paraCells || 1), [paraCells]);
   const memory = mode === "memory";
 
+  // Size the writing pad to match the demonstrated sentence: as many writing
+  // rows as the sentence wraps to, each tall enough to write a character.
+  const rowHeight = Math.round(boxSize * 1.1);
+  const writeRows = useMemo(() => {
+    const n = sentences[activeSentence]?.tokens.length || 0;
+    const w = typeof window !== "undefined" ? Math.min(window.innerWidth, 480) : 400;
+    const perRow = Math.max(1, Math.floor((w - 32 + 8) / (boxSize + 8)));
+    return Math.min(6, Math.max(1, Math.ceil(n / perRow)));
+  }, [sentences, activeSentence, boxSize]);
+
   // Pinyin for every character in the current paragraph.
   useEffect(() => {
     if (phase !== PHASE.PRACTICE || sentences.length === 0) return;
@@ -213,6 +223,8 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
                   <SentenceWritePad
                     key={`pad-${pIndex}-${si}-${mode}-${attempt}`}
                     pinyin={memory ? s.tokens.filter((t) => t.t === "c").map((t) => pinyinMap[t.ch] || "").join(" ") : ""}
+                    rows={writeRows}
+                    rowHeight={rowHeight}
                     onDone={advanceSentence}
                   />
                 </>
