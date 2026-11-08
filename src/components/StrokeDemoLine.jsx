@@ -11,6 +11,7 @@ export default function StrokeDemoLine({ tokens, size, pinyinMap, onWidth }) {
   const boxRefs = useRef([]);
   const writersRef = useRef([]);
   const lineRef = useRef(null);
+  const runRef = useRef(0); // only the latest animation run plays; a new press restarts it
 
   // Report the demonstration's actual rendered width so the writing pad below
   // can be made the same left-to-right length.
@@ -47,8 +48,9 @@ export default function StrokeDemoLine({ tokens, size, pinyinMap, onWidth }) {
     writersRef.current = writers;
 
     const order = tokens.map((t, i) => (t.t === "c" ? i : -1)).filter((i) => i >= 0);
+    const myRun = ++runRef.current;
     const playFrom = (k) => {
-      if (cancelled || k >= order.length) return;
+      if (cancelled || myRun !== runRef.current || k >= order.length) return;
       const w = writers[order[k]];
       if (!w) { playFrom(k + 1); return; }
       w.animateCharacter({ onComplete: () => playFrom(k + 1) });
@@ -57,16 +59,20 @@ export default function StrokeDemoLine({ tokens, size, pinyinMap, onWidth }) {
 
     return () => {
       cancelled = true;
+      runRef.current++; // stop any in-flight run
       boxes.forEach((el) => { if (el) el.innerHTML = ""; });
       writersRef.current = [];
     };
   }, [tokens, boxSize]);
 
+  // Replay the strokes. A new press starts a fresh run and the previous one
+  // stops, so repeated taps never stack overlapping animations.
   const replay = () => {
     const writers = writersRef.current;
     const order = tokens.map((t, i) => (t.t === "c" ? i : -1)).filter((i) => i >= 0);
+    const myRun = ++runRef.current;
     const playFrom = (k) => {
-      if (k >= order.length) return;
+      if (myRun !== runRef.current || k >= order.length) return;
       const w = writers[order[k]];
       if (!w) { playFrom(k + 1); return; }
       w.animateCharacter({ onComplete: () => playFrom(k + 1) });
