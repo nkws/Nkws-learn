@@ -47,37 +47,24 @@ const sentencesOf = (para) =>
     .filter((s) => cjkCount(s) > 0)
     .map((display) => ({ display, tokens: tokensOf(display) }));
 
-function StaticLine({ tokens, size, reveal }) {
+// A non-active sentence row: same per-character cells (pinyin + model char
+// above the box) so the reference stays aligned with the blanks. `reveal`
+// fills the boxes with the written glyph (finished rows); otherwise they're
+// empty (upcoming rows).
+function StaticLine({ tokens, size, pinyinMap, showChar, reveal }) {
   return (
     <div className="hw-line">
       {tokens.map((tok, i) => (
-        <div key={i} className={`hw-box ${reveal ? "done" : "upcoming"}${tok.t === "p" ? " hw-punct" : ""}`} style={{ width: size, height: size }}>
-          {reveal && <span className="sw-static-hz" style={{ fontSize: Math.round(size * (tok.t === "p" ? 0.72 : 0.66)) }}>{tok.ch}</span>}
+        <div key={i} className="hw-cell" style={{ width: size }}>
+          <div className="hw-cell-ref">
+            <span className="hw-cell-py">{tok.t === "c" ? (pinyinMap?.[tok.ch] || "") : ""}</span>
+            <span className="hw-cell-hz">{showChar ? tok.ch : ""}</span>
+          </div>
+          <div className={`hw-box ${reveal ? "done" : "upcoming"}${tok.t === "p" ? " hw-punct" : ""}`} style={{ width: size, height: size }}>
+            {reveal && <span className="sw-static-hz" style={{ fontSize: Math.round(size * (tok.t === "p" ? 0.72 : 0.66)) }}>{tok.ch}</span>}
+          </div>
         </div>
       ))}
-    </div>
-  );
-}
-
-function ModelRow({ tokens, pinyinMap, memory, onSpeak }) {
-  if (memory) {
-    const py = tokens.filter((t) => t.t === "c").map((t) => pinyinMap[t.ch] || "·").join(" ");
-    return (
-      <div className="sw-model sw-model-memory">
-        <span className="sw-model-py-line">{py}</span>
-        <button className="spelling-word-speak" onClick={onSpeak} aria-label="听一听" title="听一听">🔊</button>
-      </div>
-    );
-  }
-  return (
-    <div className="sw-model">
-      {tokens.map((tok, i) => (
-        <span key={i} className={`sw-model-char${tok.t === "p" ? " sw-model-punct" : ""}`}>
-          <span className="sw-model-py">{tok.t === "c" ? (pinyinMap[tok.ch] || "") : ""}</span>
-          <span className="sw-model-hz">{tok.ch}</span>
-        </span>
-      ))}
-      <button className="spelling-word-speak" onClick={onSpeak} aria-label="听一听" title="听一听">🔊</button>
     </div>
   );
 }
@@ -240,13 +227,14 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
 
           {sentences.map((s, si) => (
             <div key={si} className={`sw-srow${si === activeSentence ? " active" : si > activeSentence ? " ahead" : ""}`}>
-              {si >= activeSentence && (
-                <ModelRow tokens={s.tokens} pinyinMap={pinyinMap} memory={memory} onSpeak={() => speak(s.display)} />
-              )}
+              <div className="sw-srow-top">
+                <button className="sw-srow-speak" onClick={() => speak(s.display)} aria-label="听一听" title="听一听">🔊</button>
+              </div>
               {si === activeSentence ? (
                 <HanziWriterLine
                   key={`${pIndex}-${si}-${mode}-${attempt}`}
                   tokens={s.tokens}
+                  pinyinMap={pinyinMap}
                   size={boxSize}
                   trace={mode === "trace"}
                   teachFirst={mode === "copy"}
@@ -254,11 +242,11 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
                 />
               ) : si < activeSentence ? (
                 <div className="sw-done-row">
-                  <StaticLine tokens={s.tokens} size={boxSize} reveal />
+                  <StaticLine tokens={s.tokens} size={boxSize} pinyinMap={pinyinMap} showChar={!memory} reveal />
                   <span className="sw-row-stars">{GRADE_STARS[results[si]] || ""}</span>
                 </div>
               ) : (
-                <StaticLine tokens={s.tokens} size={boxSize} reveal={false} />
+                <StaticLine tokens={s.tokens} size={boxSize} pinyinMap={pinyinMap} showChar={!memory} reveal={false} />
               )}
             </div>
           ))}

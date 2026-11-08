@@ -3019,3 +3019,15 @@ button:focus-visible {
   display: flex; gap: 10px; justify-content: center; width: 100%; max-width: 320px;
 }
 .hw-punct-controls .btn-primary, .hw-punct-controls .btn-secondary { flex: 1; }
+
+/* ---- Sentence Writing: aligned cells (pinyin + model char above each box) ---- */
+.hw-line { align-items: flex-start; }
+.hw-cell { display: inline-flex; flex-direction: column; align-items: center; }
+.hw-cell-ref {
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+  height: 40px; margin-bottom: 4px; line-height: 1.1;
+}
+.hw-cell-py { font-size: 12px; color: #8a8f99; min-height: 14px; }
+.hw-cell-hz { font-size: 22px; color: var(--text); font-weight: 600; min-height: 24px; }
+.sw-srow-top { width: 100%; max-width: 460px; display: flex; justify-content: flex-end; }
+.sw-srow-speak { font-size: 18px; padding: 2px 8px; border-radius: 8px; line-height: 1; background: transparent; }

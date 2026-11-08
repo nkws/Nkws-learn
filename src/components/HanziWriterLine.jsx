@@ -51,7 +51,7 @@ function TraceCanvas({ size, clearTick }) {
   );
 }
 
-export default function HanziWriterLine({ word, tokens: tokensProp, teachFirst = false, trace = false, size, onComplete }) {
+export default function HanziWriterLine({ word, tokens: tokensProp, teachFirst = false, trace = false, size, pinyinMap, onComplete }) {
   const tokens = useMemo(
     () => tokensProp || [...String(word || "")].map((ch) => ({ t: "c", ch })),
     [tokensProp, word]
@@ -64,6 +64,7 @@ export default function HanziWriterLine({ word, tokens: tokensProp, teachFirst =
   useEffect(() => { onCompleteRef.current = onComplete; }, [onComplete]);
 
   const boxSize = size || boxSizeFor(tokens.length);
+  const showChar = trace || teachFirst; // model char shown above each box except in memory mode
   const [activeIndex, setActiveIndex] = useState(0);
   const [hinted, setHinted] = useState(false);
   const [teaching, setTeaching] = useState(teachFirst);
@@ -172,31 +173,35 @@ export default function HanziWriterLine({ word, tokens: tokensProp, teachFirst =
               : "自己写一写 Write from memory"}
       </p>
       <div className="hw-line">
-        {tokens.map((tok, i) =>
-          tok.t === "c" ? (
-            <div
-              key={i}
-              ref={(el) => { boxRefs.current[i] = el; }}
-              className={`hw-box${i === activeIndex ? " active" : ""}${i < activeIndex ? " done" : ""}`}
-              style={{ width: boxSize, height: boxSize }}
-            />
-          ) : (
-            <div
-              key={i}
-              className={`hw-box hw-punct${i === activeIndex ? " active" : ""}${i < activeIndex ? " done" : ""}`}
-              style={{ width: boxSize, height: boxSize }}
-            >
-              {i < activeIndex ? (
-                <span className="hw-punct-done" style={{ fontSize: Math.round(boxSize * 0.72) }}>{tok.ch}</span>
-              ) : (
-                <>
-                  <span className="hw-punct-target" style={{ fontSize: Math.round(boxSize * 0.72) }}>{tok.ch}</span>
-                  {i === activeIndex && <TraceCanvas size={boxSize} clearTick={clearTick} />}
-                </>
-              )}
+        {tokens.map((tok, i) => (
+          <div key={i} className="hw-cell" style={{ width: boxSize }}>
+            <div className="hw-cell-ref">
+              <span className="hw-cell-py">{tok.t === "c" ? (pinyinMap?.[tok.ch] || "") : ""}</span>
+              <span className="hw-cell-hz">{showChar ? tok.ch : ""}</span>
             </div>
-          )
-        )}
+            {tok.t === "c" ? (
+              <div
+                ref={(el) => { boxRefs.current[i] = el; }}
+                className={`hw-box${i === activeIndex ? " active" : ""}${i < activeIndex ? " done" : ""}`}
+                style={{ width: boxSize, height: boxSize }}
+              />
+            ) : (
+              <div
+                className={`hw-box hw-punct${i === activeIndex ? " active" : ""}${i < activeIndex ? " done" : ""}`}
+                style={{ width: boxSize, height: boxSize }}
+              >
+                {i < activeIndex ? (
+                  <span className="hw-punct-done" style={{ fontSize: Math.round(boxSize * 0.72) }}>{tok.ch}</span>
+                ) : (
+                  <>
+                    <span className="hw-punct-target" style={{ fontSize: Math.round(boxSize * 0.72) }}>{tok.ch}</span>
+                    {i === activeIndex && <TraceCanvas size={boxSize} clearTick={clearTick} />}
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
       {loadError ? (
         <div className="hw-error">
