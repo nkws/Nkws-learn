@@ -3102,3 +3102,11 @@ button:focus-visible {
 .sw-demo-hint { font-size: 12px; color: #9aa0ab; margin: 2px 0 0; text-align: center; }
 .sw-erase-btn.on { background: var(--coral, #FF6B6B); color: #fff; }
 .hw-line-controls { max-width: 400px; }
+
+/* Sentence Writing: demo controls on top so the characters sit right above the pad */
+.sw-demo { gap: 4px; margin-bottom: 4px; }
+.sw-demo-top { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.sw-demo .stroke-anim-btn { min-width: 0; padding: 6px 14px; font-size: 14px; }
+.sw-demo .hw-cell-ref { height: 24px; }         /* +20% demo pinyin */
+.sw-demo .hw-cell-py { font-size: 15px; }
+.sw-demo-hint { margin: 0; }

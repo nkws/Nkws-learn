@@ -86,7 +86,7 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
   // reference to watch, so it gets a smaller box.
   const padCharWidth = Math.round(boxSize * 1.2); // writing space ~20% larger than a demo char
   const rowHeight = Math.round(padCharWidth * 1.1);
-  const demoSize = Math.min(60, boxSize);
+  const demoSize = Math.min(72, boxSize); // ~20% larger demonstrated characters
 
   // Pinyin for every character in the current paragraph.
   useEffect(() => {

@@ -77,6 +77,10 @@ export default function StrokeDemoLine({ tokens, size, pinyinMap, onWidth }) {
 
   return (
     <div className="sw-demo">
+      <div className="sw-demo-top">
+        <button className="btn-secondary stroke-anim-btn" onClick={replay}>▶ 全部演示 Watch all</button>
+        <span className="sw-demo-hint">点字看笔顺 Tap a word</span>
+      </div>
       <div className="hw-line" ref={lineRef}>
         {tokens.map((tok, i) => (
           <div key={i} className="hw-cell" style={{ width: boxSize }}>
@@ -97,8 +101,6 @@ export default function StrokeDemoLine({ tokens, size, pinyinMap, onWidth }) {
           </div>
         ))}
       </div>
-      <p className="sw-demo-hint">点一个字看笔顺 Tap a character to see its strokes</p>
-      <button className="btn-secondary stroke-anim-btn" onClick={replay}>▶ 全部演示 Watch all</button>
     </div>
   );
 }
