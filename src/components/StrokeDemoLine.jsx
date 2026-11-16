@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import HanziWriter from "hanzi-writer";
 import { boxSizeFor } from "../utils/writingBox";
 
@@ -13,6 +13,7 @@ export default function StrokeDemoLine({ tokens, size, pinyinMap, onWidth }) {
   const writersRef = useRef([]);
   const lineRef = useRef(null);
   const runRef = useRef(0); // only the latest "watch all" run plays
+  const [noData, setNoData] = useState(() => new Set()); // char indices with no stroke data
 
   // Report the demonstration's actual rendered width so the writing pad below
   // can be made the same left-to-right length.
@@ -42,7 +43,7 @@ export default function StrokeDemoLine({ tokens, size, pinyinMap, onWidth }) {
         strokeColor: "#1A237E",
         strokeAnimationSpeed: 1.2,
         delayBetweenStrokes: 150,
-        onLoadCharDataError() { /* skip chars without data */ },
+        onLoadCharDataError() { setNoData((s) => (s.has(i) ? s : new Set(s).add(i))); },
       });
     });
     writersRef.current = writers;
@@ -82,16 +83,19 @@ export default function StrokeDemoLine({ tokens, size, pinyinMap, onWidth }) {
         <span className="sw-demo-hint">点字看笔顺 Tap a word</span>
       </div>
       <div className="hw-line" ref={lineRef}>
-        {tokens.map((tok, i) => (
+        {tokens.map((tok, i) => {
+          const strokes = tok.t === "c" && !noData.has(i); // has stroke data to animate
+          return (
           <div key={i} className="hw-cell" style={{ width: boxSize }}>
             <div
-              className={`hw-box sw-demo-box${tok.t === "p" ? " hw-punct" : " sw-demo-tap"}`}
+              className={`hw-box sw-demo-box${tok.t === "p" ? " hw-punct" : ""}${strokes ? " sw-demo-tap" : ""}`}
               style={{ width: boxSize, height: boxSize }}
-              onClick={tok.t === "c" ? () => animateOne(i) : undefined}
+              onClick={strokes ? () => animateOne(i) : undefined}
             >
-              {tok.t === "c" ? (
-                <div className="sw-demo-holder" ref={(el) => { boxRefs.current[i] = el; }} />
-              ) : (
+              {/* Always mount a holder for characters so the writer can load;
+                  overlay the glyph when there's no stroke data. */}
+              {tok.t === "c" && <div className="sw-demo-holder" ref={(el) => { boxRefs.current[i] = el; }} />}
+              {(tok.t !== "c" || noData.has(i)) && (
                 <span className="sw-static-hz" style={{ fontSize: Math.round(boxSize * 0.72) }}>{tok.ch}</span>
               )}
             </div>
@@ -99,7 +103,8 @@ export default function StrokeDemoLine({ tokens, size, pinyinMap, onWidth }) {
               <span className="hw-cell-py">{tok.t === "c" ? (pinyinMap?.[tok.ch] || "") : ""}</span>
             </div>
           </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
