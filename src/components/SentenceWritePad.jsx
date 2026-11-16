@@ -1,42 +1,42 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
-// One wide handwriting box for a whole sentence — simple free writing, same
-// touch + mouse drawing the spelling drill uses (reliable multi-stroke, no
-// pointer-capture quirks). No recognition: the child writes in their own hand
-// and self-checks. The box sizes itself for a child's hand: it measures its own
-// width and gives as many child-height writing rows as the sentence needs,
-// independent of the (compact) demonstration above. Remounting (new key) gives
-// a fresh, empty box.
-export default function SentenceWritePad({ pinyin, onDone, charCount = 1, charWidth = 90, rowHeight = 110, width }) {
-  const wrapRef = useRef(null);
+// A 田字格 worksheet for a whole sentence: one generous box per character,
+// filling the available width and wrapping to as many rows as the sentence
+// needs — sized for a child's hand, independent of the compact demonstration.
+// Simple free writing (reliable touch + mouse drawing, no pointer-capture
+// quirks), an eraser, and clear. No recognition: the child writes in his own
+// hand and self-checks. The grid behind the one canvas marks each box.
+export default function SentenceWritePad({ pinyin, onDone, charCount = 1, cell = 120 }) {
+  const outerRef = useRef(null);
   const canvasRef = useRef(null);
   const drawingRef = useRef(false);
   const lastRef = useRef(null);
   const eraseRef = useRef(false);
-  const [measuredW, setMeasuredW] = useState(0);
+  const [avail, setAvail] = useState(0);
   const [erasing, setErasing] = useState(false);
-  const toggleErase = () => { const next = !eraseRef.current; eraseRef.current = next; setErasing(next); };
+  const toggleErase = () => { const n = !eraseRef.current; eraseRef.current = n; setErasing(n); };
 
-  // Rows needed to write `charCount` child-sized characters across the box.
-  const perRow = Math.max(1, Math.floor(measuredW / (charWidth + 8)) || 1);
-  const rows = Math.min(8, Math.max(1, Math.ceil(charCount / perRow)));
-  const height = rows * rowHeight;
+  // Lay the characters out as a grid of `cell`-sized boxes across the width.
+  const cols = Math.max(1, Math.floor(avail / cell) || 1);
+  const rows = Math.min(12, Math.max(1, Math.ceil(charCount / cols)));
+  const padW = (rows === 1 ? Math.min(cols, charCount) : cols) * cell;
+  const padH = rows * cell;
 
-  // Track the box's own rendered width (it equals `width` when one is given).
-  useEffect(() => {
-    const wrap = wrapRef.current;
-    if (!wrap) return;
-    const measure = () => setMeasuredW(wrap.clientWidth);
+  // Track the available width (full content width, not the demo's).
+  useLayoutEffect(() => {
+    const outer = outerRef.current;
+    if (!outer) return;
+    const measure = () => setAvail(outer.clientWidth);
     measure();
     const ro = new ResizeObserver(measure);
-    ro.observe(wrap);
+    ro.observe(outer);
     return () => ro.disconnect();
   }, []);
 
   // (Re)fit the canvas bitmap whenever its size changes.
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || !padW || !padH) return;
     const rect = canvas.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
     canvas.width = Math.max(1, Math.floor(rect.width * dpr));
@@ -48,7 +48,7 @@ export default function SentenceWritePad({ pinyin, onDone, charCount = 1, charWi
     ctx.strokeStyle = "#2563EB";
     ctx.lineWidth = 4;
     ctx.clearRect(0, 0, rect.width, rect.height);
-  }, [measuredW, height]);
+  }, [padW, padH]);
 
   const clear = useCallback(() => {
     const canvas = canvasRef.current;
@@ -69,8 +69,8 @@ export default function SentenceWritePad({ pinyin, onDone, charCount = 1, charWi
     lastRef.current = point(e);
     const ctx = canvasRef.current.getContext("2d");
     if (eraseRef.current) {
-      ctx.globalCompositeOperation = "destination-out"; // erase to transparent
-      ctx.lineWidth = Math.max(18, Math.round(rowHeight * 0.3));
+      ctx.globalCompositeOperation = "destination-out";
+      ctx.lineWidth = Math.max(18, Math.round(cell * 0.28));
     } else {
       ctx.globalCompositeOperation = "source-over";
       ctx.lineWidth = 4;
@@ -91,13 +91,13 @@ export default function SentenceWritePad({ pinyin, onDone, charCount = 1, charWi
   const end = (e) => { if (!drawingRef.current) return; e.preventDefault(); drawingRef.current = false; lastRef.current = null; };
 
   return (
-    <div className="sw-pad">
+    <div className="sw-pad" ref={outerRef}>
       {pinyin && <p className="sw-pad-pinyin">{pinyin}</p>}
-      <div className="sw-pad-wrap" ref={wrapRef} style={{ "--rh": `${rowHeight}px`, width: width ? `${width}px` : undefined, maxWidth: "100%" }}>
+      <div className="sw-pad-wrap sw-pad-grid" style={{ width: padW || "100%", height: padH, "--cell": `${cell}px` }}>
         <canvas
           ref={canvasRef}
           className="sw-pad-canvas"
-          style={{ height }}
+          style={{ width: padW || "100%", height: padH }}
           onMouseDown={start}
           onMouseMove={moveDraw}
           onMouseUp={end}

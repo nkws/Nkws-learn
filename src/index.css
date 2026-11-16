@@ -3131,3 +3131,14 @@ button:focus-visible {
 @media (orientation: landscape) {
   .writing-screen .sw-practice { padding-top: 8px; }
 }
+
+/* Sentence Writing: 田字格 grid worksheet — one box per character */
+.sw-pad-grid {
+  background-color: #fff;
+  background-image:
+    linear-gradient(to right, #D7DCE4 1px, transparent 1px),
+    linear-gradient(to bottom, #D7DCE4 1px, transparent 1px),
+    linear-gradient(to right, transparent calc(50% - 0.5px), #EAEDF2 calc(50% - 0.5px), #EAEDF2 calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+    linear-gradient(to bottom, transparent calc(50% - 0.5px), #EAEDF2 calc(50% - 0.5px), #EAEDF2 calc(50% + 0.5px), transparent calc(50% + 0.5px));
+  background-size: var(--cell, 120px) var(--cell, 120px);
+}

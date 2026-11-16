@@ -58,7 +58,6 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
   const [activeSentence, setActiveSentence] = useState(0);
   const [attempt, setAttempt] = useState(0);
   const [pinyinMap, setPinyinMap] = useState({});
-  const [demoWidth, setDemoWidth] = useState(0);
 
   const lessons = useMemo(() => sortListsByOrder(lists.filter((l) => listKind(l) === KIND)), [lists]);
 
@@ -69,9 +68,9 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
 
   // The child writes at full (finger) size; the demonstration is just a compact
   // reference to watch, so it gets a smaller box.
-  const padCharWidth = Math.round(boxSize * 1.2); // writing space ~20% larger than a demo char
-  const rowHeight = Math.round(padCharWidth * 1.1);
-  const demoSize = Math.min(72, boxSize); // ~20% larger demonstrated characters
+  const demoSize = Math.min(72, boxSize); // compact demonstrated characters (reference only)
+  // A generous per-character writing box, sized for his hand (not the demo).
+  const cell = Math.min(150, Math.max(104, Math.round(boxSize * 1.4)));
 
   // Pinyin for every character in the current paragraph.
   useEffect(() => {
@@ -219,15 +218,13 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
           ) : activeS ? (
             <div className="sw-stage">
               {!memory && (
-                <StrokeDemoLine key={`demo-${pIndex}-${activeSentence}-${attempt}`} tokens={activeS.tokens} size={demoSize} pinyinMap={pinyinMap} onWidth={setDemoWidth} />
+                <StrokeDemoLine key={`demo-${pIndex}-${activeSentence}-${attempt}`} tokens={activeS.tokens} size={demoSize} pinyinMap={pinyinMap} />
               )}
               <SentenceWritePad
                 key={`pad-${pIndex}-${activeSentence}-${mode}-${attempt}`}
                 pinyin={memory ? activeS.tokens.filter((t) => t.t === "c").map((t) => pinyinMap[t.ch] || "").join(" ") : ""}
                 charCount={activeS.tokens.length}
-                charWidth={padCharWidth}
-                rowHeight={rowHeight}
-                width={!memory && demoWidth > 0 ? demoWidth : undefined}
+                cell={cell}
                 onDone={advanceSentence}
               />
             </div>
