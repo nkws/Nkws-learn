@@ -3095,3 +3095,10 @@ button:focus-visible {
 
 /* Let the writing pad grow to the demonstration's width (was capped at 460px) */
 .sw-pad { max-width: 100%; }
+
+/* Sentence Writing: tap-a-character demo + eraser */
+.sw-demo-tap { cursor: pointer; }
+.sw-demo-tap:active { background: #EEF1F6; }
+.sw-demo-hint { font-size: 12px; color: #9aa0ab; margin: 2px 0 0; text-align: center; }
+.sw-erase-btn.on { background: var(--coral, #FF6B6B); color: #fff; }
+.hw-line-controls { max-width: 400px; }

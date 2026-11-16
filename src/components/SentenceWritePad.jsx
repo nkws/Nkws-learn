@@ -12,7 +12,10 @@ export default function SentenceWritePad({ pinyin, onDone, charCount = 1, charWi
   const canvasRef = useRef(null);
   const drawingRef = useRef(false);
   const lastRef = useRef(null);
+  const eraseRef = useRef(false);
   const [measuredW, setMeasuredW] = useState(0);
+  const [erasing, setErasing] = useState(false);
+  const toggleErase = () => { const next = !eraseRef.current; eraseRef.current = next; setErasing(next); };
 
   // Rows needed to write `charCount` child-sized characters across the box.
   const perRow = Math.max(1, Math.floor(measuredW / (charWidth + 8)) || 1);
@@ -60,7 +63,19 @@ export default function SentenceWritePad({ pinyin, onDone, charCount = 1, charWi
     const t = e.touches?.[0];
     return { x: (t ? t.clientX : e.clientX) - rect.left, y: (t ? t.clientY : e.clientY) - rect.top };
   };
-  const start = (e) => { e.preventDefault(); drawingRef.current = true; lastRef.current = point(e); };
+  const start = (e) => {
+    e.preventDefault();
+    drawingRef.current = true;
+    lastRef.current = point(e);
+    const ctx = canvasRef.current.getContext("2d");
+    if (eraseRef.current) {
+      ctx.globalCompositeOperation = "destination-out"; // erase to transparent
+      ctx.lineWidth = Math.max(18, Math.round(rowHeight * 0.3));
+    } else {
+      ctx.globalCompositeOperation = "source-over";
+      ctx.lineWidth = 4;
+    }
+  };
   const moveDraw = (e) => {
     if (!drawingRef.current) return;
     e.preventDefault();
@@ -93,6 +108,7 @@ export default function SentenceWritePad({ pinyin, onDone, charCount = 1, charWi
         />
       </div>
       <div className="hw-line-controls">
+        <button className={`btn-secondary sw-erase-btn${erasing ? " on" : ""}`} onClick={toggleErase} aria-pressed={erasing}>🧹 橡皮 Eraser</button>
         <button className="btn-secondary" onClick={clear}>重写 Clear</button>
         <button className="btn-primary" onClick={onDone}>下一句 ✓</button>
       </div>

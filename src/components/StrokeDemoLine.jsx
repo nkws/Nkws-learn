@@ -2,16 +2,17 @@ import { useEffect, useLayoutEffect, useRef } from "react";
 import HanziWriter from "hanzi-writer";
 import { boxSizeFor } from "../utils/writingBox";
 
-// Read-only "watch how it's written" line: each character auto-writes its
-// strokes in order (a presentation, using the stroke data only to show — never
-// to grade or compare the child's writing). Punctuation has no stroke data, so
-// it's shown statically. Column-aligned with the freehand practice line below.
+// Read-only "watch how it's written" line: each character is shown as a faint
+// outline the child can read; TAP a character and it writes its own strokes in
+// order (stroke data used only to show — never to grade the child's writing).
+// A button plays them all in sequence. Punctuation has no stroke data, so it's
+// shown statically. Column-aligned with the freehand practice line below.
 export default function StrokeDemoLine({ tokens, size, pinyinMap, onWidth }) {
   const boxSize = size || boxSizeFor(tokens.length);
   const boxRefs = useRef([]);
   const writersRef = useRef([]);
   const lineRef = useRef(null);
-  const runRef = useRef(0); // only the latest animation run plays; a new press restarts it
+  const runRef = useRef(0); // only the latest "watch all" run plays
 
   // Report the demonstration's actual rendered width so the writing pad below
   // can be made the same left-to-right length.
@@ -27,7 +28,6 @@ export default function StrokeDemoLine({ tokens, size, pinyinMap, onWidth }) {
 
   useEffect(() => {
     const boxes = boxRefs.current;
-    let cancelled = false;
     const writers = tokens.map((tok, i) => {
       if (tok.t !== "c") return null;
       const el = boxes[i];
@@ -47,24 +47,20 @@ export default function StrokeDemoLine({ tokens, size, pinyinMap, onWidth }) {
     });
     writersRef.current = writers;
 
-    const order = tokens.map((t, i) => (t.t === "c" ? i : -1)).filter((i) => i >= 0);
-    const myRun = ++runRef.current;
-    const playFrom = (k) => {
-      if (cancelled || myRun !== runRef.current || k >= order.length) return;
-      const w = writers[order[k]];
-      if (!w) { playFrom(k + 1); return; }
-      w.animateCharacter({ onComplete: () => playFrom(k + 1) });
-    };
-    playFrom(0);
-
     return () => {
-      cancelled = true;
       boxes.forEach((el) => { if (el) el.innerHTML = ""; });
-      writersRef.current = []; // replaces the array, so any replay run below stops
+      writersRef.current = []; // replaces the array, so any run below stops
     };
   }, [tokens, boxSize]);
 
-  // Replay the strokes. A new press starts a fresh run and the previous one
+  // Tap one character: it writes just its own strokes.
+  const animateOne = (i) => {
+    const w = writersRef.current[i];
+    if (!w) return;
+    try { w.animateCharacter(); } catch { /* ignore */ }
+  };
+
+  // Play them all in order. A new press starts a fresh run and the previous one
   // stops, so repeated taps never stack overlapping animations.
   const replay = () => {
     const writers = writersRef.current;
@@ -84,7 +80,11 @@ export default function StrokeDemoLine({ tokens, size, pinyinMap, onWidth }) {
       <div className="hw-line" ref={lineRef}>
         {tokens.map((tok, i) => (
           <div key={i} className="hw-cell" style={{ width: boxSize }}>
-            <div className={`hw-box sw-demo-box${tok.t === "p" ? " hw-punct" : ""}`} style={{ width: boxSize, height: boxSize }}>
+            <div
+              className={`hw-box sw-demo-box${tok.t === "p" ? " hw-punct" : " sw-demo-tap"}`}
+              style={{ width: boxSize, height: boxSize }}
+              onClick={tok.t === "c" ? () => animateOne(i) : undefined}
+            >
               {tok.t === "c" ? (
                 <div className="sw-demo-holder" ref={(el) => { boxRefs.current[i] = el; }} />
               ) : (
@@ -97,7 +97,8 @@ export default function StrokeDemoLine({ tokens, size, pinyinMap, onWidth }) {
           </div>
         ))}
       </div>
-      <button className="btn-secondary stroke-anim-btn" onClick={replay}>▶ 看笔顺 Watch strokes</button>
+      <p className="sw-demo-hint">点一个字看笔顺 Tap a character to see its strokes</p>
+      <button className="btn-secondary stroke-anim-btn" onClick={replay}>▶ 全部演示 Watch all</button>
     </div>
   );
 }
