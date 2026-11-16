@@ -84,7 +84,8 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
 
   // The child writes at full (finger) size; the demonstration is just a compact
   // reference to watch, so it gets a smaller box.
-  const rowHeight = Math.round(boxSize * 1.1);
+  const padCharWidth = Math.round(boxSize * 1.2); // writing space ~20% larger than a demo char
+  const rowHeight = Math.round(padCharWidth * 1.1);
   const demoSize = Math.min(60, boxSize);
 
   // Pinyin for every character in the current paragraph.
@@ -220,7 +221,7 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
                     key={`pad-${pIndex}-${si}-${mode}-${attempt}`}
                     pinyin={memory ? s.tokens.filter((t) => t.t === "c").map((t) => pinyinMap[t.ch] || "").join(" ") : ""}
                     charCount={s.tokens.length}
-                    charWidth={boxSize}
+                    charWidth={padCharWidth}
                     rowHeight={rowHeight}
                     width={!memory && demoWidth > 0 ? demoWidth : undefined}
                     onDone={advanceSentence}
