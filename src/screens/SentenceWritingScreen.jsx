@@ -41,21 +41,6 @@ const sentencesOf = (para) =>
     .filter((s) => cjkCount(s) > 0)
     .map((display) => ({ display, tokens: tokensOf(display) }));
 
-// A non-active sentence as a compact reference line: finished sentences show
-// their characters (for self-comparison, with a ✓); upcoming sentences show
-// the text dimmed (or just pinyin, in memory mode, so they're not spoiled).
-function SentenceRef({ tokens, pinyinMap, done, reveal }) {
-  const text = reveal
-    ? tokens.map((t) => t.ch).join("")
-    : tokens.filter((t) => t.t === "c").map((t) => pinyinMap?.[t.ch] || "·").join(" ");
-  return (
-    <div className={`sw-ref${done ? " done" : " ahead"}`}>
-      {done && <span className="sw-ref-check">✓</span>}
-      <span className="sw-ref-text">{text}</span>
-    </div>
-  );
-}
-
 export default function SentenceWritingScreen({ activeChild, user, onBack }) {
   const { speak } = useTTS("zh");
   const { lists, createList, updateList, deleteList } = useSpellingLists(activeChild, user?.id);
@@ -141,6 +126,7 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
 
   const paraDone = activeSentence >= sentences.length && sentences.length > 0;
   const lastPara = pIndex >= paragraphs.length - 1;
+  const activeS = sentences[activeSentence] || null;
 
   const onTopBack = () => { if (phase === PHASE.LIBRARY) onBack(); else setPhase(PHASE.LIBRARY); };
 
@@ -193,49 +179,34 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
           )}
         </div>
       ) : phase === PHASE.PRACTICE ? (
-        <div className="writing-body">
-          <div className="sw-paranav">
+        <div className="writing-body sw-practice">
+          {/* One slim toolbar: paragraph nav + progress + mode + speaker */}
+          <div className="sw-toolbar">
             <button className="sw-arrow" onClick={() => goParagraph(-1)} disabled={pIndex === 0} aria-label="上一段">‹</button>
-            <span className="sw-paralabel">
-              {lessonTitle && <span className="sw-lesson-name">{lessonTitle} · </span>}第 {pIndex + 1} / {paragraphs.length} 段
-            </span>
-            <button className="sw-arrow" onClick={() => goParagraph(1)} disabled={lastPara} aria-label="下一段">›</button>
-          </div>
-          <div className="sw-modebar">
-            {MODES.map((m) => (
-              <button key={m.key} className={`sw-mode-btn${mode === m.key ? " active" : ""}`} onClick={() => pickMode(m.key)}>{m.label}</button>
-            ))}
-          </div>
-
-          {sentences.map((s, si) => (
-            <div key={si} className={`sw-srow${si === activeSentence ? " active" : si > activeSentence ? " ahead" : ""}`}>
-              <div className="sw-srow-top">
-                <button className="sw-srow-speak" onClick={() => speak(s.display)} aria-label="听一听" title="听一听">🔊</button>
-              </div>
-              {si === activeSentence ? (
-                <>
-                  {!memory && (
-                    <StrokeDemoLine key={`demo-${pIndex}-${si}-${attempt}`} tokens={s.tokens} size={demoSize} pinyinMap={pinyinMap} onWidth={setDemoWidth} />
-                  )}
-                  <SentenceWritePad
-                    key={`pad-${pIndex}-${si}-${mode}-${attempt}`}
-                    pinyin={memory ? s.tokens.filter((t) => t.t === "c").map((t) => pinyinMap[t.ch] || "").join(" ") : ""}
-                    charCount={s.tokens.length}
-                    charWidth={padCharWidth}
-                    rowHeight={rowHeight}
-                    width={!memory && demoWidth > 0 ? demoWidth : undefined}
-                    onDone={advanceSentence}
-                  />
-                </>
-              ) : si < activeSentence ? (
-                <SentenceRef tokens={s.tokens} pinyinMap={pinyinMap} done reveal />
-              ) : (
-                <SentenceRef tokens={s.tokens} pinyinMap={pinyinMap} reveal={!memory} />
+            <div className="sw-toolbar-mid">
+              <span className="sw-toolbar-pos">
+                {lessonTitle && <span className="sw-lesson-name">{lessonTitle} · </span>}
+                {paragraphs.length > 1 && `第 ${pIndex + 1}/${paragraphs.length} 段 · `}
+                第 {Math.min(activeSentence + 1, sentences.length)}/{sentences.length} 句
+              </span>
+              {sentences.length > 1 && (
+                <span className="sw-dots">
+                  {sentences.map((_, i) => (
+                    <span key={i} className={`sw-dot${i < activeSentence ? " done" : i === activeSentence ? " now" : ""}`} />
+                  ))}
+                </span>
               )}
             </div>
-          ))}
+            <button className="sw-arrow" onClick={() => goParagraph(1)} disabled={lastPara} aria-label="下一段">›</button>
+            <div className="sw-modebar sw-modebar-mini">
+              {MODES.map((m) => (
+                <button key={m.key} className={`sw-mode-btn${mode === m.key ? " active" : ""}`} onClick={() => pickMode(m.key)}>{m.label}</button>
+              ))}
+            </div>
+            <button className="sw-srow-speak" onClick={() => activeS && speak(activeS.display)} aria-label="听一听" title="听一听">🔊</button>
+          </div>
 
-          {paraDone && (
+          {paraDone ? (
             <div className="sw-para-done">
               <span className="sw-para-done-msg">这段写完了！🎉</span>
               {lastPara ? (
@@ -245,7 +216,22 @@ export default function SentenceWritingScreen({ activeChild, user, onBack }) {
               )}
               <button className="btn-secondary" onClick={restartParagraph}>再写一次 Again</button>
             </div>
-          )}
+          ) : activeS ? (
+            <div className="sw-stage">
+              {!memory && (
+                <StrokeDemoLine key={`demo-${pIndex}-${activeSentence}-${attempt}`} tokens={activeS.tokens} size={demoSize} pinyinMap={pinyinMap} onWidth={setDemoWidth} />
+              )}
+              <SentenceWritePad
+                key={`pad-${pIndex}-${activeSentence}-${mode}-${attempt}`}
+                pinyin={memory ? activeS.tokens.filter((t) => t.t === "c").map((t) => pinyinMap[t.ch] || "").join(" ") : ""}
+                charCount={activeS.tokens.length}
+                charWidth={padCharWidth}
+                rowHeight={rowHeight}
+                width={!memory && demoWidth > 0 ? demoWidth : undefined}
+                onDone={advanceSentence}
+              />
+            </div>
+          ) : null}
         </div>
       ) : phase === PHASE.DONE ? (
         <div className="writing-body writing-centered">

@@ -3110,3 +3110,24 @@ button:focus-visible {
 .sw-demo .hw-cell-ref { height: 24px; }         /* +20% demo pinyin */
 .sw-demo .hw-cell-py { font-size: 15px; }
 .sw-demo-hint { margin: 0; }
+
+/* ---- Sentence Writing: slim toolbar + single active sentence (declutter) ---- */
+.sw-practice { gap: 8px; }
+.sw-toolbar {
+  display: flex; align-items: center; justify-content: center;
+  flex-wrap: wrap; gap: 8px 10px; width: 100%; max-width: 760px;
+  padding-bottom: 4px; border-bottom: 1px solid #EEF0F4;
+}
+.sw-toolbar-mid { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.sw-toolbar-pos { font-size: 13px; color: #555; font-weight: 700; }
+.sw-dots { display: flex; gap: 5px; }
+.sw-dot { width: 8px; height: 8px; border-radius: 50%; background: #D7DBE3; }
+.sw-dot.done { background: var(--teal, #0E7C7B); }
+.sw-dot.now { background: var(--coral, #FF6B6B); }
+.sw-modebar-mini { width: auto; max-width: none; }
+.sw-modebar-mini .sw-mode-btn { flex: 0 0 auto; padding: 6px 14px; }
+.sw-stage { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 100%; }
+/* In landscape, keep the top chrome tight so the demo + box share one screen */
+@media (orientation: landscape) {
+  .writing-screen .sw-practice { padding-top: 8px; }
+}
