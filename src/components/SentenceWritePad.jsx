@@ -16,8 +16,10 @@ export default function SentenceWritePad({ pinyin, onDone, charCount = 1, cell =
   const [erasing, setErasing] = useState(false);
   const toggleErase = () => { const n = !eraseRef.current; eraseRef.current = n; setErasing(n); };
 
-  // Lay the characters out as a grid of `cell`-sized boxes across the width.
-  const cols = Math.max(1, Math.floor(avail / cell) || 1);
+  // Lay the characters out as a grid of `cell`-sized boxes across the width,
+  // leaving a touch gutter on each side so the page can still be scrolled.
+  const GUTTER = 28;
+  const cols = Math.max(1, Math.floor((avail - GUTTER * 2) / cell) || 1);
   const rows = Math.min(12, Math.max(1, Math.ceil(charCount / cols)));
   const padW = (rows === 1 ? Math.min(cols, charCount) : cols) * cell;
   const padH = rows * cell;
