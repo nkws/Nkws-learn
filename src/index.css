@@ -3328,3 +3328,18 @@ button:focus-visible {
 .lc-self-yes { background: #1FA35E; }
 .lc-self-no { background: var(--coral, #FF6B6B); }
 .lc-self-yes:active, .lc-self-no:active { transform: translateY(1px); }
+
+/* Dictation: printed sentence with a blank to fill */
+.lc-cloze {
+  width: 100%; max-width: 460px; box-sizing: border-box;
+  margin: 16px 0 4px; padding: 16px 18px;
+  background: #F4F7F8; border-radius: 14px;
+  font-size: 26px; line-height: 2.0; color: var(--text);
+  text-align: center;
+}
+.lc-blank {
+  display: inline-block;
+  width: 1.4em; height: 1.5em;
+  margin: 0 4px; vertical-align: -0.3em;
+  border-bottom: 3px solid var(--coral, #FF6B6B);
+}
