@@ -3288,3 +3288,43 @@ button:focus-visible {
   cursor: pointer;
 }
 .lc-edit-additem { width: 100%; max-width: 460px; margin: 6px 0 4px; }
+
+/* ── Listening: syllabus drills, section layout, write + self-check ───────── */
+.lc-section-gap { margin-top: 26px; }
+.lc-syll {
+  width: 100%; max-width: 460px; box-sizing: border-box;
+  border: 2px solid var(--line, #E3E6EC); border-radius: 16px;
+  padding: 12px 14px; margin: 8px 0; background: #FAFBFC;
+}
+.lc-syll-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; gap: 10px; }
+.lc-syll-name { font-weight: 800; color: var(--text); }
+.lc-syll-all {
+  border: none; background: var(--teal, #0E7C7B); color: #fff;
+  border-radius: 10px; padding: 6px 12px; font-size: 13px; font-family: inherit;
+  font-weight: 700; cursor: pointer; white-space: nowrap;
+}
+.lc-lesson-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.lc-chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  border: 2px solid var(--line, #E3E6EC); background: #fff; color: var(--text);
+  border-radius: 10px; padding: 7px 11px; font-size: 15px; font-weight: 700;
+  font-family: inherit; cursor: pointer;
+}
+.lc-chip:active { transform: translateY(1px); }
+.lc-chip-n { font-size: 11px; font-weight: 700; color: #fff; background: var(--coral, #FF6B6B); border-radius: 8px; padding: 1px 6px; }
+
+.lc-modebar { margin-bottom: 14px; }
+.lc-q-hint { color: #888; font-weight: 700; font-size: 20px; }
+
+.lc-write { width: 100%; max-width: 460px; display: flex; flex-direction: column; align-items: center; }
+.lc-answer { width: 100%; display: flex; flex-direction: column; align-items: center; }
+.lc-answer-label { font-size: 14px; color: #888; font-weight: 700; margin: 4px 0 8px; }
+.lc-selfcheck { display: flex; align-items: center; gap: 12px; margin-top: 16px; flex-wrap: wrap; justify-content: center; }
+.lc-selfcheck-q { font-size: 17px; font-weight: 800; color: var(--text); }
+.lc-self-yes, .lc-self-no {
+  border: none; border-radius: 14px; padding: 12px 22px; font-size: 18px;
+  font-weight: 800; font-family: inherit; cursor: pointer; color: #fff;
+}
+.lc-self-yes { background: #1FA35E; }
+.lc-self-no { background: var(--coral, #FF6B6B); }
+.lc-self-yes:active, .lc-self-no:active { transform: translateY(1px); }
