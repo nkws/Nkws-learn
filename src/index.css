@@ -3142,3 +3142,149 @@ button:focus-visible {
     linear-gradient(to bottom, transparent calc(50% - 0.5px), #EAEDF2 calc(50% - 0.5px), #EAEDF2 calc(50% + 0.5px), transparent calc(50% + 0.5px));
   background-size: var(--cell, 120px) var(--cell, 120px);
 }
+
+/* ── 听力理解 Listening comprehension ─────────────────────────────────────
+   Hear-first MCQ: a big Play button reads the passage aloud (device TTS),
+   the passage text stays hidden until "Show text", then a multiple-choice
+   question with clear right/wrong feedback. Shares the writing-screen shell
+   and the --teal / --coral tokens used elsewhere. */
+.lc-practice { align-items: center; }
+.lc-progress { font-size: 14px; color: #888; text-align: center; margin: 2px 0 10px; }
+
+.lc-play-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  max-width: 460px;
+  border: none;
+  border-radius: 20px;
+  padding: 22px 16px;
+  background: var(--teal, #0E7C7B);
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(14, 124, 123, 0.28);
+}
+.lc-play-btn.played { background: #10908F; }
+.lc-play-btn:active { transform: translateY(1px); }
+.lc-play-icon { font-size: 40px; line-height: 1; }
+.lc-play-label { font-size: 18px; font-weight: 800; }
+
+.lc-reveal {
+  margin-top: 12px;
+  border: 2px dashed var(--line, #E3E6EC);
+  background: #fff;
+  color: #888;
+  border-radius: 12px;
+  padding: 8px 16px;
+  font-size: 15px;
+  font-family: inherit;
+  cursor: pointer;
+}
+.lc-passage {
+  margin-top: 12px;
+  width: 100%;
+  max-width: 460px;
+  box-sizing: border-box;
+  background: #F4F7F8;
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 22px;
+  line-height: 1.8;
+  color: var(--text);
+}
+.lc-question {
+  margin: 18px 0 14px;
+  width: 100%;
+  max-width: 460px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.lc-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 460px;
+}
+.lc-choice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 2px solid var(--line, #E3E6EC);
+  border-radius: 16px;
+  padding: 16px 20px;
+  background: #fff;
+  font-family: inherit;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.12s, background 0.12s;
+}
+.lc-choice:active { transform: translateY(1px); }
+.lc-choice.correct { border-color: #1FA35E; background: #E9F7EF; color: #0F7A41; }
+.lc-choice.wrong { border-color: var(--coral, #FF6B6B); background: #FFEDED; color: #C0392B; }
+.lc-choice.dim { opacity: 0.5; }
+.lc-choice-mark { font-size: 22px; font-weight: 900; }
+
+.lc-feedback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  max-width: 460px;
+  margin-top: 20px;
+}
+.lc-feedback-msg { font-size: 19px; font-weight: 800; text-align: center; }
+.lc-feedback-msg.ok { color: #1FA35E; }
+.lc-feedback-msg.no { color: var(--coral, #FF6B6B); }
+
+/* Editor */
+.lc-edit-card {
+  width: 100%;
+  max-width: 460px;
+  box-sizing: border-box;
+  border: 2px solid var(--line, #E3E6EC);
+  border-radius: 16px;
+  padding: 14px;
+  margin: 10px 0;
+  background: #FAFBFC;
+}
+.lc-edit-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.lc-edit-num { font-weight: 800; color: var(--teal, #0E7C7B); }
+.lc-edit-remove {
+  border: none; background: none; color: #B0B4BB; font-size: 20px; cursor: pointer; line-height: 1;
+}
+.lc-edit-label { display: block; font-size: 13px; color: #888; margin: 10px 0 4px; }
+.lc-edit-passage { font-size: 18px; }
+.lc-edit-choice { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.lc-edit-correct {
+  flex: 0 0 auto;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 2px solid var(--line, #E3E6EC);
+  background: #fff;
+  color: #fff;
+  font-weight: 900;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.lc-edit-correct.on { background: #1FA35E; border-color: #1FA35E; }
+.lc-edit-addchoice, .lc-edit-additem {
+  border: 2px dashed var(--line, #E3E6EC);
+  background: #fff;
+  color: #888;
+  border-radius: 12px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+}
+.lc-edit-additem { width: 100%; max-width: 460px; margin: 6px 0 4px; }
