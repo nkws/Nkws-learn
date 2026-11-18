@@ -69,6 +69,7 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
   const [phase, setPhase] = useState(PHASE.LIBRARY);
   const [sessionId, setSessionId] = useState(null);
   const [manage, setManage] = useState(false); // tap a completed item to reset it
+  const [dictType, setDictType] = useState("hanzi"); // library: 写汉字 vs 写拼音 (separate exercises)
   const [editId, setEditId] = useState(null);
   const [titleDraft, setTitleDraft] = useState("");
   const [items, setItems] = useState([blankItem()]);
@@ -99,19 +100,20 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
   const multi = isDictation && !!current?.blanks && current.blanks.length > 1;
 
   // ── Launchers ────────────────────────────────────────────────────────────
-  const beginSession = useCallback((id, title, type, fmt, normItems) => {
+  const beginSession = useCallback((id, title, type, fmt, normItems, mode = "hanzi") => {
     if (!normItems.length) return;
     unlock();
-    setSessionId(id); setSessionTitle(title); setSessionType(type); setFormat(fmt); setDictMode("hanzi"); setPlayItems(normItems);
+    setSessionId(id); setSessionTitle(title); setSessionType(type); setFormat(fmt); setDictMode(mode); setPlayItems(normItems);
     setQIndex(0); setPicked(null); setRevealed(false); setSelfResult(null); setScore(0);
     setReveal(false); setPlayed(false); setAttempt((a) => a + 1); setPhase(PHASE.PRACTICE);
   }, [unlock]);
 
-  const startDictation = (syllId, tag) => {
+  const modeLabel = (mode) => (mode === "pinyin" ? "写拼音" : "写汉字");
+  const startDictation = (syllId, tag, mode) => {
     const label = syllabusById(syllId)?.label || "听写";
-    beginSession(`dict:${syllId}:${tag}`, `${label} · ${tag}`, "dictation", "write", dictationItems(syllId, tag).map(clozeItem));
+    beginSession(`dict:${syllId}:${tag}:${mode}`, `${label} · ${tag} · ${modeLabel(mode)}`, "dictation", "write", dictationItems(syllId, tag).map(clozeItem), mode);
   };
-  const startWeekly = (paper) => beginSession(paper.id, paper.label, "dictation", "write", weeklyItems(paper.id).map(clozeItem));
+  const startWeekly = (paper, mode) => beginSession(`${paper.id}:${mode}`, `${paper.label} · ${modeLabel(mode)}`, "dictation", "write", weeklyItems(paper.id).map(clozeItem), mode);
   const startPack = (pack) => beginSession(pack.id, pack.label, "comprehension", "select", pack.items.map(compItem));
   const startMyLesson = (lesson) => beginSession(`my:${lesson.id}`, lesson.title || "我的听力", "comprehension", "select", itemsFromWords(lesson.words).map(compItem));
 
@@ -153,8 +155,6 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
     setQIndex((i) => i + 1);
     setPicked(null); setRevealed(false); setSelfResult(null); setReveal(false); setPlayed(false); setAttempt((a) => a + 1);
   };
-  const switchDictMode = (m) => { setDictMode(m); setRevealed(false); setSelfResult(null); setAttempt((a) => a + 1); };
-
   // In manage mode, tapping a completed exercise resets just that one; otherwise
   // the tap launches it. Returns the class suffix for the completion colour.
   const launchTap = (id, launch) => (manage && statusOf(id) ? () => resetOne(id) : launch);
@@ -197,8 +197,13 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
               </span>
             </div>
           )}
-          {/* 1. Sentence dictation from the syllabus */}
+          {/* 1. Sentence dictation from the syllabus — 写汉字 and 写拼音 are
+               separate exercises, each with its own completion. */}
           <p className="home-pick-label">句子听写 · 跟着课本 Sentence dictation</p>
+          <div className="sw-modebar sw-modebar-mini lc-type-seg">
+            <button className={`sw-mode-btn${dictType === "hanzi" ? " active" : ""}`} onClick={() => setDictType("hanzi")}>写汉字<span className="lc-seg-sub">听写</span></button>
+            <button className={`sw-mode-btn${dictType === "pinyin" ? " active" : ""}`} onClick={() => setDictType("pinyin")}>写拼音<span className="lc-seg-sub">注音</span></button>
+          </div>
           {DICT_SYLLABI.map((id) => {
             const syll = syllabusById(id);
             if (!syll) return null;
@@ -210,9 +215,9 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
                 </div>
                 <div className="lc-lesson-chips">
                   {dictationLessons(id).map((l) => {
-                    const lid = `dict:${id}:${l.tag}`;
+                    const lid = `dict:${id}:${l.tag}:${dictType}`;
                     return (
-                      <button key={l.tag} className={`lc-chip${doneClass(lid)}`} onClick={launchTap(lid, () => startDictation(id, l.tag))}>
+                      <button key={l.tag} className={`lc-chip${doneClass(lid)}`} onClick={launchTap(lid, () => startDictation(id, l.tag, dictType))}>
                         {statusOf(lid) === "perfect" && <span className="lc-star">★</span>}{l.tag}<span className="lc-chip-n">{l.count}</span>
                       </button>
                     );
@@ -220,11 +225,14 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
                 </div>
                 {weekly.length > 0 && (
                   <div className="lc-weekly">
-                    {weekly.map((p) => (
-                      <button key={p.id} className={`lc-weekly-btn${doneClass(p.id)}`} onClick={launchTap(p.id, () => startWeekly(p))}>
-                        {statusOf(p.id) === "perfect" ? "⭐" : "📄"} {p.label.split("·").pop().trim()}<span className="lc-chip-n">{p.count}</span>
-                      </button>
-                    ))}
+                    {weekly.map((p) => {
+                      const wid = `${p.id}:${dictType}`;
+                      return (
+                        <button key={p.id} className={`lc-weekly-btn${doneClass(wid)}`} onClick={launchTap(wid, () => startWeekly(p, dictType))}>
+                          {statusOf(wid) === "perfect" ? "⭐" : "📄"} {p.label.split("·").pop().trim()}<span className="lc-chip-n">{p.count}</span>
+                        </button>
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -302,18 +310,13 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
             第 {qIndex + 1}/{playItems.length} {isDictation ? "句" : "题"}
           </div>
 
-          {/* Mode toggle */}
-          {!answered && (isDictation ? (
-            <div className="sw-modebar sw-modebar-mini lc-modebar">
-              <button className={`sw-mode-btn${dictMode === "hanzi" ? " active" : ""}`} onClick={() => switchDictMode("hanzi")}>写汉字</button>
-              <button className={`sw-mode-btn${dictMode === "pinyin" ? " active" : ""}`} onClick={() => switchDictMode("pinyin")}>写拼音</button>
-            </div>
-          ) : (
+          {/* Comprehension answers two ways; dictation mode is fixed per exercise. */}
+          {!isDictation && !answered && (
             <div className="sw-modebar sw-modebar-mini lc-modebar">
               <button className={`sw-mode-btn${format === "select" ? " active" : ""}`} onClick={() => setFormat("select")}>选择</button>
               <button className={`sw-mode-btn${format === "write" ? " active" : ""}`} onClick={() => setFormat("write")}>填空</button>
             </div>
-          ))}
+          )}
 
           <button className={`lc-play-btn${played ? " played" : ""}`} onClick={playCurrent}>
             <span className="lc-play-icon">🔊</span>
@@ -411,7 +414,7 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
           <div className="writing-done-emoji">{score >= playItems.length ? "⭐" : "🎉"}</div>
           <h1 className="hero-title">{score >= playItems.length ? "全对了！" : "练完了！"}</h1>
           <p className="writing-done-stats">{sessionTitle} · 答对 {score}/{playItems.length}</p>
-          <button className="btn-primary" onClick={() => beginSession(sessionId, sessionTitle, sessionType, format, playItems)}>再练一次 Again</button>
+          <button className="btn-primary" onClick={() => beginSession(sessionId, sessionTitle, sessionType, format, playItems, dictMode)}>再练一次 Again</button>
           <button className="btn-secondary" onClick={() => setPhase(PHASE.LIBRARY)}>回到听力 Back</button>
         </div>
       ) : null}
