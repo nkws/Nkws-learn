@@ -83,7 +83,6 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
   const [qIndex, setQIndex] = useState(0);
   const [picked, setPicked] = useState(null);
   const [revealed, setRevealed] = useState(false);
-  const [selfResult, setSelfResult] = useState(null);
   const [score, setScore] = useState(0);
   const [reveal, setReveal] = useState(false); // comprehension passage shown
   const [played, setPlayed] = useState(false);
@@ -104,7 +103,7 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
     if (!normItems.length) return;
     unlock();
     setSessionId(id); setSessionTitle(title); setSessionType(type); setFormat(fmt); setDictMode(mode); setPlayItems(normItems);
-    setQIndex(0); setPicked(null); setRevealed(false); setSelfResult(null); setScore(0);
+    setQIndex(0); setPicked(null); setRevealed(false); setScore(0);
     setReveal(false); setPlayed(false); setAttempt((a) => a + 1); setPhase(PHASE.PRACTICE);
   }, [unlock]);
 
@@ -148,35 +147,30 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
     const text = current.passage ? `${current.passage} ${current.q}` : current.q;
     speak(text, format === "select" ? current.choices : undefined);
   };
-  const pick = (ci) => { if (picked !== null) return; setPicked(ci); if (ci === current.answer) setScore((s) => s + 1); };
-  const selfCheck = (ok) => { if (selfResult !== null) return; setSelfResult(ok); if (ok) setScore((s) => s + 1); };
-  const advance = () => {
-    if (isLast) { markComplete(sessionId, score, playItems.length); setPhase(PHASE.DONE); return; }
+  const goNext = (finalScore) => {
+    if (isLast) { markComplete(sessionId, finalScore, playItems.length); setPhase(PHASE.DONE); return; }
     setQIndex((i) => i + 1);
-    setPicked(null); setRevealed(false); setSelfResult(null); setReveal(false); setPlayed(false); setAttempt((a) => a + 1);
+    setPicked(null); setRevealed(false); setReveal(false); setPlayed(false); setAttempt((a) => a + 1);
   };
+  const pick = (ci) => { if (picked !== null) return; setPicked(ci); if (ci === current.answer) setScore((s) => s + 1); };
+  // Self-marking: tapping ✓/✗ records and goes straight to the next item.
+  const selfCheck = (ok) => { const finalScore = ok ? score + 1 : score; if (ok) setScore(finalScore); goNext(finalScore); };
+  const advance = () => goNext(score);
   // In manage mode, tapping a completed exercise resets just that one; otherwise
   // the tap launches it. Returns the class suffix for the completion colour.
   const launchTap = (id, launch) => (manage && statusOf(id) ? () => resetOne(id) : launch);
   const doneClass = (id) => { const st = statusOf(id); return st ? ` lc-${st}${manage ? " lc-resettable" : ""}` : ""; };
 
   const onTopBack = () => { if (phase === PHASE.LIBRARY) onBack(); else setPhase(PHASE.LIBRARY); };
-  const answered = selectMode ? picked !== null : selfResult !== null;
+  const answered = selectMode ? picked !== null : revealed;
   const nextLabel = isLast ? "完成 Finish" : (isDictation ? "下一句 Next →" : "下一题 Next →");
 
   const selfCheckBlock = (
-    selfResult === null ? (
-      <div className="lc-selfcheck">
-        <span className="lc-selfcheck-q">写对了吗？</span>
-        <button className="lc-self-yes" onClick={() => selfCheck(true)}>✓ 对了</button>
-        <button className="lc-self-no" onClick={() => selfCheck(false)}>✗ 再练</button>
-      </div>
-    ) : (
-      <div className="lc-feedback">
-        <span className={`lc-feedback-msg${selfResult ? " ok" : " no"}`}>{selfResult ? "很棒！🎉" : "没关系，多练几次～"}</span>
-        <button className="btn-primary" onClick={advance}>{nextLabel}</button>
-      </div>
-    )
+    <div className="lc-selfcheck">
+      <span className="lc-selfcheck-q">写对了吗？</span>
+      <button className="lc-self-yes" onClick={() => selfCheck(true)}>✓ 对了</button>
+      <button className="lc-self-no" onClick={() => selfCheck(false)}>✗ 错了</button>
+    </div>
   );
 
   return (
@@ -331,7 +325,7 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
               {current.segs.map((sg, k) => sg.t === "text" ? (
                 <span key={k}>{sg.text}</span>
               ) : pinyinMode ? (
-                <u key={k} className="lc-underline">{multi && <sup className="lc-bnum">{CIRC[sg.i]}</sup>}{sg.ch}</u>
+                <span key={k}>{multi && <sup className="lc-bnum">{CIRC[sg.i]}</sup>}<u className="lc-underline">{sg.ch}</u></span>
               ) : (
                 <span key={k} className="lc-blank-wrap">{multi && <sup className="lc-bnum">{CIRC[sg.i]}</sup>}<span className="lc-blank" /></span>
               ))}
