@@ -5,7 +5,7 @@ import { listKind, sortListsByOrder } from "../utils/spellingKinds";
 import { useListeningProgress } from "../hooks/useListeningProgress";
 import { SYLLABI, syllabusById } from "../data/writingSyllabi";
 import { DICTATION, dictationLessons, dictationItems, weeklyPapers, weeklyItems } from "../data/dictationSentences";
-import { LISTENING_PACKS } from "../data/listeningPacks";
+import { COMPREHENSION, comprehensionLessons, comprehensionItems } from "../data/listeningPacks";
 import SentenceWritePad from "../components/SentenceWritePad";
 import StrokeDemoLine from "../components/StrokeDemoLine";
 import PracticeCanvas from "../components/PracticeCanvas";
@@ -124,7 +124,10 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
     beginSession(`dict:${syllId}:${tag}:${mode}`, `${label} · ${lessonName(tag)} · ${modeLabel(mode)}`, "dictation", "write", dictationItems(syllId, tag).map(clozeItem), mode);
   };
   const startWeekly = (paper, mode) => beginSession(`${paper.id}:${mode}`, `${paper.label} · ${modeLabel(mode)}`, "dictation", "write", weeklyItems(paper.id).map(clozeItem), mode);
-  const startPack = (pack) => beginSession(pack.id, pack.label, "comprehension", "select", pack.items.map(compItem));
+  const startComprehension = (syllId, tag) => {
+    const label = syllabusById(syllId)?.label || "听力";
+    beginSession(`comp:${syllId}:${tag}`, `${label} · ${lessonName(tag)} · 听力理解`, "comprehension", "select", comprehensionItems(syllId, tag).map(compItem));
+  };
   const startMyLesson = (lesson) => beginSession(`my:${lesson.id}`, lesson.title || "我的听力", "comprehension", "select", itemsFromWords(lesson.words).map(compItem));
 
   // ── Editor (my lessons) ──────────────────────────────────────────────────
@@ -244,20 +247,30 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
             );
           })}
 
-          {/* 2. Hand-authored comprehension packs */}
+          {/* 2. Comprehension, anchored to each lesson's words */}
           <p className="home-pick-label lc-section-gap">听力理解 Comprehension</p>
-          <div className="topic-list">
-            {LISTENING_PACKS.map((p) => (
-              <button key={p.id} className={`topic-card${doneClass(p.id)}`} onClick={launchTap(p.id, () => startPack(p))}>
-                <span className="topic-icon">{statusOf(p.id) === "perfect" ? "⭐" : "耳"}</span>
-                <div className="topic-info">
-                  <h2 className="topic-title">{p.label}</h2>
-                  <p className="topic-desc">{p.items.length} 题 · 选择 / 填空</p>
+          {Object.keys(COMPREHENSION).map((id) => {
+            const syll = syllabusById(id);
+            if (!syll) return null;
+            return (
+              <div key={id} className="lc-syll">
+                <div className="lc-syll-head">
+                  <span className="lc-syll-name">{syll.label}{syll.stream === "高级华文" ? " (Higher)" : ""}</span>
+                  <span className="lc-syll-sub">选择 / 填空</span>
                 </div>
-                <span className="topic-arrow">{manage && statusOf(p.id) ? "↺" : "›"}</span>
-              </button>
-            ))}
-          </div>
+                <div className="lc-lesson-chips">
+                  {comprehensionLessons(id).map((l) => {
+                    const cid = `comp:${id}:${l.tag}`;
+                    return (
+                      <button key={l.tag} className={`lc-chip${doneClass(cid)}`} onClick={launchTap(cid, () => startComprehension(id, l.tag))}>
+                        {statusOf(cid) === "perfect" && <span className="lc-star">★</span>}{lessonName(l.tag)}<span className="lc-chip-n">{l.count}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
 
           {/* 3. Parent's own lessons */}
           <p className="home-pick-label lc-section-gap">我的听力 My lessons</p>

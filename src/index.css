@@ -3400,3 +3400,4 @@ button:focus-visible {
 .lc-ref-lnum { flex: 0 0 64px; font-weight: 700; color: #888; font-size: 15px; }
 .lc-ref-chars { flex: 1; font-size: 22px; line-height: 1.7; letter-spacing: 2px; color: var(--text); }
 .lc-ref-back { margin: 18px auto 0; }
+.lc-syll-sub { font-size: 11px; color: #aaa; font-weight: 600; }
