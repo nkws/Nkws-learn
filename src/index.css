@@ -2828,6 +2828,14 @@ button:focus-visible {
   width: 100%;
   max-width: 460px;
   margin: 4px auto 10px;
+  /* Long bilingual label — override btn-primary's big font/padding so it
+     doesn't get squeezed and wrap mid-phrase inside the pill. */
+  font-size: 16px;
+  padding: 13px 18px;
+  line-height: 1.35;
+  white-space: normal;
+  word-break: keep-all;        /* don't split 复习到期的字 / Review across odd points */
+  overflow-wrap: break-word;
 }
 
 /* lesson list badges */
