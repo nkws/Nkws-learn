@@ -3,7 +3,7 @@ import { useTTS } from "../hooks/useSpeech";
 import { useSpellingLists } from "../hooks/useSpellingLists";
 import { listKind, sortListsByOrder } from "../utils/spellingKinds";
 import { useListeningProgress } from "../hooks/useListeningProgress";
-import { syllabusById } from "../data/writingSyllabi";
+import { SYLLABI, syllabusById } from "../data/writingSyllabi";
 import { DICTATION, dictationLessons, dictationItems, weeklyPapers, weeklyItems } from "../data/dictationSentences";
 import { LISTENING_PACKS } from "../data/listeningPacks";
 import SentenceWritePad from "../components/SentenceWritePad";
@@ -20,7 +20,8 @@ import PracticeCanvas from "../components/PracticeCanvas";
 // Writing is self-checked (reveal the answer, mark ✓/✗) — matches the sentence
 // writing approach and the school's marked worksheets. ZERO live AI.
 const KIND = "listening";
-const PHASE = { LIBRARY: "library", EDIT: "edit", PRACTICE: "practice", DONE: "done" };
+const PHASE = { LIBRARY: "library", EDIT: "edit", PRACTICE: "practice", DONE: "done", REFERENCE: "reference" };
+const P1_SYLLABI = SYLLABI.filter((s) => s.levelNum === 1);
 
 const isCJK = (ch) => /[一-鿿]/.test(ch);
 const PUNCT = /[。，、；：！？·…—“”‘’""''（）()《》〈〉【】]/;
@@ -60,6 +61,16 @@ const clozeItem = (c) => ({ passage: "", q: "", choices: [], answer: 0, word: c.
 const DICT_SYLLABI = Object.keys(DICTATION);
 const cellFor = (n) => (n <= 2 ? 132 : n <= 4 ? 116 : 104);
 const CIRC = ["①", "②", "③", "④", "⑤", "⑥"];
+
+// Chinese numeral for 1–99, so lessons read 第一课, 第十二课 … (not "L1").
+function cnNum(n) {
+  const d = "零一二三四五六七八九";
+  if (n <= 10) return n === 10 ? "十" : d[n];
+  if (n < 20) return "十" + (n % 10 ? d[n % 10] : "");
+  const t = Math.floor(n / 10), o = n % 10;
+  return d[t] + "十" + (o ? d[o] : "");
+}
+const lessonName = (tag) => `第${cnNum(parseInt(String(tag).replace(/\D/g, ""), 10) || 0)}课`;
 
 export default function ListeningScreen({ activeChild, user, onBack }) {
   const { speak, unlock } = useTTS("zh");
@@ -110,7 +121,7 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
   const modeLabel = (mode) => (mode === "pinyin" ? "写拼音" : "写汉字");
   const startDictation = (syllId, tag, mode) => {
     const label = syllabusById(syllId)?.label || "听写";
-    beginSession(`dict:${syllId}:${tag}:${mode}`, `${label} · ${tag} · ${modeLabel(mode)}`, "dictation", "write", dictationItems(syllId, tag).map(clozeItem), mode);
+    beginSession(`dict:${syllId}:${tag}:${mode}`, `${label} · ${lessonName(tag)} · ${modeLabel(mode)}`, "dictation", "write", dictationItems(syllId, tag).map(clozeItem), mode);
   };
   const startWeekly = (paper, mode) => beginSession(`${paper.id}:${mode}`, `${paper.label} · ${modeLabel(mode)}`, "dictation", "write", weeklyItems(paper.id).map(clozeItem), mode);
   const startPack = (pack) => beginSession(pack.id, pack.label, "comprehension", "select", pack.items.map(compItem));
@@ -212,7 +223,7 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
                     const lid = `dict:${id}:${l.tag}:${dictType}`;
                     return (
                       <button key={l.tag} className={`lc-chip${doneClass(lid)}`} onClick={launchTap(lid, () => startDictation(id, l.tag, dictType))}>
-                        {statusOf(lid) === "perfect" && <span className="lc-star">★</span>}{l.tag}<span className="lc-chip-n">{l.count}</span>
+                        {statusOf(lid) === "perfect" && <span className="lc-star">★</span>}{lessonName(l.tag)}<span className="lc-chip-n">{l.count}</span>
                       </button>
                     );
                   })}
@@ -266,6 +277,24 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
               ))}
             </div>
           )}
+
+          <button className="lc-ref-link" onClick={() => setPhase(PHASE.REFERENCE)}>📖 生字表 · 家长参考 Word lists</button>
+        </div>
+      ) : phase === PHASE.REFERENCE ? (
+        <div className="writing-body lc-ref">
+          <p className="writing-note-en sw-hint lc-ref-note">生字表（家长参考）· 练习时请勿让孩子看到答案 — for parents' reference, not during the child's practice.</p>
+          {P1_SYLLABI.map((syll) => (
+            <div key={syll.id} className="lc-ref-syll">
+              <h2 className="lc-ref-title">{syll.label}{syll.stream === "高级华文" ? " (Higher)" : ""}</h2>
+              {syll.lessons.map((l) => (
+                <div key={l.tag} className="lc-ref-lesson">
+                  <span className="lc-ref-lnum">{lessonName(l.tag)}</span>
+                  <span className="lc-ref-chars">{l.chars.join(" ")}</span>
+                </div>
+              ))}
+            </div>
+          ))}
+          <button className="btn-secondary lc-ref-back" onClick={() => setPhase(PHASE.LIBRARY)}>← 返回 Back</button>
         </div>
       ) : phase === PHASE.EDIT ? (
         <div className="writing-body">

@@ -3385,3 +3385,18 @@ button:focus-visible {
 .lc-type-seg { width: 100%; max-width: 460px; margin: 2px 0 12px; }
 .lc-type-seg .sw-mode-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 9px 10px; font-size: 16px; }
 .lc-seg-sub { font-size: 11px; font-weight: 600; opacity: 0.7; }
+
+/* Listening: parent word-list reference */
+.lc-ref-link {
+  width: 100%; max-width: 460px; margin: 22px 0 6px;
+  border: 2px dashed var(--line, #E3E6EC); background: #fff; color: #777;
+  border-radius: 12px; padding: 11px 14px; font-size: 14px; font-family: inherit; font-weight: 700; cursor: pointer;
+}
+.lc-ref { align-items: stretch; }
+.lc-ref-note { background: #FFF7E0; border: 1px solid #F2C200; border-radius: 12px; padding: 10px 12px; color: #8A6D00; }
+.lc-ref-syll { width: 100%; max-width: 460px; margin: 14px auto 0; }
+.lc-ref-title { font-size: 18px; font-weight: 800; color: var(--teal, #0E7C7B); margin: 6px 0 8px; }
+.lc-ref-lesson { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line, #E3E6EC); }
+.lc-ref-lnum { flex: 0 0 64px; font-weight: 700; color: #888; font-size: 15px; }
+.lc-ref-chars { flex: 1; font-size: 22px; line-height: 1.7; letter-spacing: 2px; color: var(--text); }
+.lc-ref-back { margin: 18px auto 0; }
