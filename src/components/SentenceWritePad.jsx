@@ -6,7 +6,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 // Simple free writing (reliable touch + mouse drawing, no pointer-capture
 // quirks), an eraser, and clear. No recognition: the child writes in his own
 // hand and self-checks. The grid behind the one canvas marks each box.
-export default function SentenceWritePad({ pinyin, onDone, charCount = 1, cell = 120, doneLabel = "下一句 ✓" }) {
+export default function SentenceWritePad({ pinyin, onDone, charCount = 1, cell = 120, doneLabel = "下一句 ✓", showDone = true }) {
   const outerRef = useRef(null);
   const canvasRef = useRef(null);
   const drawingRef = useRef(false);
@@ -112,7 +112,7 @@ export default function SentenceWritePad({ pinyin, onDone, charCount = 1, cell =
       <div className="hw-line-controls">
         <button className={`btn-secondary sw-erase-btn${erasing ? " on" : ""}`} onClick={toggleErase} aria-pressed={erasing}>🧹 橡皮 Eraser</button>
         <button className="btn-secondary" onClick={clear}>重写 Clear</button>
-        <button className="btn-primary" onClick={onDone}>{doneLabel}</button>
+        {showDone && <button className="btn-primary" onClick={onDone}>{doneLabel}</button>}
       </div>
     </div>
   );

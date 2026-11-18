@@ -202,8 +202,8 @@ export default function ListeningScreen({ activeChild, onBack }) {
               {!revealed ? (
                 <button className="btn-primary lc-reveal-btn" onClick={() => setRevealed(true)}>看答案 Reveal ✓</button>
               ) : (
-                <div className="lc-answer">
-                  <p className="lc-answer-label">答案 Answer</p>
+                <div className="lc-answer lc-answer-compare">
+                  <p className="lc-answer-label">答案 Answer（和你写的比一比）</p>
                   <div className="lc-py-list">
                     {current.blanks.map((b, k) => (
                       <span key={k} className="lc-py-answer">{multi && <span className="lc-bnum">{CIRC[k]} </span>}{b.ch} <b>{b.py}</b></span>
@@ -215,17 +215,17 @@ export default function ListeningScreen({ activeChild, onBack }) {
             </div>
           ) : (
             <div className="lc-write">
-              {!revealed ? (
-                <SentenceWritePad
-                  key={`pad-${qIndex}-${attempt}`}
-                  charCount={Math.max(1, answerTokens.length)}
-                  cell={cellFor(answerTokens.length)}
-                  doneLabel="看答案 Reveal ✓"
-                  onDone={() => setRevealed(true)}
-                />
-              ) : (
-                <div className="lc-answer">
-                  <p className="lc-answer-label">答案 Answer</p>
+              <SentenceWritePad
+                key={`pad-${qIndex}-${attempt}`}
+                charCount={Math.max(1, answerTokens.length)}
+                cell={cellFor(answerTokens.length)}
+                doneLabel="看答案 Reveal ✓"
+                showDone={!revealed}
+                onDone={() => setRevealed(true)}
+              />
+              {revealed && (
+                <div className="lc-answer lc-answer-compare">
+                  <p className="lc-answer-label">答案 Answer（和你写的比一比）</p>
                   <StrokeDemoLine key={`ans-${qIndex}-${attempt}`} tokens={answerTokens} size={72} pinyinMap={{}} />
                   {selfCheckBlock}
                 </div>

@@ -3411,3 +3411,6 @@ button:focus-visible {
 .lc-ref-chars { flex: 1; font-size: 22px; line-height: 1.7; letter-spacing: 2px; color: var(--text); }
 .lc-ref-back { margin: 18px auto 0; }
 .lc-syll-sub { font-size: 11px; color: #aaa; font-weight: 600; }
+
+/* Keep the child's writing on screen; show the answer below it to compare */
+.lc-answer-compare { margin-top: 14px; padding-top: 14px; border-top: 2px dashed var(--line, #E3E6EC); width: 100%; max-width: 460px; }
