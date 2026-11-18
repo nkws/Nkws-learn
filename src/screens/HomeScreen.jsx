@@ -141,9 +141,9 @@ export default function HomeScreen({ progress, activeChild, user, isPlus, onSele
               >
                 <span className="topic-icon">耳</span>
                 <div className="topic-info">
-                  <h2 className="topic-title">听力 Listening</h2>
+                  <h2 className="topic-title">句子听写 Sentence Dictation</h2>
                   <p className="topic-desc">
-                    句子听写、听力理解。
+                    听句子，写汉字或写拼音。
                   </p>
                 </div>
                 <span className="topic-arrow">›</span>
