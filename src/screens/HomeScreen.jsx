@@ -70,40 +70,10 @@ export default function HomeScreen({ progress, activeChild, user, isPlus, onSele
         ))}
       </div>
 
-      {(onEnglishSpelling || onChineseDictation || onPinyinPractice || onCharacterWriting || onSentenceWriting || onListening) && (
+      {(onChineseDictation || onPinyinPractice || onCharacterWriting || onSentenceWriting || onListening) && (
         <>
-          <p className="home-pick-label">Practice tools</p>
+          <p className="home-pick-label">华语 Chinese</p>
           <div className="topic-list">
-            {onEnglishSpelling && (
-              <button
-                className="topic-card spelling-home-tile"
-                onClick={onEnglishSpelling}
-              >
-                <span className="topic-icon">✏️</span>
-                <div className="topic-info">
-                  <h2 className="topic-title">English Spelling</h2>
-                  <p className="topic-desc">
-                    Hear the word, write it on the screen.
-                  </p>
-                </div>
-                <span className="topic-arrow">›</span>
-              </button>
-            )}
-            {onChineseDictation && (
-              <button
-                className="topic-card spelling-home-tile"
-                onClick={onChineseDictation}
-              >
-                <span className="topic-icon">字</span>
-                <div className="topic-info">
-                  <h2 className="topic-title">中文听写</h2>
-                  <p className="topic-desc">
-                    听一听，写汉字。
-                  </p>
-                </div>
-                <span className="topic-arrow">›</span>
-              </button>
-            )}
             {onCharacterWriting && (
               <button
                 className="topic-card spelling-home-tile"
@@ -119,16 +89,31 @@ export default function HomeScreen({ progress, activeChild, user, isPlus, onSele
                 <span className="topic-arrow">›</span>
               </button>
             )}
-            {onSentenceWriting && (
+            {onPinyinPractice && (
               <button
                 className="topic-card spelling-home-tile"
-                onClick={onSentenceWriting}
+                onClick={onPinyinPractice}
               >
-                <span className="topic-icon">句</span>
+                <span className="topic-icon">ā</span>
                 <div className="topic-info">
-                  <h2 className="topic-title">写句子 Sentence Writing</h2>
+                  <h2 className="topic-title">汉语拼音 Pinyin</h2>
                   <p className="topic-desc">
-                    描红、照着写、默写，一句一句练。
+                    听一听，写拼音。
+                  </p>
+                </div>
+                <span className="topic-arrow">›</span>
+              </button>
+            )}
+            {onChineseDictation && (
+              <button
+                className="topic-card spelling-home-tile"
+                onClick={onChineseDictation}
+              >
+                <span className="topic-icon">字</span>
+                <div className="topic-info">
+                  <h2 className="topic-title">中文听写 Word Dictation</h2>
+                  <p className="topic-desc">
+                    听一听，写汉字。
                   </p>
                 </div>
                 <span className="topic-arrow">›</span>
@@ -149,21 +134,42 @@ export default function HomeScreen({ progress, activeChild, user, isPlus, onSele
                 <span className="topic-arrow">›</span>
               </button>
             )}
-            {onPinyinPractice && (
+            {onSentenceWriting && (
               <button
                 className="topic-card spelling-home-tile"
-                onClick={onPinyinPractice}
+                onClick={onSentenceWriting}
               >
-                <span className="topic-icon">ā</span>
+                <span className="topic-icon">句</span>
                 <div className="topic-info">
-                  <h2 className="topic-title">汉语拼音</h2>
+                  <h2 className="topic-title">写句子 Sentence Writing</h2>
                   <p className="topic-desc">
-                    听一听，写拼音。
+                    描红、照着写、默写，一句一句练。
                   </p>
                 </div>
                 <span className="topic-arrow">›</span>
               </button>
             )}
+          </div>
+        </>
+      )}
+
+      {onEnglishSpelling && (
+        <>
+          <p className="home-pick-label">English</p>
+          <div className="topic-list">
+            <button
+              className="topic-card spelling-home-tile"
+              onClick={onEnglishSpelling}
+            >
+              <span className="topic-icon">✏️</span>
+              <div className="topic-info">
+                <h2 className="topic-title">English Spelling</h2>
+                <p className="topic-desc">
+                  Hear the word, write it on the screen.
+                </p>
+              </div>
+              <span className="topic-arrow">›</span>
+            </button>
           </div>
         </>
       )}
