@@ -3359,3 +3359,24 @@ button:focus-visible {
   border-radius: 10px; padding: 7px 12px; font-size: 14px; font-weight: 700; font-family: inherit; cursor: pointer;
 }
 .lc-weekly-btn:active { transform: translateY(1px); }
+
+/* Listening: multi-blank numbering, completion colours, manage/reset */
+.lc-bnum { font-size: 0.62em; color: var(--coral, #FF6B6B); font-weight: 800; margin: 0 1px; }
+.lc-blank-wrap { display: inline-flex; align-items: flex-start; }
+.lc-py-list { display: flex; flex-direction: column; gap: 6px; align-items: center; }
+
+.lc-manage-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%; max-width: 460px; margin-bottom: 8px; }
+.lc-manage-hint { font-size: 12px; color: #999; }
+.lc-manage-actions { display: flex; gap: 8px; flex: 0 0 auto; }
+.lc-manage-btn { border: 2px solid var(--line, #E3E6EC); background: #fff; color: #666; border-radius: 10px; padding: 5px 11px; font-size: 13px; font-family: inherit; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.lc-reset-all { border-color: var(--coral, #FF6B6B); color: var(--coral, #FF6B6B); }
+
+/* Completion colours */
+.lc-star { color: #F2B300; margin-right: 2px; }
+.lc-chip.lc-perfect { background: #FFF7E0; border-color: #F2C200; color: #8A6D00; }
+.lc-chip.lc-done { background: #E9F7EF; border-color: #1FA35E; color: #0F7A41; }
+.lc-weekly-btn.lc-perfect { background: #FFF7E0; border-color: #F2C200; color: #8A6D00; }
+.lc-weekly-btn.lc-done { background: #E9F7EF; border-color: #1FA35E; color: #0F7A41; }
+.topic-card.lc-perfect { background: #FFFBEF; box-shadow: inset 4px 0 0 #F2C200; }
+.topic-card.lc-done { background: #F1FBF5; box-shadow: inset 4px 0 0 #1FA35E; }
+.lc-resettable { outline: 2px dashed var(--coral, #FF6B6B); outline-offset: 2px; }

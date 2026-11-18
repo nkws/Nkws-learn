@@ -1,12 +1,12 @@
 // 句子听写 — sentence-dictation carrier sentences, grounded in the MOE P1 生字表.
-// The whole sentence is read aloud; on screen it is shown with the target word
-// either blanked (写汉字 — hear & write the character, no pinyin cue) or
-// underlined (写拼音 — write the character's hanyu pinyin). Human-authored, saved
-// as fixed content — no live AI.
+// The whole sentence is read aloud; on screen the target word(s) are shown either
+// blanked (写汉字 — hear & write the character, no pinyin cue) or underlined
+// (写拼音 — write the character's hanyu pinyin). Human-authored, fixed content.
 //
-// Marker format: 【字|pīnyīn】 — the character to practise and its context-correct
-// pinyin (tone marks). P1 tone-sandhi characters (一/不/七) use the citation tone
-// the child is taught. Scope so far: 华文 P1, lessons L1–L8.
+// Marker: 【字|pīnyīn】 — the character to practise and its context-correct pinyin.
+// A sentence may contain MORE THAN ONE marker (multi-blank), like the school's
+// 公__(yuán) 学__(xí). P1 tone-sandhi characters (一/不/七) use the citation tone.
+// Scope so far: 华文 P1, lessons L1–L8, plus weekly mixed papers.
 export const DICTATION = {
   "hw-p1": {
     L1: ["我有【一|yī】只小猫。", "一加一等于【二|èr】。", "我今年【五|wǔ】岁。", "哥哥开【口|kǒu】唱歌。", "他是个好【人|rén】。"],
@@ -20,32 +20,49 @@ export const DICTATION = {
   },
 };
 
-// Weekly-style mixed papers (like the school's 听写（十三）/（十四）): each draws
-// from several recent lessons. Hand-curated.
+// Weekly-style mixed papers (like the school's 听写（十三）/（十四）). Some sentences
+// have two blanks, to practise the multi-blank format.
 export const WEEKLY = {
   "hw-p1": [
     {
       id: "wk-hw-p1-1", label: "小一 华文 · 听写练习（一）",
-      sentences: ["他是个好【人|rén】。", "我【不|bù】爱吃糖。", "我要【去|qù】学校。", "我坐巴【士|shì】回家。", "我在看【书|shū】。", "妈妈【在|zài】家里。", "这条路很【长|cháng】。", "我的【头|tóu】有点痛。"],
+      sentences: ["他是个好【人|rén】。", "我【不|bù】爱吃糖。", "我要【去|qù】学校。", "我坐巴【士|shì】回家。", "我在看【书|shū】。", "妈妈【在|zài】家里。", "这条路很【长|cháng】。", "我有【两|liǎng】只小【羊|yáng】。"],
     },
     {
       id: "wk-hw-p1-2", label: "小一 华文 · 听写练习（二）",
-      sentences: ["哥哥开【口|kǒu】唱歌。", "她是【女|nǚ】生。", "你有【几|jǐ】本书？", "爸爸会开【车|chē】。", "我们去爬【山|shān】。", "太阳【下|xià】山了。", "请【关|guān】灯。", "爸爸去【工|gōng】作。"],
+      sentences: ["哥哥开【口|kǒu】唱歌。", "她是【女|nǚ】生。", "你有【几|jǐ】本书？", "爸爸会开【车|chē】。", "【早|zǎo】上我去爬【山|shān】。", "太阳【下|xià】山了。", "请【关|guān】灯。", "爸爸去【工|gōng】作。"],
     },
   ],
 };
 
-const MARK = /【([^|】]+)\|?([^】]*)】/;
+const MARK = /【([^|】]+)\|?([^】]*)】/g;
 
-// Turn a marked sentence into the pieces the UI needs.
+// Parse a marked sentence into segments and blanks. Supports multiple blanks.
+//   full   — the sentence read aloud (no markers)
+//   segs   — [{ t:"text", text } | { t:"blank", ch, py, i }] in order
+//   blanks — [{ ch, py }] in order
 export function parseCloze(s) {
-  const m = String(s).match(MARK);
-  if (!m) return { full: s, before: s, answer: "", after: "", py: "" };
-  const answer = m[1];
-  const py = m[2] || "";
-  const before = s.slice(0, m.index);
-  const after = s.slice(m.index + m[0].length);
-  return { full: before + answer + after, before, answer, after, py };
+  const str = String(s);
+  const segs = [];
+  const blanks = [];
+  let full = "";
+  let last = 0;
+  let m;
+  MARK.lastIndex = 0;
+  while ((m = MARK.exec(str))) {
+    const text = str.slice(last, m.index);
+    if (text) { segs.push({ t: "text", text }); full += text; }
+    const ch = m[1];
+    const py = m[2] || "";
+    segs.push({ t: "blank", ch, py, i: blanks.length });
+    blanks.push({ ch, py });
+    full += ch;
+    last = m.index + m[0].length;
+  }
+  const tail = str.slice(last);
+  if (tail) { segs.push({ t: "text", text: tail }); full += tail; }
+  if (!blanks.length) return { full: str, segs: [{ t: "text", text: str }], blanks: [] };
+  return { full, segs, blanks };
 }
 
 export function dictationLessons(syllabusId) {

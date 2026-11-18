@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback } from "react";
 import { useTTS } from "../hooks/useSpeech";
 import { useSpellingLists } from "../hooks/useSpellingLists";
 import { listKind, sortListsByOrder } from "../utils/spellingKinds";
+import { useListeningProgress } from "../hooks/useListeningProgress";
 import { syllabusById } from "../data/writingSyllabi";
 import { DICTATION, dictationLessons, dictationItems, weeklyPapers, weeklyItems } from "../data/dictationSentences";
 import { LISTENING_PACKS } from "../data/listeningPacks";
@@ -53,17 +54,21 @@ const wordsFromItems = (items) =>
     .filter((it) => it.q && it.choices.length >= 2)
     .map((it) => JSON.stringify(it));
 
-const compItem = (it) => ({ passage: it.passage || "", q: it.q || "", choices: it.choices, answer: it.answer, word: it.choices[it.answer] || "", before: "", after: "", sentence: "", py: "" });
-const clozeItem = (c) => ({ passage: "", q: "", choices: [], answer: 0, word: c.answer, before: c.before, after: c.after, sentence: c.full, py: c.py });
+const compItem = (it) => ({ passage: it.passage || "", q: it.q || "", choices: it.choices, answer: it.answer, word: it.choices[it.answer] || "", segs: null, blanks: null, sentence: "" });
+const clozeItem = (c) => ({ passage: "", q: "", choices: [], answer: 0, word: c.blanks.map((b) => b.ch).join(""), segs: c.segs, blanks: c.blanks, sentence: c.full });
 
 const DICT_SYLLABI = Object.keys(DICTATION);
 const cellFor = (n) => (n <= 2 ? 132 : n <= 4 ? 116 : 104);
+const CIRC = ["①", "②", "③", "④", "⑤", "⑥"];
 
 export default function ListeningScreen({ activeChild, user, onBack }) {
   const { speak, unlock } = useTTS("zh");
   const { lists, createList, updateList, deleteList } = useSpellingLists(activeChild, user?.id);
+  const { markComplete, resetOne, resetAll, statusOf, doneCount } = useListeningProgress(activeChild?.id);
 
   const [phase, setPhase] = useState(PHASE.LIBRARY);
+  const [sessionId, setSessionId] = useState(null);
+  const [manage, setManage] = useState(false); // tap a completed item to reset it
   const [editId, setEditId] = useState(null);
   const [titleDraft, setTitleDraft] = useState("");
   const [items, setItems] = useState([blankItem()]);
@@ -91,23 +96,24 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
   const isDictation = sessionType === "dictation";
   const pinyinMode = isDictation && dictMode === "pinyin";
   const selectMode = !isDictation && format === "select";
+  const multi = isDictation && !!current?.blanks && current.blanks.length > 1;
 
   // ── Launchers ────────────────────────────────────────────────────────────
-  const beginSession = useCallback((title, type, fmt, normItems) => {
+  const beginSession = useCallback((id, title, type, fmt, normItems) => {
     if (!normItems.length) return;
     unlock();
-    setSessionTitle(title); setSessionType(type); setFormat(fmt); setDictMode("hanzi"); setPlayItems(normItems);
+    setSessionId(id); setSessionTitle(title); setSessionType(type); setFormat(fmt); setDictMode("hanzi"); setPlayItems(normItems);
     setQIndex(0); setPicked(null); setRevealed(false); setSelfResult(null); setScore(0);
     setReveal(false); setPlayed(false); setAttempt((a) => a + 1); setPhase(PHASE.PRACTICE);
   }, [unlock]);
 
   const startDictation = (syllId, tag) => {
     const label = syllabusById(syllId)?.label || "听写";
-    beginSession(`${label} · ${tag}`, "dictation", "write", dictationItems(syllId, tag).map(clozeItem));
+    beginSession(`dict:${syllId}:${tag}`, `${label} · ${tag}`, "dictation", "write", dictationItems(syllId, tag).map(clozeItem));
   };
-  const startWeekly = (paper) => beginSession(paper.label, "dictation", "write", weeklyItems(paper.id).map(clozeItem));
-  const startPack = (pack) => beginSession(pack.label, "comprehension", "select", pack.items.map(compItem));
-  const startMyLesson = (lesson) => beginSession(lesson.title || "我的听力", "comprehension", "select", itemsFromWords(lesson.words).map(compItem));
+  const startWeekly = (paper) => beginSession(paper.id, paper.label, "dictation", "write", weeklyItems(paper.id).map(clozeItem));
+  const startPack = (pack) => beginSession(pack.id, pack.label, "comprehension", "select", pack.items.map(compItem));
+  const startMyLesson = (lesson) => beginSession(`my:${lesson.id}`, lesson.title || "我的听力", "comprehension", "select", itemsFromWords(lesson.words).map(compItem));
 
   // ── Editor (my lessons) ──────────────────────────────────────────────────
   const openNew = () => { setEditId(null); setTitleDraft(""); setItems([blankItem()]); setPhase(PHASE.EDIT); };
@@ -123,7 +129,7 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
     let id = editId;
     if (id) updateList(id, { title, words });
     else { id = createList(title, "zh", KIND); updateList(id, { words }); setEditId(id); }
-    if (thenPractise) beginSession(title, "comprehension", "select", itemsFromWords(words).map(compItem));
+    if (thenPractise) beginSession(`my:${id}`, title, "comprehension", "select", itemsFromWords(words).map(compItem));
     else setPhase(PHASE.LIBRARY);
   };
   const setItem = (i, patch) => setItems((arr) => arr.map((it, k) => (k === i ? { ...it, ...patch } : it)));
@@ -143,11 +149,16 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
   const pick = (ci) => { if (picked !== null) return; setPicked(ci); if (ci === current.answer) setScore((s) => s + 1); };
   const selfCheck = (ok) => { if (selfResult !== null) return; setSelfResult(ok); if (ok) setScore((s) => s + 1); };
   const advance = () => {
-    if (isLast) { setPhase(PHASE.DONE); return; }
+    if (isLast) { markComplete(sessionId, score, playItems.length); setPhase(PHASE.DONE); return; }
     setQIndex((i) => i + 1);
     setPicked(null); setRevealed(false); setSelfResult(null); setReveal(false); setPlayed(false); setAttempt((a) => a + 1);
   };
   const switchDictMode = (m) => { setDictMode(m); setRevealed(false); setSelfResult(null); setAttempt((a) => a + 1); };
+
+  // In manage mode, tapping a completed exercise resets just that one; otherwise
+  // the tap launches it. Returns the class suffix for the completion colour.
+  const launchTap = (id, launch) => (manage && statusOf(id) ? () => resetOne(id) : launch);
+  const doneClass = (id) => { const st = statusOf(id); return st ? ` lc-${st}${manage ? " lc-resettable" : ""}` : ""; };
 
   const onTopBack = () => { if (phase === PHASE.LIBRARY) onBack(); else setPhase(PHASE.LIBRARY); };
   const answered = selectMode ? picked !== null : selfResult !== null;
@@ -177,6 +188,15 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
 
       {phase === PHASE.LIBRARY ? (
         <div className="writing-body">
+          {doneCount > 0 && (
+            <div className="lc-manage-row">
+              <span className="lc-manage-hint">{manage ? "点亮的练习 → 点一下可重置" : "⭐ 完成的练习会亮起"}</span>
+              <span className="lc-manage-actions">
+                {manage && <button className="lc-manage-btn lc-reset-all" onClick={() => { if (confirm("重置所有听力进度？")) { resetAll(); setManage(false); } }}>全部重置</button>}
+                <button className="lc-manage-btn" onClick={() => setManage((m) => !m)}>{manage ? "✓ 完成" : "✎ 管理进度"}</button>
+              </span>
+            </div>
+          )}
           {/* 1. Sentence dictation from the syllabus */}
           <p className="home-pick-label">句子听写 · 跟着课本 Sentence dictation</p>
           {DICT_SYLLABI.map((id) => {
@@ -189,17 +209,20 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
                   <span className="lc-syll-name">{syll.label}{syll.stream === "高级华文" ? " (Higher)" : ""}</span>
                 </div>
                 <div className="lc-lesson-chips">
-                  {dictationLessons(id).map((l) => (
-                    <button key={l.tag} className="lc-chip" onClick={() => startDictation(id, l.tag)}>
-                      {l.tag}<span className="lc-chip-n">{l.count}</span>
-                    </button>
-                  ))}
+                  {dictationLessons(id).map((l) => {
+                    const lid = `dict:${id}:${l.tag}`;
+                    return (
+                      <button key={l.tag} className={`lc-chip${doneClass(lid)}`} onClick={launchTap(lid, () => startDictation(id, l.tag))}>
+                        {statusOf(lid) === "perfect" && <span className="lc-star">★</span>}{l.tag}<span className="lc-chip-n">{l.count}</span>
+                      </button>
+                    );
+                  })}
                 </div>
                 {weekly.length > 0 && (
                   <div className="lc-weekly">
                     {weekly.map((p) => (
-                      <button key={p.id} className="lc-weekly-btn" onClick={() => startWeekly(p)}>
-                        📄 {p.label.split("·").pop().trim()}<span className="lc-chip-n">{p.count}</span>
+                      <button key={p.id} className={`lc-weekly-btn${doneClass(p.id)}`} onClick={launchTap(p.id, () => startWeekly(p))}>
+                        {statusOf(p.id) === "perfect" ? "⭐" : "📄"} {p.label.split("·").pop().trim()}<span className="lc-chip-n">{p.count}</span>
                       </button>
                     ))}
                   </div>
@@ -212,13 +235,13 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
           <p className="home-pick-label lc-section-gap">听力理解 Comprehension</p>
           <div className="topic-list">
             {LISTENING_PACKS.map((p) => (
-              <button key={p.id} className="topic-card" onClick={() => startPack(p)}>
-                <span className="topic-icon">耳</span>
+              <button key={p.id} className={`topic-card${doneClass(p.id)}`} onClick={launchTap(p.id, () => startPack(p))}>
+                <span className="topic-icon">{statusOf(p.id) === "perfect" ? "⭐" : "耳"}</span>
                 <div className="topic-info">
                   <h2 className="topic-title">{p.label}</h2>
                   <p className="topic-desc">{p.items.length} 题 · 选择 / 填空</p>
                 </div>
-                <span className="topic-arrow">›</span>
+                <span className="topic-arrow">{manage && statusOf(p.id) ? "↺" : "›"}</span>
               </button>
             ))}
           </div>
@@ -229,8 +252,8 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
           {myLessons.length > 0 && (
             <div className="topic-list">
               {myLessons.map((l) => (
-                <button key={l.id} className="topic-card" onClick={() => startMyLesson(l)}>
-                  <span className="topic-icon">句</span>
+                <button key={l.id} className={`topic-card${doneClass(`my:${l.id}`)}`} onClick={launchTap(`my:${l.id}`, () => startMyLesson(l))}>
+                  <span className="topic-icon">{statusOf(`my:${l.id}`) === "perfect" ? "⭐" : "句"}</span>
                   <div className="topic-info">
                     <h2 className="topic-title">{l.title}</h2>
                     <p className="topic-desc">{itemsFromWords(l.words).length} 题</p>
@@ -301,11 +324,15 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
 
           {/* Prompt */}
           {isDictation ? (
-            pinyinMode ? (
-              <p className="lc-cloze">{current.before}<u className="lc-underline">{current.word}</u>{current.after}</p>
-            ) : (
-              <p className="lc-cloze">{current.before}<span className="lc-blank" />{current.after}</p>
-            )
+            <p className="lc-cloze">
+              {current.segs.map((sg, k) => sg.t === "text" ? (
+                <span key={k}>{sg.text}</span>
+              ) : pinyinMode ? (
+                <u key={k} className="lc-underline">{multi && <sup className="lc-bnum">{CIRC[sg.i]}</sup>}{sg.ch}</u>
+              ) : (
+                <span key={k} className="lc-blank-wrap">{multi && <sup className="lc-bnum">{CIRC[sg.i]}</sup>}<span className="lc-blank" /></span>
+              ))}
+            </p>
           ) : (
             <>
               {current.passage && (reveal
@@ -343,14 +370,18 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
             </>
           ) : pinyinMode ? (
             <div className="lc-write">
-              <p className="lc-write-hint">写出<b> {current.word} </b>的拼音</p>
+              <p className="lc-write-hint">{multi ? "写出画线字的拼音" : <>写出<b> {current.blanks[0].ch} </b>的拼音</>}</p>
               <PracticeCanvas key={`py-${qIndex}-${attempt}`} clearLabel="重写 Clear" height={130} />
               {!revealed ? (
                 <button className="btn-primary lc-reveal-btn" onClick={() => setRevealed(true)}>看答案 Reveal ✓</button>
               ) : (
                 <div className="lc-answer">
                   <p className="lc-answer-label">答案 Answer</p>
-                  <p className="lc-py-answer">{current.word} <b>{current.py}</b></p>
+                  <div className="lc-py-list">
+                    {current.blanks.map((b, k) => (
+                      <span key={k} className="lc-py-answer">{multi && <span className="lc-bnum">{CIRC[k]} </span>}{b.ch} <b>{b.py}</b></span>
+                    ))}
+                  </div>
                   {selfCheckBlock}
                 </div>
               )}
@@ -377,10 +408,10 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
         </div>
       ) : phase === PHASE.DONE ? (
         <div className="writing-body writing-centered">
-          <div className="writing-done-emoji">🎉</div>
-          <h1 className="hero-title">练完了！</h1>
+          <div className="writing-done-emoji">{score >= playItems.length ? "⭐" : "🎉"}</div>
+          <h1 className="hero-title">{score >= playItems.length ? "全对了！" : "练完了！"}</h1>
           <p className="writing-done-stats">{sessionTitle} · 答对 {score}/{playItems.length}</p>
-          <button className="btn-primary" onClick={() => beginSession(sessionTitle, sessionType, format, playItems)}>再练一次 Again</button>
+          <button className="btn-primary" onClick={() => beginSession(sessionId, sessionTitle, sessionType, format, playItems)}>再练一次 Again</button>
           <button className="btn-secondary" onClick={() => setPhase(PHASE.LIBRARY)}>回到听力 Back</button>
         </div>
       ) : null}
