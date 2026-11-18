@@ -302,7 +302,7 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
           {/* Prompt */}
           {isDictation ? (
             pinyinMode ? (
-              <p className="lc-cloze">{current.before}<u className="lc-underline">{current.answer}</u>{current.after}</p>
+              <p className="lc-cloze">{current.before}<u className="lc-underline">{current.word}</u>{current.after}</p>
             ) : (
               <p className="lc-cloze">{current.before}<span className="lc-blank" />{current.after}</p>
             )
@@ -343,14 +343,14 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
             </>
           ) : pinyinMode ? (
             <div className="lc-write">
-              <p className="lc-write-hint">写出<b> {current.answer} </b>的拼音</p>
+              <p className="lc-write-hint">写出<b> {current.word} </b>的拼音</p>
               <PracticeCanvas key={`py-${qIndex}-${attempt}`} clearLabel="重写 Clear" height={130} />
               {!revealed ? (
                 <button className="btn-primary lc-reveal-btn" onClick={() => setRevealed(true)}>看答案 Reveal ✓</button>
               ) : (
                 <div className="lc-answer">
                   <p className="lc-answer-label">答案 Answer</p>
-                  <p className="lc-py-answer">{current.answer} <b>{current.py}</b></p>
+                  <p className="lc-py-answer">{current.word} <b>{current.py}</b></p>
                   {selfCheckBlock}
                 </div>
               )}
