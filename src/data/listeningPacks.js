@@ -1,41 +1,42 @@
 // 听力理解 — P1 listening comprehension, anchored to the MOE 生字表 lesson by
-// lesson. Each item's passage features that lesson's 生字 (with earlier,
-// already-taught words and everyday heard-vocabulary so it stays natural), and
-// the correct answer is always a syllabus word. Human-authored, fixed content,
-// no live AI. Organised like 句子听写: COMPREHENSION[syllabusId][lessonTag].
+// lesson. The passage features that lesson's 生字 (plus earlier and everyday
+// heard-vocabulary so it stays natural), but the QUESTION needs inference — the
+// answer is NOT stated in the passage; the child works it out and writes it.
+// `answer` is the expected written answer, revealed for self-check. No MCQ.
+// Human-authored, fixed content, no live AI. COMPREHENSION[syllabusId][lessonTag].
 export const COMPREHENSION = {
   "hw-p1": {
     L1: [
-      { passage: "我家有五口人：爸爸、妈妈、哥哥、姐姐和我。", q: "我家有几口人？", choices: ["三口", "五口", "四口"], answer: 1 },
-      { passage: "他是一个好人，大家都喜欢他。", q: "大家喜欢他吗？", choices: ["喜欢", "不喜欢"], answer: 0 },
+      { passage: "我家有五口人，可是今天只有我一个人在家。", q: "其他人在家吗？", answer: "不在" },
+      { passage: "他从来不欺负别人，大家都愿意和他做朋友。", q: "他是个怎样的人？", answer: "好人" },
     ],
     L2: [
-      { passage: "妹妹是女生，弟弟是男生。", q: "妹妹是男生还是女生？", choices: ["男生", "女生"], answer: 1 },
-      { passage: "她不爱吃糖，也不爱吃饼干。", q: "她爱吃糖吗？", choices: ["很爱", "不爱"], answer: 1 },
+      { passage: "弟弟一口饭也不想吃，一直说肚子不舒服。", q: "弟弟今天怎么了？", answer: "生病了" },
+      { passage: "这件衣服有裙子，是粉红色的。", q: "这件衣服是男生还是女生穿的？", answer: "女生" },
     ],
     L3: [
-      { passage: "我有七个气球，送给弟弟一个。", q: "我本来有几个气球？", choices: ["七个", "五个", "八个"], answer: 0 },
-      { passage: "下课了，我要去公园玩。", q: "我要去哪里？", choices: ["学校", "公园", "家里"], answer: 1 },
+      { passage: "下课了，小明拿着足球往操场跑。", q: "小明要去做什么？", answer: "踢球" },
+      { passage: "星期六不用上课，我可以睡到很晚。", q: "星期六要去学校吗？", answer: "不用去" },
     ],
     L4: [
-      { passage: "我每天坐巴士上学。", q: "我怎么去上学？", choices: ["走路", "坐巴士", "坐船"], answer: 1 },
-      { passage: "弟弟养了四只小狗。", q: "弟弟有几只小狗？", choices: ["四只", "三只", "十只"], answer: 0 },
+      { passage: "小红每天很早起床，坐第一班巴士。", q: "小红上学会迟到吗？", answer: "不会" },
+      { passage: "停车场里停了好几辆车，就是没看到爸爸的。", q: "爸爸的车在停车场吗？", answer: "不在" },
     ],
     L5: [
-      { passage: "早上，我们一起去爬山。", q: "我们早上做什么？", choices: ["看书", "爬山", "画画"], answer: 1 },
-      { passage: "草地上有三只小羊在吃草。", q: "草地上有几只羊？", choices: ["两只", "三只", "五只"], answer: 1 },
+      { passage: "太阳很大，羊儿都躲到大树下乘凉。", q: "今天天气热不热？", answer: "很热" },
+      { passage: "早上公鸡一叫，我就起床了。", q: "这是什么时候的事？", answer: "早上" },
     ],
     L6: [
-      { passage: "太阳下山了，天慢慢黑了。", q: "太阳怎么了？", choices: ["升起来了", "下山了"], answer: 1 },
-      { passage: "妈妈在家里做饭，爸爸在公司上班。", q: "妈妈在哪里？", choices: ["家里", "公司", "学校"], answer: 0 },
+      { passage: "太阳下山了，小鸟都飞回家休息。", q: "现在大概是什么时候？", answer: "傍晚" },
+      { passage: "这个大箱子，我一个人怎么也搬不动。", q: "箱子是轻还是重？", answer: "很重" },
     ],
     L7: [
-      { passage: "晚上，天上有很多星星。", q: "天上的星星多吗？", choices: ["很多", "很少"], answer: 0 },
-      { passage: "我们每个人有两只手。", q: "我们有几只手？", choices: ["一只", "两只", "三只"], answer: 1 },
+      { passage: "妹妹袋子里的糖只剩一颗了。", q: "妹妹的糖是多还是少？", answer: "很少" },
+      { passage: "这条路走了很久很久，还看不到尽头。", q: "这条路长不长？", answer: "很长" },
     ],
     L8: [
-      { passage: "爸爸每天早上去工作。", q: "爸爸每天去做什么？", choices: ["工作", "玩球", "睡觉"], answer: 0 },
-      { passage: "我今天头有点痛，想休息。", q: "我哪里不舒服？", choices: ["手", "头", "脚"], answer: 1 },
+      { passage: "小明揉着眼睛，一直打哈欠。", q: "小明现在想做什么？", answer: "睡觉" },
+      { passage: "他捂着头说好痛，脸也红红的。", q: "他现在舒不舒服？", answer: "不舒服" },
     ],
   },
 };

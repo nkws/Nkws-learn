@@ -30,7 +30,7 @@ const tokensOf = (s) =>
     .map((ch) => (isCJK(ch) ? { t: "c", ch } : PUNCT.test(ch) ? { t: "p", ch } : null))
     .filter(Boolean);
 
-const blankItem = () => ({ passage: "", q: "", choices: ["", "", ""], answer: 0 });
+const blankItem = () => ({ passage: "", q: "", answer: "" });
 
 const itemsFromWords = (words) =>
   (words || [])
@@ -38,24 +38,22 @@ const itemsFromWords = (words) =>
       try {
         const o = typeof w === "string" ? JSON.parse(w) : w;
         if (!o || typeof o !== "object") return null;
-        const choices = Array.isArray(o.choices) ? o.choices.map((c) => String(c)) : [];
-        return { passage: String(o.passage || ""), q: String(o.q || ""), choices, answer: Number.isInteger(o.answer) ? o.answer : 0 };
+        // New shape { passage, q, answer:text }; tolerate legacy MCQ { choices, answer:index }.
+        const answer = typeof o.answer === "string"
+          ? o.answer
+          : (Array.isArray(o.choices) ? String(o.choices[o.answer] || "") : "");
+        return { passage: String(o.passage || ""), q: String(o.q || ""), answer };
       } catch { return null; }
     })
-    .filter((it) => it && it.q && it.choices.filter((c) => c.trim()).length >= 2);
+    .filter((it) => it && it.q && it.answer.trim());
 
 const wordsFromItems = (items) =>
   items
-    .map((it) => ({
-      passage: it.passage.trim(),
-      q: it.q.trim(),
-      choices: it.choices.map((c) => c.trim()).filter(Boolean),
-      answer: Math.min(it.answer, Math.max(0, it.choices.filter((c) => c.trim()).length - 1)),
-    }))
-    .filter((it) => it.q && it.choices.length >= 2)
+    .map((it) => ({ passage: it.passage.trim(), q: it.q.trim(), answer: it.answer.trim() }))
+    .filter((it) => it.q && it.answer)
     .map((it) => JSON.stringify(it));
 
-const compItem = (it) => ({ passage: it.passage || "", q: it.q || "", choices: it.choices, answer: it.answer, word: it.choices[it.answer] || "", segs: null, blanks: null, sentence: "" });
+const compItem = (it) => ({ passage: it.passage || "", q: it.q || "", word: it.answer || "", segs: null, blanks: null, sentence: "" });
 const clozeItem = (c) => ({ passage: "", q: "", choices: [], answer: 0, word: c.blanks.map((b) => b.ch).join(""), segs: c.segs, blanks: c.blanks, sentence: c.full });
 
 const DICT_SYLLABI = Object.keys(DICTATION);
@@ -88,11 +86,9 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
   // Practice session
   const [sessionTitle, setSessionTitle] = useState("");
   const [sessionType, setSessionType] = useState("comprehension"); // "dictation" | "comprehension"
-  const [format, setFormat] = useState("select"); // comprehension: "select" | "write"
   const [dictMode, setDictMode] = useState("hanzi"); // dictation: "hanzi" | "pinyin"
   const [playItems, setPlayItems] = useState([]);
   const [qIndex, setQIndex] = useState(0);
-  const [picked, setPicked] = useState(null);
   const [revealed, setRevealed] = useState(false);
   const [score, setScore] = useState(0);
   const [reveal, setReveal] = useState(false); // comprehension passage shown
@@ -106,29 +102,28 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
   const answerTokens = useMemo(() => tokensOf(current?.word || ""), [current]);
   const isDictation = sessionType === "dictation";
   const pinyinMode = isDictation && dictMode === "pinyin";
-  const selectMode = !isDictation && format === "select";
   const multi = isDictation && !!current?.blanks && current.blanks.length > 1;
 
   // ── Launchers ────────────────────────────────────────────────────────────
-  const beginSession = useCallback((id, title, type, fmt, normItems, mode = "hanzi") => {
+  const beginSession = useCallback((id, title, type, normItems, mode = "hanzi") => {
     if (!normItems.length) return;
     unlock();
-    setSessionId(id); setSessionTitle(title); setSessionType(type); setFormat(fmt); setDictMode(mode); setPlayItems(normItems);
-    setQIndex(0); setPicked(null); setRevealed(false); setScore(0);
+    setSessionId(id); setSessionTitle(title); setSessionType(type); setDictMode(mode); setPlayItems(normItems);
+    setQIndex(0); setRevealed(false); setScore(0);
     setReveal(false); setPlayed(false); setAttempt((a) => a + 1); setPhase(PHASE.PRACTICE);
   }, [unlock]);
 
   const modeLabel = (mode) => (mode === "pinyin" ? "写拼音" : "写汉字");
   const startDictation = (syllId, tag, mode) => {
     const label = syllabusById(syllId)?.label || "听写";
-    beginSession(`dict:${syllId}:${tag}:${mode}`, `${label} · ${lessonName(tag)} · ${modeLabel(mode)}`, "dictation", "write", dictationItems(syllId, tag).map(clozeItem), mode);
+    beginSession(`dict:${syllId}:${tag}:${mode}`, `${label} · ${lessonName(tag)} · ${modeLabel(mode)}`, "dictation", dictationItems(syllId, tag).map(clozeItem), mode);
   };
-  const startWeekly = (paper, mode) => beginSession(`${paper.id}:${mode}`, `${paper.label} · ${modeLabel(mode)}`, "dictation", "write", weeklyItems(paper.id).map(clozeItem), mode);
+  const startWeekly = (paper, mode) => beginSession(`${paper.id}:${mode}`, `${paper.label} · ${modeLabel(mode)}`, "dictation", weeklyItems(paper.id).map(clozeItem), mode);
   const startComprehension = (syllId, tag) => {
     const label = syllabusById(syllId)?.label || "听力";
-    beginSession(`comp:${syllId}:${tag}`, `${label} · ${lessonName(tag)} · 听力理解`, "comprehension", "select", comprehensionItems(syllId, tag).map(compItem));
+    beginSession(`comp:${syllId}:${tag}`, `${label} · ${lessonName(tag)} · 听力理解`, "comprehension", comprehensionItems(syllId, tag).map(compItem));
   };
-  const startMyLesson = (lesson) => beginSession(`my:${lesson.id}`, lesson.title || "我的听力", "comprehension", "select", itemsFromWords(lesson.words).map(compItem));
+  const startMyLesson = (lesson) => beginSession(`my:${lesson.id}`, lesson.title || "我的听力", "comprehension", itemsFromWords(lesson.words).map(compItem));
 
   // ── Editor (my lessons) ──────────────────────────────────────────────────
   const openNew = () => { setEditId(null); setTitleDraft(""); setItems([blankItem()]); setPhase(PHASE.EDIT); };
@@ -144,12 +139,10 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
     let id = editId;
     if (id) updateList(id, { title, words });
     else { id = createList(title, "zh", KIND); updateList(id, { words }); setEditId(id); }
-    if (thenPractise) beginSession(`my:${id}`, title, "comprehension", "select", itemsFromWords(words).map(compItem));
+    if (thenPractise) beginSession(`my:${id}`, title, "comprehension", itemsFromWords(words).map(compItem));
     else setPhase(PHASE.LIBRARY);
   };
   const setItem = (i, patch) => setItems((arr) => arr.map((it, k) => (k === i ? { ...it, ...patch } : it)));
-  const setChoice = (i, ci, val) => setItems((arr) => arr.map((it, k) => (k === i ? { ...it, choices: it.choices.map((c, j) => (j === ci ? val : c)) } : it)));
-  const addChoice = (i) => setItems((arr) => arr.map((it, k) => (k === i && it.choices.length < 4 ? { ...it, choices: [...it.choices, ""] } : it)));
   const addItem = () => setItems((arr) => [...arr, blankItem()]);
   const removeItem = (i) => setItems((arr) => (arr.length <= 1 ? arr : arr.filter((_, k) => k !== i)));
 
@@ -159,25 +152,21 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
     setPlayed(true);
     if (isDictation) { speak(current.sentence); return; }
     const text = current.passage ? `${current.passage} ${current.q}` : current.q;
-    speak(text, format === "select" ? current.choices : undefined);
+    speak(text);
   };
   const goNext = (finalScore) => {
     if (isLast) { markComplete(sessionId, finalScore, playItems.length); setPhase(PHASE.DONE); return; }
     setQIndex((i) => i + 1);
-    setPicked(null); setRevealed(false); setReveal(false); setPlayed(false); setAttempt((a) => a + 1);
+    setRevealed(false); setReveal(false); setPlayed(false); setAttempt((a) => a + 1);
   };
-  const pick = (ci) => { if (picked !== null) return; setPicked(ci); if (ci === current.answer) setScore((s) => s + 1); };
   // Self-marking: tapping ✓/✗ records and goes straight to the next item.
   const selfCheck = (ok) => { const finalScore = ok ? score + 1 : score; if (ok) setScore(finalScore); goNext(finalScore); };
-  const advance = () => goNext(score);
   // In manage mode, tapping a completed exercise resets just that one; otherwise
   // the tap launches it. Returns the class suffix for the completion colour.
   const launchTap = (id, launch) => (manage && statusOf(id) ? () => resetOne(id) : launch);
   const doneClass = (id) => { const st = statusOf(id); return st ? ` lc-${st}${manage ? " lc-resettable" : ""}` : ""; };
 
   const onTopBack = () => { if (phase === PHASE.LIBRARY) onBack(); else setPhase(PHASE.LIBRARY); };
-  const answered = selectMode ? picked !== null : revealed;
-  const nextLabel = isLast ? "完成 Finish" : (isDictation ? "下一句 Next →" : "下一题 Next →");
 
   const selfCheckBlock = (
     <div className="lc-selfcheck">
@@ -320,17 +309,11 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
                 {items.length > 1 && <button className="lc-edit-remove" onClick={() => removeItem(i)} title="删除这题">✕</button>}
               </div>
               <label className="lc-edit-label">短文 Passage（读给孩子听）</label>
-              <textarea className="sw-input lc-edit-passage" value={it.passage} onChange={(e) => setItem(i, { passage: e.target.value })} placeholder="例如：小明有一只小猫。小猫是白色的。" rows={2} />
-              <label className="lc-edit-label">问题 Question</label>
-              <input className="sw-title-input" value={it.q} onChange={(e) => setItem(i, { q: e.target.value })} placeholder="例如：小猫是什么颜色的？" />
-              <label className="lc-edit-label">选项 Choices（点圆圈标正确答案）</label>
-              {it.choices.map((c, ci) => (
-                <div key={ci} className="lc-edit-choice">
-                  <button className={`lc-edit-correct${it.answer === ci ? " on" : ""}`} onClick={() => setItem(i, { answer: ci })} title="标为正确答案" aria-label="正确答案">{it.answer === ci ? "✓" : ""}</button>
-                  <input className="sw-title-input" value={c} onChange={(e) => setChoice(i, ci, e.target.value)} placeholder={`选项 ${ci + 1}`} />
-                </div>
-              ))}
-              {it.choices.length < 4 && <button className="lc-edit-addchoice" onClick={() => addChoice(i)}>+ 加选项</button>}
+              <textarea className="sw-input lc-edit-passage" value={it.passage} onChange={(e) => setItem(i, { passage: e.target.value })} placeholder="例如：小明打着雨伞上学。" rows={2} />
+              <label className="lc-edit-label">问题 Question（需要动脑想，不直接说出答案）</label>
+              <input className="sw-title-input" value={it.q} onChange={(e) => setItem(i, { q: e.target.value })} placeholder="例如：今天天气怎么样？" />
+              <label className="lc-edit-label">答案 Answer（孩子写出来，自己对照）</label>
+              <input className="sw-title-input" value={it.answer} onChange={(e) => setItem(i, { answer: e.target.value })} placeholder="例如：下雨" />
             </div>
           ))}
           <button className="btn-secondary lc-edit-additem" onClick={addItem}>+ 加一题 Add question</button>
@@ -345,14 +328,6 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
             {sessionTitle && <span className="sw-lesson-name">{sessionTitle} · </span>}
             第 {qIndex + 1}/{playItems.length} {isDictation ? "句" : "题"}
           </div>
-
-          {/* Comprehension answers two ways; dictation mode is fixed per exercise. */}
-          {!isDictation && !answered && (
-            <div className="sw-modebar sw-modebar-mini lc-modebar">
-              <button className={`sw-mode-btn${format === "select" ? " active" : ""}`} onClick={() => setFormat("select")}>选择</button>
-              <button className={`sw-mode-btn${format === "write" ? " active" : ""}`} onClick={() => setFormat("write")}>填空</button>
-            </div>
-          )}
 
           <button className={`lc-play-btn${played ? " played" : ""}`} onClick={playCurrent}>
             <span className="lc-play-icon">🔊</span>
@@ -381,33 +356,8 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
             </>
           )}
 
-          {/* Response */}
-          {selectMode ? (
-            <>
-              <div className="lc-choices">
-                {current.choices.map((c, ci) => {
-                  const isAnswer = ci === current.answer;
-                  const isPicked = ci === picked;
-                  const state = picked === null ? "" : isAnswer ? " correct" : isPicked ? " wrong" : " dim";
-                  return (
-                    <button key={ci} className={`lc-choice${state}`} onClick={() => pick(ci)} disabled={picked !== null}>
-                      <span className="lc-choice-text">{c}</span>
-                      {picked !== null && isAnswer && <span className="lc-choice-mark">✓</span>}
-                      {picked !== null && isPicked && !isAnswer && <span className="lc-choice-mark">✗</span>}
-                    </button>
-                  );
-                })}
-              </div>
-              {picked !== null && (
-                <div className="lc-feedback">
-                  <span className={`lc-feedback-msg${picked === current.answer ? " ok" : " no"}`}>
-                    {picked === current.answer ? "答对了！🎉" : `再想想～ 正确答案：${current.choices[current.answer]}`}
-                  </span>
-                  <button className="btn-primary" onClick={advance}>{nextLabel}</button>
-                </div>
-              )}
-            </>
-          ) : pinyinMode ? (
+          {/* Response — written answer, self-checked */}
+          {pinyinMode ? (
             <div className="lc-write">
               <p className="lc-write-hint">{multi ? "写出画线字的拼音" : <>写出<b> {current.blanks[0].ch} </b>的拼音</>}</p>
               <PracticeCanvas key={`py-${qIndex}-${attempt}`} clearLabel="重写 Clear" height={130} />
@@ -450,7 +400,7 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
           <div className="writing-done-emoji">{score >= playItems.length ? "⭐" : "🎉"}</div>
           <h1 className="hero-title">{score >= playItems.length ? "全对了！" : "练完了！"}</h1>
           <p className="writing-done-stats">{sessionTitle} · 答对 {score}/{playItems.length}</p>
-          <button className="btn-primary" onClick={() => beginSession(sessionId, sessionTitle, sessionType, format, playItems, dictMode)}>再练一次 Again</button>
+          <button className="btn-primary" onClick={() => beginSession(sessionId, sessionTitle, sessionType, playItems, dictMode)}>再练一次 Again</button>
           <button className="btn-secondary" onClick={() => setPhase(PHASE.LIBRARY)}>回到听力 Back</button>
         </div>
       ) : null}
