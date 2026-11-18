@@ -3,22 +3,21 @@ import { useTTS } from "../hooks/useSpeech";
 import { useSpellingLists } from "../hooks/useSpellingLists";
 import { listKind, sortListsByOrder } from "../utils/spellingKinds";
 import { syllabusById } from "../data/writingSyllabi";
-import { DICTATION, dictationLessons, dictationItems } from "../data/dictationSentences";
+import { DICTATION, dictationLessons, dictationItems, weeklyPapers, weeklyItems } from "../data/dictationSentences";
 import { LISTENING_PACKS } from "../data/listeningPacks";
 import SentenceWritePad from "../components/SentenceWritePad";
 import StrokeDemoLine from "../components/StrokeDemoLine";
+import PracticeCanvas from "../components/PracticeCanvas";
 
 // 中文听力 — Chinese listening, P1 first, grounded in the MOE 生字表.
-// Three content sources:
-//   1. 句子听写 — sentence dictation from the syllabus (dictationSentences.js):
-//      the whole sentence is read aloud and PRINTED on screen with a blank; the
-//      child writes the missing character in the blank and reveals to self-check.
-//   2. 听力理解 — hand-authored comprehension packs (short passage + question),
-//      answerable by 选择 (tap) or 填空 (write + self-check).
-//   3. 我的听力 — the parent's own items, saved like spelling lists (kind
-//      "listening") with per-child cloud sync.
-// ZERO live AI: content is fixed or syllabus-derived; the device Chinese voice
-// reads it aloud on tap.
+//   1. 句子听写 — sentence dictation: the whole sentence is read aloud. In 写汉字
+//      the target character is a blank to fill (listening only, no pinyin cue);
+//      in 写拼音 the character is shown underlined and the child writes its hanyu
+//      pinyin. Per-lesson and weekly mixed papers.
+//   2. 听力理解 — comprehension packs (passage + question), 选择 or 填空.
+//   3. 我的听力 — the parent's own items (kind "listening", per-child cloud sync).
+// Writing is self-checked (reveal the answer, mark ✓/✗) — matches the sentence
+// writing approach and the school's marked worksheets. ZERO live AI.
 const KIND = "listening";
 const PHASE = { LIBRARY: "library", EDIT: "edit", PRACTICE: "practice", DONE: "done" };
 
@@ -54,9 +53,8 @@ const wordsFromItems = (items) =>
     .filter((it) => it.q && it.choices.length >= 2)
     .map((it) => JSON.stringify(it));
 
-// Normalisers → a common practice-item shape.
-const compItem = (it) => ({ passage: it.passage || "", q: it.q || "", choices: it.choices, answer: it.answer, word: it.choices[it.answer] || "", before: "", after: "", sentence: "" });
-const clozeItem = (c) => ({ passage: "", q: "", choices: [], answer: 0, word: c.answer, before: c.before, after: c.after, sentence: c.full });
+const compItem = (it) => ({ passage: it.passage || "", q: it.q || "", choices: it.choices, answer: it.answer, word: it.choices[it.answer] || "", before: "", after: "", sentence: "", py: "" });
+const clozeItem = (c) => ({ passage: "", q: "", choices: [], answer: 0, word: c.answer, before: c.before, after: c.after, sentence: c.full, py: c.py });
 
 const DICT_SYLLABI = Object.keys(DICTATION);
 const cellFor = (n) => (n <= 2 ? 132 : n <= 4 ? 116 : 104);
@@ -74,6 +72,7 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
   const [sessionTitle, setSessionTitle] = useState("");
   const [sessionType, setSessionType] = useState("comprehension"); // "dictation" | "comprehension"
   const [format, setFormat] = useState("select"); // comprehension: "select" | "write"
+  const [dictMode, setDictMode] = useState("hanzi"); // dictation: "hanzi" | "pinyin"
   const [playItems, setPlayItems] = useState([]);
   const [qIndex, setQIndex] = useState(0);
   const [picked, setPicked] = useState(null);
@@ -90,13 +89,14 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
   const isLast = qIndex >= playItems.length - 1;
   const answerTokens = useMemo(() => tokensOf(current?.word || ""), [current]);
   const isDictation = sessionType === "dictation";
-  const writeMode = isDictation || format === "write";
+  const pinyinMode = isDictation && dictMode === "pinyin";
+  const selectMode = !isDictation && format === "select";
 
   // ── Launchers ────────────────────────────────────────────────────────────
   const beginSession = useCallback((title, type, fmt, normItems) => {
     if (!normItems.length) return;
     unlock();
-    setSessionTitle(title); setSessionType(type); setFormat(fmt); setPlayItems(normItems);
+    setSessionTitle(title); setSessionType(type); setFormat(fmt); setDictMode("hanzi"); setPlayItems(normItems);
     setQIndex(0); setPicked(null); setRevealed(false); setSelfResult(null); setScore(0);
     setReveal(false); setPlayed(false); setAttempt((a) => a + 1); setPhase(PHASE.PRACTICE);
   }, [unlock]);
@@ -105,6 +105,7 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
     const label = syllabusById(syllId)?.label || "听写";
     beginSession(`${label} · ${tag}`, "dictation", "write", dictationItems(syllId, tag).map(clozeItem));
   };
+  const startWeekly = (paper) => beginSession(paper.label, "dictation", "write", weeklyItems(paper.id).map(clozeItem));
   const startPack = (pack) => beginSession(pack.label, "comprehension", "select", pack.items.map(compItem));
   const startMyLesson = (lesson) => beginSession(lesson.title || "我的听力", "comprehension", "select", itemsFromWords(lesson.words).map(compItem));
 
@@ -146,10 +147,26 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
     setQIndex((i) => i + 1);
     setPicked(null); setRevealed(false); setSelfResult(null); setReveal(false); setPlayed(false); setAttempt((a) => a + 1);
   };
+  const switchDictMode = (m) => { setDictMode(m); setRevealed(false); setSelfResult(null); setAttempt((a) => a + 1); };
 
   const onTopBack = () => { if (phase === PHASE.LIBRARY) onBack(); else setPhase(PHASE.LIBRARY); };
-  const answered = writeMode ? selfResult !== null : picked !== null;
+  const answered = selectMode ? picked !== null : selfResult !== null;
   const nextLabel = isLast ? "完成 Finish" : (isDictation ? "下一句 Next →" : "下一题 Next →");
+
+  const selfCheckBlock = (
+    selfResult === null ? (
+      <div className="lc-selfcheck">
+        <span className="lc-selfcheck-q">写对了吗？</span>
+        <button className="lc-self-yes" onClick={() => selfCheck(true)}>✓ 对了</button>
+        <button className="lc-self-no" onClick={() => selfCheck(false)}>✗ 再练</button>
+      </div>
+    ) : (
+      <div className="lc-feedback">
+        <span className={`lc-feedback-msg${selfResult ? " ok" : " no"}`}>{selfResult ? "很棒！🎉" : "没关系，多练几次～"}</span>
+        <button className="btn-primary" onClick={advance}>{nextLabel}</button>
+      </div>
+    )
+  );
 
   return (
     <div className="screen writing-screen">
@@ -165,6 +182,7 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
           {DICT_SYLLABI.map((id) => {
             const syll = syllabusById(id);
             if (!syll) return null;
+            const weekly = weeklyPapers(id);
             return (
               <div key={id} className="lc-syll">
                 <div className="lc-syll-head">
@@ -177,6 +195,15 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
                     </button>
                   ))}
                 </div>
+                {weekly.length > 0 && (
+                  <div className="lc-weekly">
+                    {weekly.map((p) => (
+                      <button key={p.id} className="lc-weekly-btn" onClick={() => startWeekly(p)}>
+                        📄 {p.label.split("·").pop().trim()}<span className="lc-chip-n">{p.count}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             );
           })}
@@ -252,30 +279,33 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
             第 {qIndex + 1}/{playItems.length} {isDictation ? "句" : "题"}
           </div>
 
-          {/* Comprehension items can switch tap-the-answer vs write-it. */}
-          {!isDictation && !answered && (
+          {/* Mode toggle */}
+          {!answered && (isDictation ? (
+            <div className="sw-modebar sw-modebar-mini lc-modebar">
+              <button className={`sw-mode-btn${dictMode === "hanzi" ? " active" : ""}`} onClick={() => switchDictMode("hanzi")}>写汉字</button>
+              <button className={`sw-mode-btn${dictMode === "pinyin" ? " active" : ""}`} onClick={() => switchDictMode("pinyin")}>写拼音</button>
+            </div>
+          ) : (
             <div className="sw-modebar sw-modebar-mini lc-modebar">
               <button className={`sw-mode-btn${format === "select" ? " active" : ""}`} onClick={() => setFormat("select")}>选择</button>
               <button className={`sw-mode-btn${format === "write" ? " active" : ""}`} onClick={() => setFormat("write")}>填空</button>
             </div>
-          )}
+          ))}
 
           <button className={`lc-play-btn${played ? " played" : ""}`} onClick={playCurrent}>
             <span className="lc-play-icon">🔊</span>
             <span className="lc-play-label">
-              {isDictation
-                ? (played ? "再听一次 Again" : "听句子 Play")
-                : (played ? "再听一次 Listen again" : "听一听 Play")}
+              {isDictation ? (played ? "再听一次 Again" : "听句子 Play") : (played ? "再听一次 Listen again" : "听一听 Play")}
             </span>
           </button>
 
-          {/* Dictation: the full sentence is printed with a blank to fill. */}
+          {/* Prompt */}
           {isDictation ? (
-            <p className="lc-cloze">
-              {current.before}
-              <span className="lc-blank" />
-              {current.after}
-            </p>
+            pinyinMode ? (
+              <p className="lc-cloze">{current.before}<u className="lc-underline">{current.answer}</u>{current.after}</p>
+            ) : (
+              <p className="lc-cloze">{current.before}<span className="lc-blank" />{current.after}</p>
+            )
           ) : (
             <>
               {current.passage && (reveal
@@ -285,7 +315,8 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
             </>
           )}
 
-          {!writeMode ? (
+          {/* Response */}
+          {selectMode ? (
             <>
               <div className="lc-choices">
                 {current.choices.map((c, ci) => {
@@ -310,6 +341,20 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
                 </div>
               )}
             </>
+          ) : pinyinMode ? (
+            <div className="lc-write">
+              <p className="lc-write-hint">写出<b> {current.answer} </b>的拼音</p>
+              <PracticeCanvas key={`py-${qIndex}-${attempt}`} clearLabel="重写 Clear" height={130} />
+              {!revealed ? (
+                <button className="btn-primary lc-reveal-btn" onClick={() => setRevealed(true)}>看答案 Reveal ✓</button>
+              ) : (
+                <div className="lc-answer">
+                  <p className="lc-answer-label">答案 Answer</p>
+                  <p className="lc-py-answer">{current.answer} <b>{current.py}</b></p>
+                  {selfCheckBlock}
+                </div>
+              )}
+            </div>
           ) : (
             <div className="lc-write">
               {!revealed ? (
@@ -324,18 +369,7 @@ export default function ListeningScreen({ activeChild, user, onBack }) {
                 <div className="lc-answer">
                   <p className="lc-answer-label">答案 Answer</p>
                   <StrokeDemoLine key={`ans-${qIndex}-${attempt}`} tokens={answerTokens} size={72} pinyinMap={{}} />
-                  {selfResult === null ? (
-                    <div className="lc-selfcheck">
-                      <span className="lc-selfcheck-q">写对了吗？</span>
-                      <button className="lc-self-yes" onClick={() => selfCheck(true)}>✓ 对了</button>
-                      <button className="lc-self-no" onClick={() => selfCheck(false)}>✗ 再练</button>
-                    </div>
-                  ) : (
-                    <div className="lc-feedback">
-                      <span className={`lc-feedback-msg${selfResult ? " ok" : " no"}`}>{selfResult ? "很棒！🎉" : "没关系，多练几次～"}</span>
-                      <button className="btn-primary" onClick={advance}>{nextLabel}</button>
-                    </div>
-                  )}
+                  {selfCheckBlock}
                 </div>
               )}
             </div>
