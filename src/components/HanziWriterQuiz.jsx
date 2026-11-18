@@ -12,10 +12,17 @@ import HanziWriter from "hanzi-writer";
 // Stroke data: Make Me a Hanzi (Arphic Public License), via Hanzi Writer's
 // default CDN for now. TODO(later): self-host via `charDataLoader`.
 
-function computeSize() {
+// Size the writing square to the space actually available (the quiz column's
+// width), not the raw viewport — otherwise on a narrow screen the character
+// spills outside its bordered box. Account for the box's border + padding.
+function computeSize(el) {
   if (typeof window === "undefined") return 360;
-  const base = Math.min(window.innerWidth, window.innerHeight) * 0.8;
-  return Math.max(300, Math.min(420, Math.floor(base)));
+  const vw = window.innerWidth, vh = window.innerHeight;
+  const host = el && el.closest ? el.closest(".hw-quiz") : null;
+  let avail = host && host.clientWidth ? host.clientWidth : Math.min(vw, 480);
+  avail -= 24; // .hw-square-wrap border (3) + padding (6) each side, plus slack
+  const base = Math.min(avail, vh * 0.72);
+  return Math.max(220, Math.min(420, Math.floor(base)));
 }
 
 export default function HanziWriterQuiz({ word, teachFirst = false, trace = false, onComplete }) {
@@ -95,7 +102,7 @@ export default function HanziWriterQuiz({ word, teachFirst = false, trace = fals
       }
     };
 
-    const size = computeSize();
+    const size = computeSize(el);
     const writer = HanziWriter.create(el, characters[0], {
       width: size,
       height: size,
